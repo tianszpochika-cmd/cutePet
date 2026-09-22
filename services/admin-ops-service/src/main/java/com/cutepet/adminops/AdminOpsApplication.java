@@ -1,9 +1,14 @@
 package com.cutepet.adminops;
 
+import com.cutepet.common.web.ApiExceptionHandler;
+import com.cutepet.common.web.AuditAspect;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
+@Import({ApiExceptionHandler.class, AuditAspect.class})
 public class AdminOpsApplication {
     public static void main(String[] args) {
         SpringApplication.run(AdminOpsApplication.class, args);

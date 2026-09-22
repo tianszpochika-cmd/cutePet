@@ -43,6 +43,7 @@ CREATE TABLE reminder_dispatches (                    -- 调度留痕（幂等/U
   reminder_id BIGINT NOT NULL,
   due_date DATE NOT NULL,
   state VARCHAR(16) NOT NULL DEFAULT 'PENDING',       -- PENDING/DONE/FAILED
+  todo_state VARCHAR(16) NOT NULL DEFAULT 'PENDING',  -- 关联待办态（DONE 不补推）
   attempts INT NOT NULL DEFAULT 0,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uk_reminder_due (reminder_id, due_date)

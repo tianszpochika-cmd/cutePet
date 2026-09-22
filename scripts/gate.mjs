@@ -62,7 +62,7 @@ if (!failed) pass('端口避让 cloudstudy 占用段');
 // ④ 契约校验 + 生成产物同步
 const contractRun = spawnSync(process.execPath, ['scripts/contracts-validate.mjs'], { stdio: 'inherit' });
 if (contractRun.status !== 0) fail('契约校验未通过');
-else pass('契约校验（152 路由 / 32 权限点 / 0 问题）');
+else pass('契约校验（路由/权限点 0 问题）');
 
 const genRun = spawnSync(process.execPath, ['scripts/contracts-generate.mjs', '--check'], { stdio: 'inherit' });
 if (genRun.status !== 0) fail('api-client 生成产物与契约不同步');
