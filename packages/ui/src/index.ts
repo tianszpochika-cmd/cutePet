@@ -1,6 +1,10 @@
-/**
- * 跨端基础组件出口（T0.2 逐个补齐）：
- * 按钮 / 卡片 / 输入 / Toast / Dialog / 空态 / 状态徽标 / 评分…
- * 视觉规格见 docs/02-设计文档/官网设计-UI视觉规范.md 与 移动端设计-UI视觉规范.md。
- */
 export { tokens } from '@cutepet/design-tokens';
+export * from './logic';
+
+export { default as CpButton } from './CpButton.vue';
+export { default as CpCard } from './CpCard.vue';
+export { default as CpInput } from './CpInput.vue';
+export { default as CpStatusBadge } from './CpStatusBadge.vue';
+export { default as CpEmpty } from './CpEmpty.vue';
+export { default as CpToast } from './CpToast.vue';
+export { default as CpDialog } from './CpDialog.vue';

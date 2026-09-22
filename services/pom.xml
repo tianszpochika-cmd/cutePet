@@ -21,6 +21,7 @@
 
   <!-- 服务模块随 T0.3 逐个创建：iam / pet / content / explore / catalog / admin-ops / notification / audit + api-gateway -->
   <modules>
+    <module>common-core</module>
     <module>service-template</module>
   </modules>
 

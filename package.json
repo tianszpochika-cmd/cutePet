@@ -13,6 +13,10 @@
     "lint": "turbo lint",
     "test": "node scripts/run-logic-tests.mjs",
     "test:logic": "node scripts/run-logic-tests.mjs",
+    "test:java": "node scripts/run-java-logic-tests.mjs",
+    "gate": "node scripts/gate.mjs && node scripts/run-java-logic-tests.mjs",
+    "db:reset": "node scripts/db-reset.mjs",
+    "seed": "node scripts/db-reset.mjs",
     "format": "prettier --write ."
   },
   "devDependencies": {

@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .turbo/
+.tmp-java/
 *.tsbuildinfo
 *.local
 .env
@@ -9,3 +10,4 @@ dist/
 logs/
 *.log
 .DS_Store
+

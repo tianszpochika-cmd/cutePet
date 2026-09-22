@@ -6,6 +6,6 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "scripts": {
-    "test": "node --test test/phone.test.ts"
+    "test": "node --test test/phone.test.ts test/domain.test.ts test/validate.test.ts"
   }
 }
