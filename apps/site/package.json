@@ -1,0 +1,24 @@
+{
+  "name": "@cutepet/site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "cutePet 官网（29 路由，端口 18582）",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 18582 --strictPort",
+    "build": "vue-tsc && vite build",
+    "typecheck": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@cutepet/design-tokens": "workspace:*",
+    "@cutepet/ui": "workspace:*",
+    "pinia": "^2.1.0",
+    "vue": "^3.5.0",
+    "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "typescript": "^5.4.0",
+    "vite": "^6.0.0",
+    "vue-tsc": "^2.0.0"
+  }
+}

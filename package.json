@@ -1,0 +1,23 @@
+{
+  "name": "cutepet",
+  "private": true,
+  "packageManager": "pnpm@10.19.0",
+  "engines": {
+    "node": ">=20.19",
+    "pnpm": ">=10"
+  },
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "typecheck": "turbo typecheck",
+    "lint": "turbo lint",
+    "test": "node scripts/run-logic-tests.mjs",
+    "test:logic": "node scripts/run-logic-tests.mjs",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.3.0",
+    "turbo": "^2.0.0",
+    "typescript": "^5.4.0"
+  }
+}
