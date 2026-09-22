@@ -25,18 +25,24 @@ export const router = createRouter({
     { path: '/pets/:id/weights', name: 'petWeights', component: () => import('./pages/pet/WeightChart.vue'), meta: { task: 'T7.2' } },
     { path: '/pets/:id/reminders', name: 'petReminders', component: () => import('./pages/pet/ReminderCenter.vue'), meta: { task: 'T7.2' } },
 
+    // ---- T7.4 资讯端 ----
+    { path: '/news', name: 'news', component: () => import('./pages/news/NewsFeed.vue'), meta: { task: 'T7.4' } },
+    { path: '/news/:slug', name: 'article', component: () => import('./pages/news/ArticleDetail.vue'), meta: { task: 'T7.4' } },
+    { path: '/search', name: 'search', component: () => import('./pages/news/SearchPage.vue'), meta: { task: 'T7.4' } },
+
+    // ---- T7.5 创作中心 ----
+    { path: '/write', name: 'write', component: () => import('./pages/news/WriteEditor.vue'), meta: { task: 'T7.5' } },
+    { path: '/write/:id', name: 'writeEdit', component: () => import('./pages/news/WriteEditor.vue'), meta: { task: 'T7.5' } },
+    { path: '/submissions', name: 'submissions', component: () => import('./pages/news/Submissions.vue'), meta: { task: 'T7.5' } },
+
+    // ---- T7.6 探索 ----
+    { path: '/explore', name: 'explore', component: () => import('./pages/explore/ExploreMap.vue'), meta: { task: 'T7.6' } },
+    { path: '/explore/poi/:id', name: 'poiDetail', component: () => import('./pages/explore/PoiDetail.vue'), meta: { task: 'T7.6' } },
+    { path: '/explore/poi/:id/review', name: 'poiReview', component: () => import('./pages/explore/ReviewForm.vue'), meta: { task: 'T7.6' } },
+    { path: '/explore/routes', name: 'routes', component: () => import('./pages/explore/RoutesPage.vue'), meta: { task: 'T7.6' } },
+    { path: '/events', name: 'events', component: () => import('./pages/explore/EventsPage.vue'), meta: { task: 'T7.6' } },
+
     // ---- 后续任务占位（M7 剩余） ----
-    { path: '/news', meta: { task: 'T7.4' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/news/:slug', meta: { task: 'T7.4' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/search', meta: { task: 'T7.4' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/write', meta: { task: 'T7.5' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/write/:id', meta: { task: 'T7.5' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/submissions', meta: { task: 'T7.5' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/explore', meta: { task: 'T7.6' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/explore/poi/:id', meta: { task: 'T7.6' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/explore/poi/:id/review', meta: { task: 'T7.6' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/explore/routes', meta: { task: 'T7.6' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/events', meta: { task: 'T7.6' }, component: () => import('./pages/ComingSoon.vue') },
     { path: '/goods', meta: { task: 'T7.7' }, component: () => import('./pages/ComingSoon.vue') },
     { path: '/goods/:id', meta: { task: 'T7.7' }, component: () => import('./pages/ComingSoon.vue') },
     { path: '/lists/:id', meta: { task: 'T7.7' }, component: () => import('./pages/ComingSoon.vue') },
