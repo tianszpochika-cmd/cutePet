@@ -42,24 +42,31 @@ export const router = createRouter({
     { path: '/explore/routes', name: 'routes', component: () => import('./pages/explore/RoutesPage.vue'), meta: { task: 'T7.6' } },
     { path: '/events', name: 'events', component: () => import('./pages/explore/EventsPage.vue'), meta: { task: 'T7.6' } },
 
-    // ---- 后续任务占位（M7 剩余） ----
-    { path: '/goods', meta: { task: 'T7.7' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/goods/:id', meta: { task: 'T7.7' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/lists/:id', meta: { task: 'T7.7' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/family', meta: { task: 'T7.8' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/family/invite', meta: { task: 'T7.8' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/family/join', meta: { task: 'T7.8' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/me', meta: { task: 'T7.8' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/me/favorites', meta: { task: 'T7.8' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/messages', meta: { task: 'T7.8' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/settings', meta: { task: 'T7.9' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/settings/privacy', meta: { task: 'T7.9' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/settings/notifications', meta: { task: 'T7.9' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/settings/export', meta: { task: 'T7.9' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/settings/delete', meta: { task: 'T7.9' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/help', meta: { task: 'T7.9' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/legal/:doc', meta: { task: 'T7.9' }, component: () => import('./pages/ComingSoon.vue') },
-    { path: '/blocked', meta: { task: 'T7.9' }, component: () => import('./pages/ComingSoon.vue') },
+    // ---- T7.7 用品 ----
+    { path: '/goods', name: 'goods', component: () => import('./pages/goods/GoodsChannel.vue'), meta: { task: 'T7.7' } },
+    { path: '/goods/:id', name: 'product', component: () => import('./pages/goods/ProductDetail.vue'), meta: { task: 'T7.7' } },
+    { path: '/lists/:id', name: 'listDetail', component: () => import('./pages/goods/ListDetail.vue'), meta: { task: 'T7.7' } },
+
+    // ---- T7.8 家庭 + 个人中心 + 消息 + 活动中心 ----
+    { path: '/family', name: 'family', component: () => import('./pages/family/FamilyPage.vue'), meta: { task: 'T7.8' } },
+    { path: '/family/invite', name: 'familyInvite', component: () => import('./pages/family/FamilyInvite.vue'), meta: { task: 'T7.8' } },
+    { path: '/family/join', name: 'familyJoin', component: () => import('./pages/family/FamilyJoin.vue'), meta: { task: 'T7.8' } },
+    { path: '/me', name: 'me', component: () => import('./pages/me/Me.vue'), meta: { task: 'T7.8' } },
+    { path: '/me/favorites', name: 'favorites', component: () => import('./pages/me/Favorites.vue'), meta: { task: 'T7.8' } },
+    { path: '/me/activity-center', name: 'activityCenter', component: () => import('./pages/me/ActivityCenter.vue'), meta: { task: 'T7.8' } },
+    { path: '/messages', name: 'messages', component: () => import('./pages/me/Messages.vue'), meta: { task: 'T7.8' } },
+
+    // ---- T7.9 设置与合规 ----
+    { path: '/settings', name: 'settings', component: () => import('./pages/settings/Settings.vue'), meta: { task: 'T7.9' } },
+    { path: '/settings/privacy', name: 'privacy', component: () => import('./pages/settings/Privacy.vue'), meta: { task: 'T7.9' } },
+    { path: '/settings/notifications', name: 'notifications', component: () => import('./pages/settings/Notifications.vue'), meta: { task: 'T7.9' } },
+    { path: '/settings/export', name: 'export', component: () => import('./pages/settings/Export.vue'), meta: { task: 'T7.9' } },
+    { path: '/settings/delete', name: 'deleteAccount', component: () => import('./pages/settings/DeleteAccount.vue'), meta: { task: 'T7.9' } },
+    { path: '/help', name: 'help', component: () => import('./pages/settings/Help.vue'), meta: { task: 'T7.9' } },
+    { path: '/legal/:doc', name: 'legal', component: () => import('./pages/settings/LegalDoc.vue'), meta: { task: 'T7.9' } },
+    { path: '/blocked', name: 'blocked', component: () => import('./pages/settings/Blocked.vue'), meta: { task: 'T7.9' } },
+
+    // ---- 剩余任务占位 ----
     { path: '/:pathMatch(.*)*', meta: { task: 'T7.9' }, component: () => import('./pages/ComingSoon.vue') },
   ],
 });

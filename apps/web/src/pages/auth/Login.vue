@@ -55,6 +55,9 @@ async function submit() {
       微信登录
     </button>
     <router-link class="back" :to="safeReturnPath(String(route.query.return))">先逛逛（返回）</router-link>
+    <router-link class="guardian-link" to="/login/guardian" data-testid="guardian-entry">
+      监护人服务（X16：绑定核验 / 同意状态 / 撤回）
+    </router-link>
   </div>
 </template>
 
@@ -102,5 +105,10 @@ button.wechat {
   text-align: center;
   color: #ff7a2f;
   font-size: 13px;
+}
+.guardian-link {
+  text-align: center;
+  color: #7a6e63;
+  font-size: 12px;
 }
 </style>
