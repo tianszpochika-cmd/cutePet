@@ -1,0 +1,51 @@
+/* cutePet 官网全局动效（T9.5 · reduced-motion 降级 · 焦点可达） */
+
+:root {
+  --primary: #ff7a2f;
+  --ink: #2b2118;
+  --ink-2: #7a6e63;
+  --line: #f0e6dc;
+  --bg: #fff9f3;
+  --e-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 滚动入场（450ms 出场曲线） */
+.enter { animation: enter-up 450ms var(--e-out) both; }
+.enter-fade { animation: fade-in 300ms var(--e-out) both; }
+
+@keyframes enter-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* reduced-motion：仅保留 ≤100ms 透明度，无位移无循环（动效规范 §6） */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 100ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 100ms !important;
+    transform: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+a { color: var(--primary); }
