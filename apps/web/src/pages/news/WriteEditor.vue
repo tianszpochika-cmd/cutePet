@@ -9,7 +9,17 @@ const route = useRoute();
 const router = useRouter();
 const editingId = route.params.id ? String(route.params.id) : null;
 
-const form = reactive({ kind: 'ARTICLE', title: '', body: '', channel: '猫', cover: '', tags: '' });
+const form = reactive({
+  kind: 'ARTICLE',
+  title: '',
+  body: '',
+  channel: '猫',
+  cover: '',
+  tags: '',
+  relatedProduct: '',
+  sourceEvidence: '',
+  interestDeclared: false,
+});
 const attempted = ref(false);
 const lastSavedAt = ref<number | null>(null);
 const dirty = ref(false);
@@ -122,6 +132,17 @@ function leaveGuard() {
       </select>
       <input v-model="form.tags" placeholder="标签，逗号分隔" @input="touch" />
     </div>
+
+    <!-- #42：评测类型增加 关联商品/来源证据/利益关系/专业复核提示 -->
+    <section v-if="form.kind === 'REVIEW'" class="review-fields" data-testid="review-extra">
+      <input v-model="form.relatedProduct" placeholder="关联商品（名称/链接）" @input="touch" />
+      <input v-model="form.sourceEvidence" placeholder="来源证据（资料链接，必填）" data-testid="source-evidence" @input="touch" />
+      <label class="interest">
+        <input v-model="form.interestDeclared" type="checkbox" data-testid="review-interest" @change="touch" />
+        利益关系声明：与品牌方无利益关联 / 已披露合作
+      </label>
+      <p class="hint">健康科普类内容将提示「专业复核」要求（发布前需具备资质的复核人确认——U94）。</p>
+    </section>
     <textarea
       v-model="form.body"
       rows="14"
@@ -233,6 +254,31 @@ textarea {
 .err {
   color: #ef4444;
   font-size: 13px;
+}
+.review-fields {
+  display: grid;
+  gap: 8px;
+}
+.review-fields input[type='text'] {
+  height: 44px;
+  border: 1px solid #f0e6dc;
+  border-radius: 12px;
+  padding: 0 12px;
+  font-size: 14px;
+}
+.interest {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+  color: #7a6e63;
+}
+.hint {
+  background: #fff1e8;
+  color: #b45309;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12px;
 }
 .tip {
   color: #7a6e63;

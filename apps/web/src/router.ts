@@ -66,6 +66,21 @@ export const router = createRouter({
     { path: '/legal/:doc', name: 'legal', component: () => import('./pages/settings/LegalDoc.vue'), meta: { task: 'T7.9' } },
     { path: '/blocked', name: 'blocked', component: () => import('./pages/settings/Blocked.vue'), meta: { task: 'T7.9' } },
 
+    // ---- T7.11 闭环页面 X01–X16 的 Web 执行 ----
+    { path: '/todos/:id/confirm', name: 'todoConfirm', component: () => import('./pages/todo/TodoConfirm.vue'), meta: { task: 'T7.11' } },
+    { path: '/plans/:id', name: 'planDetail', component: () => import('./pages/todo/PlanDetail.vue'), meta: { task: 'T7.11' } },
+    { path: '/pets/:id/share', name: 'shareManage', component: () => import('./pages/family/ShareManage.vue'), meta: { task: 'T7.11' } },
+    { path: '/pets/:id/transfer', name: 'transferPet', component: () => import('./pages/family/TransferPet.vue'), meta: { task: 'T7.11' } },
+    { path: '/family/transfer-admin', name: 'transferAdmin', component: () => import('./pages/family/TransferAdmin.vue'), meta: { task: 'T7.11' } },
+    { path: '/pets/recycle', name: 'recycleBin', component: () => import('./pages/pet/RecycleBin.vue'), meta: { task: 'T7.11' } },
+    { path: '/me/sync', name: 'syncQueue', component: () => import('./pages/me/SyncQueue.vue'), meta: { task: 'T7.11' } },
+    { path: '/me/activity-center/publish', name: 'publishActivity', component: () => import('./pages/me/PublishActivity.vue'), meta: { task: 'T7.11' } },
+    { path: '/me/signups/:id', name: 'signupDetail', component: () => import('./pages/me/SignupDetail.vue'), meta: { task: 'T7.11' } },
+    { path: '/me/activity-center/published/:id', name: 'activityManage', component: () => import('./pages/me/ActivityManage.vue'), meta: { task: 'T7.11' } },
+    { path: '/write/list/new', name: 'listEditor', component: () => import('./pages/news/ListEditor.vue'), meta: { task: 'T7.11' } },
+    { path: '/submissions/:id/version', name: 'versionCompare', component: () => import('./pages/news/VersionCompare.vue'), meta: { task: 'T7.11' } },
+    { path: '/guardian/control', name: 'guardianControl', component: () => import('./pages/auth/GuardianControl.vue'), meta: { task: 'T7.11' } },
+
     // ---- 剩余任务占位 ----
     { path: '/:pathMatch(.*)*', meta: { task: 'T7.9' }, component: () => import('./pages/ComingSoon.vue') },
   ],
