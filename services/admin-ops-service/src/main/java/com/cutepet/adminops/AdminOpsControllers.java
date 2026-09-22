@@ -26,10 +26,12 @@ class AdminOpsControllers {
     private final TrackingService tracking;
     private final Repos.DisputeRepo disputes;
     private final Repos.ModerationRepo moderationRepo;
+    private final DashboardService dashboard;
 
     AdminOpsControllers(ReportService reports, GovernanceService governance, ModerationService moderation,
                         RoleService roles, TrackingService tracking,
-                        Repos.DisputeRepo disputes, Repos.ModerationRepo moderationRepo) {
+                        Repos.DisputeRepo disputes, Repos.ModerationRepo moderationRepo,
+                        DashboardService dashboard) {
         this.reports = reports;
         this.governance = governance;
         this.moderation = moderation;
@@ -37,6 +39,7 @@ class AdminOpsControllers {
         this.tracking = tracking;
         this.disputes = disputes;
         this.moderationRepo = moderationRepo;
+        this.dashboard = dashboard;
     }
 
     private long userOf(String userIdHeader) {
@@ -263,5 +266,12 @@ class AdminOpsControllers {
             @PathVariable long id, @RequestBody RoleUpdateReq req) {
         PermissionGuard.require(perms, "rbac.manage");
         return roles.update(id, req.permissions());
+    }
+
+    @GetMapping("/admin/dashboard")
+    public Map<String, Object> adminDashboard(
+            @RequestHeader(value = "X-Permissions", required = false) String perms) {
+        PermissionGuard.require(perms, "dashboard.view.all"); // 各业务域看板按域权限在本地阶段分域开放
+        return dashboard.overview();
     }
 }
