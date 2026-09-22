@@ -43,6 +43,7 @@ export const ROUTES: RouteSpec[] = [
   { id: 'familyDissolve', method: 'POST', path: '/families/dissolve', auth: 'user', summary: '解散家庭' },
   { id: 'familyTransferOwner', method: 'POST', path: '/families/transfer-owner', auth: 'user', summary: '所有权转移' },
   { id: 'familyTransferAdmin', method: 'POST', path: '/families/transfer-admin', auth: 'user', summary: '管理员转交' },
+  { id: 'familyTransferRespond', method: 'PUT', path: '/families/transfers/respond', auth: 'user', summary: '转移响应' },
   { id: 'familySharePet', method: 'PATCH', path: '/families/share/:petId', auth: 'user', summary: '共享档位' },
 
   // ---- 宠物管理（M2） ----

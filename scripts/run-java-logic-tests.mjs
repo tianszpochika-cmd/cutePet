@@ -2,12 +2,18 @@
 // Java 纯逻辑测试运行器（T0.3 配套，零环境）。
 // 用系统已安装的 javac/java 编译并执行 services 下的 *LogicTest.java（纯 Java，无 Spring/JUnit 依赖）。
 // 输出目录仅在仓库内 .tmp-java/；不写入 ~/.m2、不启动任何服务。
-import { readdirSync, existsSync, statSync } from 'node:fs';
+import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
 import { join, dirname, relative, sep } from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const SERVICES = 'services';
 const COMMON_MAIN = join(SERVICES, 'common-core', 'src', 'main', 'java');
+
+/** 只编译纯 Java（跳过 Spring/Jakarta/AspectJ 依赖文件——它们的编译与运行属开发机 mvn 职责） */
+function isPureJava(file) {
+  const src = readFileSync(file, 'utf8');
+  return !/org\.springframework|jakarta\.|org\.aspectj/.test(src);
+}
 
 function collect(dir, predicate, out = []) {
   if (!existsSync(dir)) return out;
@@ -35,10 +41,10 @@ for (const testFile of tests) {
   const serviceMain = join(SERVICES, serviceName, 'src', 'main', 'java');
 
   const sources = [
-    ...(existsSync(COMMON_MAIN) ? collect(COMMON_MAIN, (f) => f.endsWith('.java')) : []),
-    ...(existsSync(serviceMain) ? collect(serviceMain, (f) => f.endsWith('.java')) : []),
+    ...(existsSync(COMMON_MAIN) ? collect(COMMON_MAIN, (f) => f.endsWith('.java') && isPureJava(f)) : []),
+    ...(existsSync(serviceMain) ? collect(serviceMain, (f) => f.endsWith('.java') && isPureJava(f)) : []),
     testFile,
-  ];
+  ].filter(isPureJava);
 
   // 类名（含包）
   const pkgDir = testFile.slice(0, testFile.lastIndexOf(sep));

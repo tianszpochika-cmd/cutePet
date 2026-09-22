@@ -52,6 +52,8 @@ export const api = {
   familyTransferOwner: (args: CallArgs = {}) => request('POST', '/families/transfer-owner', args),
   /** 管理员转交 · POST /families/transfer-admin · user */
   familyTransferAdmin: (args: CallArgs = {}) => request('POST', '/families/transfer-admin', args),
+  /** 转移响应 · PUT /families/transfers/respond · user */
+  familyTransferRespond: (args: CallArgs = {}) => request('PUT', '/families/transfers/respond', args),
   /** 共享档位 · PATCH /families/share/:petId · user */
   familySharePet: (args: CallArgs = {}) => request('PATCH', '/families/share/:petId', args),
   /** 宠物列表 · GET /pets · user */
