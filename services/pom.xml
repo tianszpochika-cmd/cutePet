@@ -19,10 +19,20 @@
     <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
   </properties>
 
-  <!-- 服务模块随 T0.3 逐个创建：iam / pet / content / explore / catalog / admin-ops / notification / audit + api-gateway -->
+  <!-- 9 服务（网关 + 8 域服务）+ 2 共享库 + 模板 -->
   <modules>
     <module>common-core</module>
+    <module>common-web</module>
     <module>service-template</module>
+    <module>api-gateway</module>
+    <module>iam-service</module>
+    <module>pet-service</module>
+    <module>content-service</module>
+    <module>explore-service</module>
+    <module>catalog-service</module>
+    <module>admin-ops-service</module>
+    <module>notification-service</module>
+    <module>audit-service</module>
   </modules>
 
   <dependencyManagement>

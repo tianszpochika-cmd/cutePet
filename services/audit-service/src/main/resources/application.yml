@@ -1,0 +1,18 @@
+server:
+  port: 18487
+spring:
+  application:
+    name: audit-service
+  datasource:
+    url: ${CUTEPET_DB_URL:jdbc:mysql://127.0.0.1:13306/cutepet?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${CUTEPET_DB_USER:cutepet}
+    password: ${CUTEPET_DB_PASSWORD:cutepet}
+  flyway:
+    enabled: true
+    schemas: cutepet_audit
+    table: cutepet_audit_schema_history
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

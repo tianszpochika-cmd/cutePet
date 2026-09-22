@@ -17,6 +17,8 @@
     "gate": "node scripts/gate.mjs && node scripts/run-java-logic-tests.mjs",
     "db:reset": "node scripts/db-reset.mjs",
     "seed": "node scripts/db-reset.mjs",
+    "contracts:validate": "node scripts/contracts-validate.mjs",
+    "contracts:generate": "node scripts/contracts-generate.mjs",
     "format": "prettier --write ."
   },
   "devDependencies": {

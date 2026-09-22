@@ -59,4 +59,18 @@ for (const p of tokenPorts) {
 }
 if (!failed) pass('端口避让 cloudstudy 占用段');
 
+// ④ 契约校验 + 生成产物同步
+const contractRun = spawnSync(process.execPath, ['scripts/contracts-validate.mjs'], { stdio: 'inherit' });
+if (contractRun.status !== 0) fail('契约校验未通过');
+else pass('契约校验（152 路由 / 32 权限点 / 0 问题）');
+
+const genRun = spawnSync(process.execPath, ['scripts/contracts-generate.mjs', '--check'], { stdio: 'inherit' });
+if (genRun.status !== 0) fail('api-client 生成产物与契约不同步');
+else pass('api-client 生成产物同步');
+
+// ⑤ 服务结构校验
+const svcRun = spawnSync(process.execPath, ['scripts/validate-services.mjs'], { stdio: 'inherit' });
+if (svcRun.status !== 0) fail('服务结构校验未通过');
+else pass('服务结构校验（12 模块 / 网关路由全覆盖）');
+
 process.exit(failed ? 1 : 0);

@@ -1,0 +1,37 @@
+server:
+  port: 18470
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: iam
+          uri: http://127.0.0.1:18480
+          predicates: Path=/auth/**,/families/**,/me,/me/phone/**,/me/export,/me/delete,/me/cancel-delete
+        - id: pet
+          uri: http://127.0.0.1:18481
+          predicates: Path=/pets/**,/records/**,/reminders/**,/plans/**,/plan-todos/**
+        - id: content
+          uri: http://127.0.0.1:18482
+          predicates: Path=/articles/**,/channels/**,/search,/topics/**,/specials/**,/comments/**,/authors/**,/me/submissions,/me/submissions/**,/me/favorites
+        - id: explore
+          uri: http://127.0.0.1:18483
+          predicates: Path=/pois/**,/routes/**,/activities/**,/adoptions
+        - id: catalog
+          uri: http://127.0.0.1:18484
+          predicates: Path=/products/**,/lists/**
+        - id: notification
+          uri: http://127.0.0.1:18486
+          predicates: Path=/messages/**,/admin/notify/**
+        - id: audit
+          uri: http://127.0.0.1:18487
+          predicates: Path=/admin/audit-logs
+        - id: admin-ops
+          uri: http://127.0.0.1:18485
+          predicates: Path=/admin/**,/reports/**,/me/reports,/tickets,/me/tickets,/counters,/track
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,gateway

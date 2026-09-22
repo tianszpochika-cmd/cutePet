@@ -1,0 +1,18 @@
+server:
+  port: 18481
+spring:
+  application:
+    name: pet-service
+  datasource:
+    url: ${CUTEPET_DB_URL:jdbc:mysql://127.0.0.1:13306/cutepet?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${CUTEPET_DB_USER:cutepet}
+    password: ${CUTEPET_DB_PASSWORD:cutepet}
+  flyway:
+    enabled: true
+    schemas: cutepet_pet
+    table: cutepet_pet_schema_history
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

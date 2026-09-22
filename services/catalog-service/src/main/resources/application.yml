@@ -1,0 +1,18 @@
+server:
+  port: 18484
+spring:
+  application:
+    name: catalog-service
+  datasource:
+    url: ${CUTEPET_DB_URL:jdbc:mysql://127.0.0.1:13306/cutepet?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai}
+    username: ${CUTEPET_DB_USER:cutepet}
+    password: ${CUTEPET_DB_PASSWORD:cutepet}
+  flyway:
+    enabled: true
+    schemas: cutepet_catalog
+    table: cutepet_catalog_schema_history
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
