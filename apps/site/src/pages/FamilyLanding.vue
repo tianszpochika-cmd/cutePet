@@ -1,91 +1,42 @@
 <script setup lang="ts">
-const MATRIX = [
-  { action: '查看共享宠物', owner: '✅', manage: '✅', readonly: '✅', note: '未共享则对家人不可见（属于家庭≠访问个人未共享宠物）' },
-  { action: '编辑健康记录', owner: '✅', manage: '✅', readonly: '❌', note: '只读不出现编辑入口' },
-  { action: '处理提醒', owner: '✅', manage: '✅', readonly: '❌', note: '完成后显示处理人' },
-  { action: '调整共享档位', owner: '✅', manage: '❌', readonly: '❌', note: '非所有者不能提升（U61）' },
-  { action: '生成健康摘要', owner: '✅', manage: '❌', readonly: '❌', note: '摘要仅所有者（#35），分享不生成实时私有链接' },
-  { action: '转移所有权', owner: '✅', manage: '❌', readonly: '❌', note: '24h 待接受可撤销，接收后共享重置只读' },
-];
+const JOURNEY = [
+  { number: '01', title: '邀请前，先选要共享的宠物', copy: '自己的宠物不会因为加入家庭而自动开放。所有者决定哪些档案需要家人一起照顾。' },
+  { number: '02', title: '加入时，看清楚共享范围', copy: '邀请说明会告诉家人可以看什么。新成员对已共享宠物先以只读方式加入。' },
+  { number: '03', title: '需要接力，再调整到可管理', copy: '所有者可按成员、按宠物授权。处理待办后记录处理人，让下一位家人知道进度。' },
+] as const;
 
-const FLOW = ['邀请码（7 天有效）', '加入时明确共享范围', '自有宠物仍私有', '新成员默认只读', '变更档位通知受影响成员'];
+const PERMISSIONS = [
+  { action: '查看这只已共享宠物的档案与记录', owner: '可以', manage: '可以', readonly: '可以' },
+  { action: '新增记录、处理本次待办', owner: '可以', manage: '可以', readonly: '不可' },
+  { action: '更正健康记录', owner: '说明原因并留痕', manage: '仅自己录入的记录', readonly: '不可' },
+  { action: '调整这只宠物的共享范围', owner: '可以', manage: '不可', readonly: '不可' },
+  { action: '核验并生成健康摘要', owner: '可以', manage: '不可', readonly: '不可' },
+  { action: '归档、删除或转移宠物', owner: '可以', manage: '不可', readonly: '不可' },
+] as const;
 </script>
 
 <template>
-  <div class="family-landing">
-    <section class="hero">
-      <p class="eyebrow">家庭共享</p>
-      <h1>一家人的照护，<br />在同一份时间线上</h1>
-      <p class="sub">共享档位逐动作生效——可管理不等于全功能，所有者保留关键操作。</p>
-      <router-link class="primary" to="/download">体验家庭共享</router-link>
-    </section>
+  <div class="family-page">
+    <section class="hero"><div class="site-wrap hero-grid">
+      <div><p class="site-eyebrow">CARE TOGETHER, WITH CLEAR BOUNDARIES</p><h1>一家人的照顾，<br /><span>也有各自的分寸。</span></h1><p class="site-lead">邀请家人帮忙，是为了让同一件照护任务少一点遗漏和重复。谁能看到哪只宠物、谁能处理待办，都由宠物所有者决定。</p><div class="hero-actions"><a class="site-button" href="#how-sharing-works">了解共享方式 <span aria-hidden="true">↓</span></a><router-link class="site-button outline" to="/download">查看使用入口 <span aria-hidden="true">↗</span></router-link></div></div>
+      <div class="relationship" role="group" aria-label="家庭共享示意：所有者选择共享一只宠物，家人按权限协作，未共享宠物仍私有"><span class="relation-label">家庭关系 · 说明示意</span><div class="relation-row"><div class="person"><span aria-hidden="true">♡</span><strong>宠物所有者</strong><small>决定共享范围</small></div><span class="line" aria-hidden="true"></span><div class="person"><span aria-hidden="true">◇</span><strong>家人</strong><small>按授权照顾</small></div></div><div class="shared"><strong>需要一起照顾的宠物</strong><span>按只读或可管理权限共享</span></div><div class="private"><strong>没有共享的宠物</strong><span>仍是所有者的私有档案</span></div></div>
+    </div></section>
 
-    <!-- 拓扑示意 -->
-    <section class="topo">
-      <h2>共享关系一览</h2>
-      <svg viewBox="0 0 640 240" role="img" aria-label="家庭共享拓扑示意">
-        <g stroke="#9b8cff" stroke-width="2" fill="none">
-          <path d="M320,60 L160,170" />
-          <path d="M320,60 L320,170" />
-          <path d="M320,60 L480,170" />
-        </g>
-        <g fill="#9b8cff">
-          <circle cx="320" cy="60" r="26" />
-        </g>
-        <g fill="#fff1e8" stroke="#ff7a2f" stroke-width="2">
-          <circle cx="160" cy="170" r="22" />
-          <circle cx="320" cy="170" r="22" />
-          <circle cx="480" cy="170" r="22" />
-        </g>
-        <g fill="#2b2118" font-size="13" text-anchor="middle">
-          <text x="320" y="65" fill="#fff">家庭</text>
-          <text x="160" y="175">旺财·可管理</text>
-          <text x="320" y="175">豆豆·只读</text>
-          <text x="480" y="175">我的·私有</text>
-        </g>
-      </svg>
-      <p class="note">右侧「我的」表示：未共享的个人宠物对家人不可见——家庭关系不越权。</p>
-    </section>
+    <section id="how-sharing-works" class="site-wrap journey" aria-labelledby="journey-heading"><div class="section-head"><div><p class="site-eyebrow">A THOUGHTFUL INVITATION</p><h2 id="journey-heading" class="site-section-title">先说清范围，<br />再开始接力。</h2></div><p>加入同一个家庭，只建立家庭关系。宠物档案要由所有者单独共享，默认权限也从只读开始。</p></div><ol><li v-for="step in JOURNEY" :key="step.number"><span>{{ step.number }}</span><h3>{{ step.title }}</h3><p>{{ step.copy }}</p></li></ol></section>
 
-    <section class="matrix">
-      <h2>逐动作权限</h2>
-      <table>
-        <thead><tr><th>动作</th><th>所有者</th><th>可管理</th><th>只读</th><th>说明</th></tr></thead>
-        <tbody>
-          <tr v-for="m in MATRIX" :key="m.action">
-            <td>{{ m.action }}</td><td>{{ m.owner }}</td><td>{{ m.manage }}</td><td>{{ m.readonly }}</td>
-            <td class="note">{{ m.note }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+    <section class="permissions"><div class="site-wrap"><div class="section-head"><div><p class="site-eyebrow">WHO CAN DO WHAT</p><h2 class="site-section-title">一起看见进度，<br />操作权限各不同。</h2></div><p>以下只针对某一只已经共享的宠物。未共享的宠物不会出现在其他家人的档案中。</p></div>
+      <div class="permission-table" role="region" aria-label="共享宠物的权限对照表" tabindex="0"><table><thead><tr><th scope="col">照护动作</th><th scope="col">宠物所有者</th><th scope="col">可管理成员</th><th scope="col">只读成员</th></tr></thead><tbody><tr v-for="permission in PERMISSIONS" :key="permission.action"><th scope="row">{{ permission.action }}</th><td>{{ permission.owner }}</td><td>{{ permission.manage }}</td><td>{{ permission.readonly }}</td></tr></tbody></table></div>
+      <p class="table-note">家庭管理员负责邀请、成员和家庭关系；这个身份不会自动获得别人宠物的查看、编辑或导出权限。</p>
+    </div></section>
 
-    <section class="flow">
-      <h2>加入流程</h2>
-      <ol><li v-for="(f, i) in FLOW" :key="i">{{ f }}</li></ol>
-      <p class="note">规则：一人同时只能属于一个家庭；管理员转交与宠物转移相互独立（待接受时原管理员有效）。</p>
-    </section>
+    <section class="site-wrap handoff"><div><p class="site-eyebrow">ONE TASK, ONE CLEAR RESULT</p><h2 class="site-section-title">交接时，<br />不必猜谁做过了。</h2><p>家人在处理疫苗、驱虫等本次待办前，先看状态；需要记录的健康事项与待办一起提交。若另一位家人已先完成，页面应显示原处理结果，不再重复写入。</p><router-link class="site-text-link" to="/products/manage">了解照护记录与提醒 <span aria-hidden="true">→</span></router-link></div><div class="handoff-card" role="group" aria-label="待办处理状态的界面示意"><span>待办状态 · 界面示意</span><div><strong>先核对本次待办</strong><small>关联实际健康记录</small></div><div><strong>平台确认处理结果</strong><small>显示处理人和下一次安排</small></div><p>离线草稿和提交失败都不会显示为已完成。</p></div></section>
 
-    <router-link class="ghost" to="/services">看完整服务场景 →</router-link>
+    <section class="safety"><div class="site-wrap safety-grid"><div><p class="site-eyebrow">PRIVATE BY DEFAULT</p><h2 class="site-section-title">属于你的资料，<br />不会因为“同一家”就公开。</h2></div><div><p>自己的收藏、草稿、联系方式和活动报名信息，不因家庭关系自动共享。健康摘要由宠物所有者核验后生成静态图片，不提供实时私有档案链接。</p><p>宠物所有权转移与家庭管理员转交是两件独立的事；双方确认之前，原权限保持有效。</p></div></div></section>
+
+    <section class="site-wrap closing"><div class="faq"><h2>开始之前，你可能想知道</h2><details><summary>家人一加入，就能看见我的所有宠物吗？</summary><p>不能。所有者需要选择要共享的宠物；没有共享的档案保持私有。新成员对已共享宠物默认只读。</p></details><details><summary>“可管理”成员能修改所有健康记录吗？</summary><p>不能。可管理成员可以新增记录和处理待办；更正或删除健康记录时，只能处理自己录入的条目，并且仍须拥有当前权限。</p></details><details><summary>家庭管理员就是所有宠物的所有者吗？</summary><p>不是。家庭管理员与宠物所有者可以是不同的人。管理员管理家庭成员，不自动获得他人宠物的数据权限。</p></details></div><div class="next"><p class="site-eyebrow">START WHEN YOU ARE READY</p><h2>把分工说清楚，再一起照顾。</h2><p>官网只解释共享规则。生成邀请、加入家庭和调整权限，都需进入用户端并由相关人员确认。</p><router-link class="site-button" to="/download">查看 Web 与手机使用方式 <span aria-hidden="true">↗</span></router-link><router-link class="site-text-link" to="/services">看看多宠家庭场景 <span aria-hidden="true">→</span></router-link></div></section>
   </div>
 </template>
 
 <style scoped>
-.family-landing { max-width: 960px; margin: 0 auto; padding: 40px 24px; display: grid; gap: 40px; }
-.hero { text-align: center; background: linear-gradient(180deg, #f5f3ff, transparent); border-radius: 32px; padding: 64px 16px 48px; display: grid; gap: 16px; justify-items: center; }
-.eyebrow { color: #9b8cff; font-weight: 700; letter-spacing: .12em; font-size: 13px; margin: 0; }
-h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.25; margin: 0; }
-.sub { color: #7a6e63; font-size: 16px; max-width: 520px; margin: 0; line-height: 1.8; }
-.primary { background: #9b8cff; color: #fff; border-radius: 999px; padding: 13px 30px; text-decoration: none; font-weight: 600; }
-.topo, .matrix, .flow { background: #fff; border-radius: 24px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 28px; display: grid; gap: 16px; }
-h2 { margin: 0; font-size: 20px; }
-svg { width: 100%; height: auto; }
-.note { color: #7a6e63; font-size: 13px; line-height: 1.7; margin: 0; }
-table { width: 100%; border-collapse: collapse; }
-th, td { text-align: left; padding: 10px 12px; font-size: 14px; border-bottom: 1px solid #f0e6dc; }
-th { color: #7a6e63; font-size: 12px; }
-td { text-align: center; }
-td:first-child, td:last-child { text-align: left; }
-ol { margin: 0; padding-left: 20px; display: grid; gap: 10px; font-size: 15px; color: #2b2118; }
-.ghost { justify-self: start; background: #fff; color: #7a6e63; border-radius: 999px; padding: 13px 28px; text-decoration: none; box-shadow: inset 0 0 0 1px #f0e6dc; }
+.family-page{overflow:hidden}.hero{padding:82px 0 105px;background:radial-gradient(circle at 78% 25%,#e9dffa,transparent 36%),linear-gradient(135deg,#fff9f3,#f5effb)}.hero-grid{display:grid;grid-template-columns:1fr .84fr;gap:8%;align-items:center}.hero h1{margin:0;font-size:clamp(40px,4.9vw,68px);line-height:1.17;letter-spacing:-.065em}.hero h1 span{color:#5d3a8a}.hero .site-lead{margin-top:24px;font-size:17px}.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:31px}.relationship{padding:28px;border:1px solid #e5d8f1;border-radius:28px;background:#fff;box-shadow:0 25px 60px rgba(69,41,88,.08)}.relation-label{color:#694196;font-size:12px;font-weight:800;letter-spacing:.06em}.relation-row{display:flex;align-items:center;gap:12px;margin:28px 0}.person{display:flex;flex:1;flex-direction:column;align-items:center;min-width:0;padding:15px 8px;border-radius:16px;background:#f6f1fb;text-align:center}.person span{font-size:28px;color:#684398}.person strong{font-size:13px}.person small{margin-top:3px;color:var(--site-muted);font-size:11px}.line{flex:none;width:32px;border-top:2px dashed #ba9bd8}.shared,.private{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-top:10px;padding:13px 16px;border-radius:13px;background:#eee5f9}.private{background:#fff9f3}.shared strong,.private strong{font-size:13px}.shared span,.private span{color:var(--site-muted);font-size:11px}.journey{padding-top:100px;padding-bottom:105px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:30px}.section-head>p{max-width:420px;margin:0;color:var(--site-muted);font-size:15px}.journey ol{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin:38px 0 0;padding:0;list-style:none}.journey li{min-height:265px;padding:25px;border:1px solid var(--site-line);border-radius:22px;background:#fff}.journey li>span{color:#684398;font-size:14px;font-weight:800}.journey h3{margin:42px 0 10px;font-size:20px;line-height:1.35}.journey li p{margin:0;color:var(--site-muted);font-size:14px}.permissions{padding:95px 0;background:#f6f1fb}.permission-table{margin-top:38px;overflow-x:auto;border:1px solid #e8dced;border-radius:20px;background:#fff}.permission-table table{width:100%;min-width:650px;border-collapse:collapse}.permission-table th,.permission-table td{padding:17px 18px;border-bottom:1px solid #eee7f1;text-align:left;font-size:14px}.permission-table thead th{background:#eee5f8;color:#573678;font-size:13px}.permission-table tbody th{width:39%;font-weight:650}.permission-table td{color:#463e47}.permission-table tr:last-child th,.permission-table tr:last-child td{border-bottom:0}.table-note{margin:17px 0 0;color:#5d4c68;font-size:13px}.handoff{display:grid;grid-template-columns:1fr .85fr;gap:10%;align-items:center;padding-top:105px;padding-bottom:105px}.handoff>div>p:not(.site-eyebrow){max-width:570px;color:var(--site-muted)}.handoff-card{padding:27px;border:1px solid var(--site-line);border-radius:24px;background:#fff;box-shadow:0 18px 40px rgba(74,44,24,.05)}.handoff-card>span{color:#694196;font-size:12px;font-weight:800}.handoff-card>div{display:flex;justify-content:space-between;gap:12px;margin-top:17px;padding:15px;border-radius:13px;background:#f6f1fb}.handoff-card strong{font-size:13px}.handoff-card small{color:var(--site-muted);font-size:11px}.handoff-card>p{margin:18px 0 0;color:var(--site-muted);font-size:12px}.safety{padding:90px 0;background:#f7f0e9}.safety-grid{display:grid;grid-template-columns:1fr 1fr;gap:10%;align-items:center}.safety-grid>div:last-child p{margin:0 0 16px;color:var(--site-muted);font-size:16px}.closing{display:grid;grid-template-columns:1fr .82fr;gap:10%;padding-top:100px;padding-bottom:110px}.faq h2,.next h2{margin:0 0 19px;font-size:clamp(25px,2.9vw,36px);line-height:1.25}.faq details{border-top:1px solid var(--site-line)}.faq details:last-child{border-bottom:1px solid var(--site-line)}.faq summary{display:flex;justify-content:space-between;align-items:center;min-height:66px;cursor:pointer;font-weight:700;list-style:none}.faq summary::after{content:'+';color:var(--site-action);font-size:23px}.faq details[open] summary::after{content:'−'}.faq details p{margin:0 0 21px;color:var(--site-muted);font-size:14px}.next{padding:30px;border-radius:24px;background:#f6f1fb}.next p:not(.site-eyebrow){color:var(--site-muted);font-size:14px}.next .site-button{margin:16px 0 6px}.next .site-text-link{display:flex}@media(max-width:1000px){.hero-grid{gap:5%}}@media(max-width:760px){.hero{padding:65px 0 75px}.hero-grid,.handoff,.safety-grid,.closing{grid-template-columns:1fr;gap:35px}.section-head{align-items:start;flex-direction:column}.journey{padding-top:72px;padding-bottom:72px}.journey ol{grid-template-columns:1fr}.journey li{min-height:0}.journey h3{margin-top:20px}.permissions{padding:72px 0}.handoff{padding-top:72px;padding-bottom:72px}.safety{padding:72px 0}.closing{padding-top:72px;padding-bottom:72px}}@media(max-width:520px){.hero-actions .site-button,.next .site-button{width:100%}.shared,.private,.handoff-card>div{align-items:start;flex-direction:column;gap:4px}.line{width:14px}}
 </style>

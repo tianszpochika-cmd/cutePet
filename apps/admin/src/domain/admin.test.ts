@@ -280,9 +280,11 @@ test('T8.6 版本差异必看 + 质量退修与违规分离 + 健康证据工单
   assert.equal(versionDiffRequired('BANNER'), false);
   const quality = reviewDisposition({ kind: 'quality', rejectCount: 3 });
   assert.equal(quality.countsAsViolation, false, '质量不计违规');
-  assert.equal(quality.suspended, true, '3 次暂停');
+  assert.equal(quality.suspended, false, '质量退修 3 次不暂停投稿');
   const violation = reviewDisposition({ kind: 'violation', rejectCount: 1 });
   assert.equal(violation.countsAsViolation, true);
+  assert.equal(violation.suspended, false, '不足 3 次人工确认违规不暂停');
+  assert.equal(reviewDisposition({ kind: 'violation', rejectCount: 3 }).suspended, true, '180 天内 3 次人工确认违规才暂停');
 
   const denied = canViewHealthEvidence({ boundTicketId: null, purpose: '', actorIsHandler: false });
   assert.equal(denied.allowed, false);

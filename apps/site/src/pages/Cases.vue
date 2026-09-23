@@ -1,54 +1,14 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { CASE_CATEGORIES, filterCases, type CaseItem } from '../domain/site';
-
-const category = ref<string>('全部');
-const items = ref<CaseItem[]>([
-  { id: 1, category: '宠物医院', title: '仁心宠物医院：把随访提醒做进日常', summary: '疫苗与复诊排期模板落地，随访完成率提升。', published: true },
-  { id: 2, category: '宠物店', title: '毛球生活馆：内容导购替代硬广', summary: '评测+清单结构上线，读者信任度提高。', published: true },
-  { id: 3, category: '救助机构', title: '爱心领养站：信息公开但不做交易', summary: '领养卡无报名/交易按钮，售卖举报双通道。', published: true },
-  { id: 4, category: '品牌方', title: '某粮品牌：来源声明与利益披露实践', summary: '（待审案例——官网不展示）', published: false },
-]);
-const shown = () => filterCases(items.value, category.value === '全部' ? '全部' : category.value);
-</script>
-
 <template>
-  <div class="cases">
-    <h1>客户案例</h1>
-    <nav class="cats">
-      <button type="button" :class="{ on: category === '全部' }" @click="category = '全部'">全部</button>
-      <button
-        v-for="c in CASE_CATEGORIES"
-        :key="c"
-        type="button"
-        :class="{ on: category === c }"
-        @click="category = c"
-      >
-        {{ c }}
-      </button>
-    </nav>
-
-    <section class="grid">
-      <article v-for="c in shown()" :key="c.id" class="card" :data-testid="`case-${c.id}`">
-        <span class="tag">{{ c.category }}</span>
-        <h2>{{ c.title }}</h2>
-        <p>{{ c.summary }}</p>
-      </article>
-    </section>
-    <p v-if="shown().length === 0" class="empty">该分类暂无已发布案例。</p>
+  <div class="cases site-wrap">
+    <nav class="crumb" aria-label="当前位置"><router-link to="/">首页</router-link><span aria-hidden="true">/</span><span aria-current="page">使用案例</span></nav>
+    <header><p class="site-eyebrow">REAL STORIES NEED REAL EVIDENCE</p><h1 class="site-section-title">真实故事，<br />等有依据后再分享。</h1><p class="site-lead">案例需要相关方授权、结果口径和可核对的出处。当前没有符合公开条件的案例。</p></header>
+    <section class="empty" aria-labelledby="empty-title"><div class="empty-icon" aria-hidden="true">✦</div><div><span class="status">案例 · 待核验</span><h2 id="empty-title">暂时没有可公开的使用案例</h2><p>这里不会用虚构机构、提升比例或用户评价填充页面。你可以先从产品能力和使用场景了解能完成哪些任务。</p><div class="actions"><router-link class="site-button" to="/products">了解产品能力</router-link><router-link class="site-button outline" to="/services">看看使用场景</router-link></div></div></section>
   </div>
 </template>
 
 <style scoped>
-.cases { max-width: 1120px; margin: 0 auto; padding: 40px 24px; display: grid; gap: 18px; }
-h1 { font-size: 32px; margin: 0; }
-.cats { display: flex; gap: 8px; flex-wrap: wrap; }
-.cats button { height: 34px; padding: 0 16px; border: none; border-radius: 999px; background: #fff; color: #7a6e63; box-shadow: inset 0 0 0 1px #f0e6dc; font-size: 13px; cursor: pointer; }
-.cats button.on { background: #ff7a2f; color: #fff; font-weight: 600; box-shadow: none; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
-.card { background: #fff; border-radius: 20px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 24px; display: grid; gap: 10px; }
-.tag { justify-self: start; background: #eaf1ff; color: #4d8dff; border-radius: 999px; padding: 3px 12px; font-size: 12px; }
-.card h2 { margin: 0; font-size: 17px; line-height: 1.5; }
-.card p { margin: 0; color: #7a6e63; font-size: 14px; line-height: 1.7; }
-.empty { color: #7a6e63; text-align: center; }
+.cases{padding-block:32px 90px}.crumb{display:flex;align-items:center;gap:10px;color:var(--site-muted);font-size:13px}.crumb a{color:inherit;text-decoration:none}
+header{padding:clamp(48px,7vw,96px) 0 45px}.empty{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:45px;padding:48px;border:1px solid var(--site-line);border-radius:28px;background:#fff}.empty-icon{display:grid;place-items:center;width:150px;height:150px;border-radius:32px;background:var(--site-soft);color:var(--site-action);font-size:76px}
+.status{color:var(--site-action);font-size:12px;font-weight:800}.empty h2{margin:6px 0 9px;font-size:28px}.empty p{max-width:630px;margin:0;color:var(--site-muted);font-size:14px}.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+@media(max-width:760px){.cases{padding-block:22px 70px}.empty{grid-template-columns:1fr;gap:20px;padding:27px}.empty-icon{width:88px;height:88px;border-radius:20px;font-size:48px}.empty h2{font-size:23px}.actions .site-button{width:100%}}
 </style>

@@ -1,0 +1,694 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <title>家庭共享与隐私 · cutePet 移动端设计稿</title>
+  <link rel="stylesheet" href="./mobile.css">
+  <style>
+    .family-demo .studio-intro .jump {
+      display: grid;
+      gap: 6px;
+      margin-top: 26px;
+    }
+    .family-demo .studio-intro .jump button {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      min-height: 44px;
+      padding: 8px 12px;
+      border: 1px solid #e7d7c8;
+      border-radius: 12px;
+      background: rgba(255,255,255,.7);
+      color: #5b3c28;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 720;
+    }
+    .family-demo .studio-intro .jump button:hover,
+    .family-demo .studio-intro .jump button[aria-current="true"] {
+      border-color: #d29468;
+      background: #fff7ef;
+      color: var(--action);
+    }
+    .family-demo .studio-intro .jump span {
+      color: #a68d7c;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .family-demo .studio-guide h2 { margin: 0 0 10px; font-size: 18px; }
+    .family-demo .studio-guide ol { margin: 12px 0; padding-left: 20px; color: #76685d; font-size: 13px; line-height: 1.8; }
+    .family-demo .studio-guide li { padding-left: 3px; }
+    .family-demo .preview-banner {
+      position: sticky;
+      top: 0;
+      z-index: 6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 27px;
+      padding: 4px 8px;
+      background: #fff0dc;
+      color: #773c0d;
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .015em;
+      text-align: center;
+    }
+    .family-demo .screen .page { padding-bottom: 32px; }
+    .family-demo .topline { margin: -7px 0 9px; }
+    .family-demo .topline .top-action { min-width: 44px; min-height: 44px; border: 0; background: none; color: var(--action); font-size: 13px; font-weight: 750; }
+    .family-demo .topline .empty-action { width: 44px; flex: none; }
+    .family-demo .intro-hero {
+      position: relative;
+      overflow: hidden;
+      margin-top: 16px;
+      padding: 20px;
+      border: 1px solid #ded2f4;
+      border-radius: 22px;
+      background: linear-gradient(135deg,#f5efff 0%,#fff8f1 95%);
+    }
+    .family-demo .intro-hero::after {
+      content: "";
+      position: absolute;
+      right: -28px;
+      top: -28px;
+      width: 132px;
+      height: 132px;
+      border-radius: 50%;
+      border: 20px solid rgba(155,140,255,.1);
+    }
+    .family-demo .intro-hero .icon-round { position: relative; z-index: 1; }
+    .family-demo .intro-hero h2 { position: relative; z-index: 1; margin: 14px 0 5px; font-size: 22px; line-height: 1.32; letter-spacing: -.035em; }
+    .family-demo .intro-hero p { position: relative; z-index: 1; margin: 0; color: #665b72; font-size: 13px; }
+    .family-demo .hero-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+    .family-demo .icon-round {
+      display: inline-grid;
+      place-items: center;
+      width: 43px;
+      height: 43px;
+      border-radius: 14px;
+      background: #e9ddff;
+      color: #7453b6;
+    }
+    .family-demo .icon-round.orange { background: #ffe2cd; color: var(--action); }
+    .family-demo .icon-round.green { background: #daf0e1; color: var(--green); }
+    .family-demo .icon-round svg { width: 23px; height: 23px; }
+    .family-demo .identity-row {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-height: 61px;
+      padding: 8px 0;
+      border-top: 1px solid var(--line);
+    }
+    .family-demo .identity-row:first-of-type { border-top: 0; }
+    .family-demo .avatar {
+      display: grid;
+      place-items: center;
+      flex: none;
+      width: 41px;
+      height: 41px;
+      border-radius: 14px;
+      background: #fff1e8;
+      color: var(--action);
+      font-size: 17px;
+      font-weight: 850;
+    }
+    .family-demo .avatar.purple { background: var(--purple-soft); color: var(--purple); }
+    .family-demo .avatar.green { background: var(--green-soft); color: var(--green); }
+    .family-demo .identity-copy { flex: 1; min-width: 0; }
+    .family-demo .identity-copy strong { display: block; font-size: 14px; line-height: 1.4; }
+    .family-demo .identity-copy small { display: block; margin-top: 1px; color: var(--muted); font-size: 12px; line-height: 1.35; }
+    .family-demo .pet-share-card { padding: 14px; }
+    .family-demo .pet-share-top { display: flex; align-items: center; gap: 12px; }
+    .family-demo .pet-share-top strong { display: block; font-size: 15px; }
+    .family-demo .pet-share-top small { display: block; margin-top: 1px; color: var(--muted); font-size: 12px; }
+    .family-demo .pet-share-top .pill { margin-left: auto; }
+    .family-demo .pet-share-card .quiet-button { padding-left: 0; margin-top: 4px; }
+    .family-demo .stack { display: grid; gap: 10px; }
+    .family-demo .scope-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .family-demo .scope-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.55; }
+    .family-demo .scope-list .mark {
+      display: grid;
+      place-items: center;
+      flex: none;
+      width: 22px;
+      height: 22px;
+      margin-top: 1px;
+      border-radius: 50%;
+      background: var(--green-soft);
+      color: var(--green);
+    }
+    .family-demo .scope-list .mark svg { width: 15px; height: 15px; }
+    .family-demo .scope-list .mark.no { background: #f4ede6; color: #887768; }
+    .family-demo .muted-panel { padding: 13px 14px; border: 1px solid #e8d9c9; border-radius: 14px; background: #fffaf5; color: #68574b; font-size: 13px; line-height: 1.6; }
+    .family-demo .invitation {
+      padding: 20px 16px;
+      border: 1px dashed #d6a888;
+      border-radius: 18px;
+      background: #fff8f2;
+      text-align: center;
+    }
+    .family-demo .invitation .code { margin: 8px 0 4px; color: #623217; font-size: 27px; font-weight: 850; letter-spacing: .08em; }
+    .family-demo .invitation p { margin: 0; color: var(--muted); font-size: 12px; }
+    .family-demo .mini-note { display: flex; gap: 8px; align-items: flex-start; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .family-demo .mini-note svg { flex: none; width: 16px; height: 16px; margin-top: 2px; color: var(--action); }
+    .family-demo .split-actions { display: grid; gap: 9px; }
+    .family-demo .switch-row { display: flex; gap: 8px; padding: 4px; border-radius: 14px; background: #f4ede6; }
+    .family-demo .switch-row button {
+      flex: 1;
+      min-height: 44px;
+      border: 0;
+      border-radius: 11px;
+      background: transparent;
+      color: #75675b;
+      font-size: 13px;
+      font-weight: 720;
+    }
+    .family-demo .switch-row button[aria-pressed="true"] { background: #fff; color: var(--action); box-shadow: 0 1px 5px rgba(43,33,24,.08); }
+    .family-demo .empty-state { padding: 25px 18px; text-align: center; }
+    .family-demo .empty-state .icon-round { width: 56px; height: 56px; border-radius: 18px; }
+    .family-demo .empty-state .icon-round svg { width: 28px; height: 28px; }
+    .family-demo .empty-state h2 { margin: 14px 0 4px; font-size: 19px; }
+    .family-demo .empty-state p { margin: 0; color: var(--muted); font-size: 13px; }
+    .family-demo .pick-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .family-demo .select-label { display: block; margin: 16px 0 7px; color: #56483c; font-size: 13px; font-weight: 780; }
+    .family-demo .choice-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      width: 100%;
+      min-height: 62px;
+      padding: 11px 12px;
+      border: 1.5px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      color: var(--ink);
+      text-align: left;
+    }
+    .family-demo .choice-card[aria-pressed="true"] { border-color: var(--action); background: #fff8f2; }
+    .family-demo .choice-card .fake-radio {
+      display: block;
+      flex: none;
+      width: 19px;
+      height: 19px;
+      margin-top: 2px;
+      border: 1.5px solid #cdbbaa;
+      border-radius: 50%;
+      background: #fff;
+    }
+    .family-demo .choice-card[aria-pressed="true"] .fake-radio { border: 6px solid var(--action); }
+    .family-demo .choice-card strong { display: block; font-size: 14px; line-height: 1.45; }
+    .family-demo .choice-card small { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; line-height: 1.4; }
+    .family-demo .right-summary { margin-top: 15px; padding: 13px 14px; border-radius: 14px; background: var(--purple-soft); color: #604789; font-size: 13px; line-height: 1.6; }
+    .family-demo .right-summary strong { display: block; color: #513a76; }
+    .family-demo .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .family-demo .comparison > div { padding: 12px; border-radius: 12px; background: #f8f2ec; }
+    .family-demo .comparison > div:last-child { background: #fff1e8; }
+    .family-demo .comparison small { display: block; color: var(--muted); font-size: 11px; }
+    .family-demo .comparison strong { display: block; margin-top: 3px; font-size: 14px; }
+    .family-demo .access-list { margin: 0; padding: 0; list-style: none; }
+    .family-demo .access-list li { display: flex; justify-content: space-between; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); font-size: 13px; }
+    .family-demo .access-list li:first-child { border-top: 0; }
+    .family-demo .access-list strong { color: var(--green); font-size: 12px; white-space: nowrap; }
+    .family-demo .access-list strong.no { color: var(--danger); }
+    .family-demo .no-access-frame { margin-top: 15px; padding: 20px 16px; border: 1px solid #ead6d2; border-radius: 18px; background: #fff7f5; text-align: center; }
+    .family-demo .no-access-frame .icon-round { background: #ffe5e0; color: var(--danger); }
+    .family-demo .no-access-frame h2 { margin: 13px 0 4px; font-size: 18px; }
+    .family-demo .no-access-frame p { margin: 0; color: #755e5a; font-size: 13px; }
+    .family-demo .checklist { display: grid; gap: 8px; }
+    .family-demo .checkline { display: flex; align-items: center; gap: 11px; min-height: 45px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; background: #fff; font-size: 13px; font-weight: 650; }
+    .family-demo .checkline input { width: 18px; height: 18px; accent-color: var(--action); }
+    .family-demo .sample-sheet { overflow: hidden; border: 1px solid #e5d7c8; border-radius: 17px; background: #fff; }
+    .family-demo .sample-sheet header { padding: 14px 16px; background: #fff1e8; }
+    .family-demo .sample-sheet header small { color: var(--action); font-size: 11px; font-weight: 800; letter-spacing: .1em; }
+    .family-demo .sample-sheet header h2 { margin: 3px 0 1px; font-size: 19px; }
+    .family-demo .sample-sheet header p { margin: 0; color: #6f5545; font-size: 12px; }
+    .family-demo .sample-sheet .sample-body { padding: 5px 16px 14px; }
+    .family-demo .sample-sheet .sample-body p { margin: 11px 0 0; padding-top: 11px; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.6; }
+    .family-demo .sample-sheet .sample-body strong { display: block; font-size: 12px; color: var(--action); }
+    .family-demo .sample-sheet .sample-body .omitted { color: var(--danger); }
+    .family-demo #permissionDialog[hidden] { display: none; }
+    .family-demo #permissionDialog .sheet { max-height: 82%; }
+    .family-demo #permissionDialog .sheet .muted-panel { margin: 12px 0; }
+    @media (max-width: 850px) {
+      .family-demo .screen .page { padding-bottom: 24px; }
+    }
+  </style>
+  <script src="./mobile-icons.js" defer></script>
+</head>
+<body class="family-demo">
+  <div class="studio">
+    <aside class="studio-intro">
+      <p class="studio-kicker">cutePet / MOBILE · 05</p>
+      <h1>一家人照护，<br>每只宠物各有边界。</h1>
+      <p>从邀请前的说明，到逐宠授权、只读访问和健康摘要。这里把“家人能做什么”画成可体验的页面。</p>
+      <div class="jump" aria-label="本页场景导航">
+        <button type="button" data-go="family">家庭概况 <span>01 / 07</span></button>
+        <button type="button" data-go="invite">邀请前告知 <span>02 / 07</span></button>
+        <button type="button" data-go="join">加入后空态 <span>03 / 07</span></button>
+        <button type="button" data-go="permission">逐宠授权 <span>04 / 07</span></button>
+        <button type="button" data-go="readonly">只读视角 <span>05 / 07</span></button>
+        <button type="button" data-go="denied">撤权与无权 <span>06 / 07</span></button>
+        <button type="button" data-go="summary">健康摘要 <span>07 / 07</span></button>
+      </div>
+      <div class="studio-links">
+        <a href="./index.html#me">返回移动端「我的」总览 →</a>
+      </div>
+    </aside>
+
+    <div class="phone">
+      <div class="statusbar" aria-hidden="true">
+        <span>9:41</span>
+        <span class="device-status">●●●　◖◗　<span class="battery"></span></span>
+      </div>
+      <main class="screen" id="screen">
+        <div class="preview-banner">设计示例 · 使用虚构资料 · 不接真实服务</div>
+
+        <section class="page" data-view="family" id="family">
+          <div class="topline">
+            <a class="icon-button" href="./index.html#me" aria-label="返回我的"><span data-icon="arrowLeft"></span></a>
+            <h1>家庭协作</h1>
+            <button class="top-action" type="button" data-go="invite">邀请</button>
+          </div>
+          <p class="eyebrow">FAMILY / OVERVIEW</p>
+          <h2 class="page-title">一起照顾，有数也有界。</h2>
+          <p class="page-subtitle">家庭身份与宠物所有权分开管理。成员只看到你主动共享的宠物。</p>
+
+          <div class="intro-hero">
+            <span class="icon-round" data-icon="users"></span>
+            <h2>橘子小屋</h2>
+            <p>3 位成员 · 1 只已共享宠物</p>
+            <div class="hero-meta"><span class="pill purple">我是家庭管理员</span><span class="pill orange">也是旺财的所有者</span></div>
+          </div>
+
+          <div class="section-head"><h2>家庭成员</h2><button type="button" data-go="permission">看逐宠权限</button></div>
+          <div class="card card-pad">
+            <div class="identity-row"><span class="avatar">我</span><span class="identity-copy"><strong>我</strong><small>家庭管理员 · 旺财所有者</small></span><span class="pill orange">所有者</span></div>
+            <div class="identity-row"><span class="avatar purple">豆</span><span class="identity-copy"><strong>豆豆爸</strong><small>普通成员 · 旺财可管理</small></span></div>
+            <div class="identity-row"><span class="avatar green">奶</span><span class="identity-copy"><strong>奶奶</strong><small>普通成员 · 旺财只读</small></span></div>
+          </div>
+
+          <div class="section-head"><h2>我的宠物共享</h2></div>
+          <div class="stack">
+            <div class="card pet-share-card">
+              <div class="pet-share-top"><span class="avatar">🐕</span><span><strong>旺财</strong><small>共享给橘子小屋 · 2 位成员</small></span><span class="pill green">已共享</span></div>
+              <button class="quiet-button" type="button" data-go="permission">查看旺财的成员权限 <span data-icon="chevronRight"></span></button>
+            </div>
+            <div class="card pet-share-card">
+              <div class="pet-share-top"><span class="avatar purple">🐈</span><span><strong>花卷</strong><small>只属于我 · 家人无法查看</small></span><span class="pill">私有</span></div>
+              <button class="quiet-button" type="button" data-go="permission" data-pet="huajuan">查看如何主动共享 <span data-icon="chevronRight"></span></button>
+            </div>
+          </div>
+          <p class="demo-note" style="margin-top:16px">演示资料：加入家庭不会自动公开自己的宠物、收藏、草稿、报名或私人联系方式。</p>
+        </section>
+
+        <section class="page" data-view="invite" id="invite" hidden>
+          <div class="topline">
+            <button class="icon-button" type="button" data-go="family" aria-label="返回家庭概况"><span data-icon="arrowLeft"></span></button>
+            <h1>邀请家人</h1><span class="empty-action"></span>
+          </div>
+          <p class="eyebrow">BEFORE INVITING</p>
+          <h2 class="page-title">发出邀请前，<br>先讲清共享范围。</h2>
+          <p class="page-subtitle">邀请只让对方加入家庭，不会让对方自动获得所有宠物的资料。</p>
+
+          <div class="section-head"><h2>对方可能看到</h2></div>
+          <div class="card card-pad">
+            <ul class="scope-list">
+              <li><span class="mark" data-icon="check"></span><span>你<strong>单独选中并共享</strong>的宠物档案、健康记录、提醒及记录录入人。</span></li>
+              <li><span class="mark" data-icon="check"></span><span>加入后的默认权限为<strong>只读</strong>；宠物所有者可按成员和宠物分别调整。</span></li>
+              <li><span class="mark no" data-icon="close"></span><span>你的私有宠物、收藏、草稿、报名和私人联系方式不会自动共享。</span></li>
+            </ul>
+          </div>
+
+          <div class="section-head"><h2>邀请有效期</h2></div>
+          <div class="invitation">
+            <span class="icon-round orange" data-icon="users"></span>
+            <div class="code">FAMILY · 6K2P</div>
+            <p>示例邀请码 · 不可用于真实加入</p>
+          </div>
+          <div class="card card-pad" style="margin-top:10px">
+            <div class="mini-note"><span data-icon="clock"></span><span>邀请码有效期为 7 天，可供多位家人使用；家庭管理员可重置，重置后旧码失效。</span></div>
+          </div>
+          <div class="muted-panel" style="margin-top:10px">健康记录可能包含过敏、当前用药及就医信息。正式邀请与授权前，需让所有者核对具体宠物与成员的可见范围。</div>
+          <div class="split-actions" style="margin-top:17px">
+            <button class="primary-button" type="button" data-go="join">预览接收邀请的人会看到什么 <span data-icon="arrowRight"></span></button>
+            <button class="secondary-button" type="button" data-go="family">返回家庭概况</button>
+          </div>
+          <p class="demo-note" style="margin-top:13px">此页只展示告知和邀请码样式，不会生成、复制或发送真实邀请。</p>
+        </section>
+
+        <section class="page" data-view="join" id="join" hidden>
+          <div class="topline">
+            <button class="icon-button" type="button" data-go="invite" aria-label="返回邀请示例"><span data-icon="arrowLeft"></span></button>
+            <h1>加入家庭预览</h1><span class="empty-action"></span>
+          </div>
+          <p class="eyebrow">JOIN / CONSENT</p>
+          <h2 class="page-title">先了解，再决定加入。</h2>
+          <p class="page-subtitle">邀请来自「橘子小屋」· 管理员为「我」。加入前应显示真实家庭名称与管理员。</p>
+          <div class="switch-row" style="margin-top:18px" role="group" aria-label="加入情境">
+            <button type="button" data-join-case="normal" aria-pressed="true">可加入</button>
+            <button type="button" data-join-case="other" aria-pressed="false">已有家庭</button>
+          </div>
+          <div id="joinNormal">
+            <div class="card card-pad" style="margin-top:14px">
+              <div class="identity-row"><span class="avatar purple">橘</span><span class="identity-copy"><strong>橘子小屋</strong><small>3 位成员 · 邀请码剩余 6 天（示例）</small></span></div>
+              <div class="mini-note" style="padding-top:9px;border-top:1px solid var(--line)"><span data-icon="info"></span><span>加入后只看到所有者主动共享给你的宠物。每只宠物的权限可能不同，初始为只读。</span></div>
+            </div>
+            <button class="primary-button" type="button" data-go="joinedEmpty" style="margin-top:16px">预览加入后的空态 <span data-icon="arrowRight"></span></button>
+            <p class="demo-note" style="margin-top:12px">“预览”不会加入家庭或修改账号关系。真实加入必须由本人确认，并由服务端校验资格与邀请状态。</p>
+          </div>
+          <div id="joinOther" hidden>
+            <div class="no-access-frame">
+              <span class="icon-round" data-icon="alert"></span>
+              <h2>你已有一个家庭</h2>
+              <p>每个账号同时只能加入一个家庭。先在原家庭处理自己的宠物共享与成员关系，再决定是否退出。</p>
+            </div>
+            <div class="muted-panel" style="margin-top:12px">退出家庭不会删除自己创建的宠物档案，但会失去其他成员共享宠物的访问权；自己宠物与原家庭的共享会解除。</div>
+            <button class="secondary-button" type="button" data-go="family" style="margin-top:15px">查看家庭管理入口</button>
+          </div>
+        </section>
+
+        <section class="page" data-view="joinedEmpty" id="joinedEmpty" hidden>
+          <div class="topline">
+            <button class="icon-button" type="button" data-go="join" aria-label="返回加入预览"><span data-icon="arrowLeft"></span></button>
+            <h1>加入后的视角</h1><span class="empty-action"></span>
+          </div>
+          <p class="eyebrow">AFTER JOIN / EMPTY</p>
+          <h2 class="page-title">加入家庭，<br>也可能先看到空白。</h2>
+          <p class="page-subtitle">成员关系建立，并不代表已有宠物授权。</p>
+          <div class="card empty-state" style="margin-top:23px">
+            <span class="icon-round" data-icon="paw"></span>
+            <h2>还没有向你共享的宠物</h2>
+            <p>请宠物所有者选择宠物，再为你设定只读或可管理权限。家庭管理员也不能替其他所有者授权。</p>
+          </div>
+          <div class="card card-pad soft-purple" style="margin-top:12px">
+            <strong style="font-size:14px">对方接下来会怎么做？</strong>
+            <p class="caption muted" style="margin:4px 0 0">进入宠物详情 → 共享管理 → 逐成员授权。收到授权后，你才可以打开相应的宠物资料。</p>
+          </div>
+          <button class="primary-button" type="button" data-go="permission" style="margin-top:18px">查看所有者如何授权 <span data-icon="arrowRight"></span></button>
+          <p class="demo-note" style="margin-top:12px">这是加入后空态的设计预览，并未发生真实加入。</p>
+        </section>
+
+        <section class="page" data-view="permission" id="permission" hidden>
+          <div class="topline">
+            <button class="icon-button" type="button" data-go="family" aria-label="返回家庭概况"><span data-icon="arrowLeft"></span></button>
+            <h1>共享权限</h1><span class="empty-action"></span>
+          </div>
+          <p class="eyebrow">OWNER / PET × MEMBER</p>
+          <h2 class="page-title">一只宠物，<br>一位成员，一份权限。</h2>
+          <p class="page-subtitle">只有这只宠物的所有者可修改授权。家庭管理员身份不会扩大此权限。</p>
+          <span class="select-label">选择宠物</span>
+          <div class="pick-row" role="group" aria-label="选择宠物">
+            <button class="chip" type="button" data-pet-pick="wangcai" aria-pressed="true">🐕 旺财 · 已共享</button>
+            <button class="chip" type="button" data-pet-pick="huajuan" aria-pressed="false">🐈 花卷 · 私有</button>
+          </div>
+          <span class="select-label">选择家庭成员</span>
+          <div class="pick-row" role="group" aria-label="选择家庭成员">
+            <button class="chip" type="button" data-member-pick="dad" aria-pressed="true">豆豆爸</button>
+            <button class="chip" type="button" data-member-pick="grandma" aria-pressed="false">奶奶</button>
+          </div>
+          <div class="right-summary"><strong id="currentRightTitle">现有示例 · 旺财 → 豆豆爸：可管理</strong><span id="currentRightDetail">可新增记录和处理提醒；不能导出摘要、归档或转移所有权。</span></div>
+          <span class="select-label">预览修改后的权限</span>
+          <div class="stack" role="group" aria-label="预览权限档位">
+            <button class="choice-card" type="button" data-level="READONLY" aria-pressed="false"><span class="fake-radio"></span><span><strong>只读</strong><small>可查看已共享档案、健康和提醒；可按本人偏好接收通知。</small></span></button>
+            <button class="choice-card" type="button" data-level="MANAGE" aria-pressed="true"><span class="fake-radio"></span><span><strong>可管理</strong><small>可新增记录、处理提醒；仅能更正自己录入的条目。</small></span></button>
+            <button class="choice-card" type="button" data-level="NONE" aria-pressed="false"><span class="fake-radio"></span><span><strong>不共享给此成员</strong><small>撤去该宠物的访问；相关提醒不再推送给对方。</small></span></button>
+          </div>
+          <button class="primary-button" type="button" id="reviewPermission" style="margin-top:18px">预览变更影响 <span data-icon="arrowRight"></span></button>
+          <button class="quiet-button" type="button" data-go="readonly" style="margin-top:5px">切换到只读成员视角 <span data-icon="chevronRight"></span></button>
+          <p class="demo-note" style="margin-top:11px">仅预览权限影响，不提交授权。真实变更应核验所有者、当前关系及对象版本，并通知受影响成员。</p>
+        </section>
+
+        <section class="page" data-view="readonly" id="readonly" hidden>
+          <div class="topline">
+            <button class="icon-button" type="button" data-go="permission" aria-label="返回共享权限"><span data-icon="arrowLeft"></span></button>
+            <h1>成员只读视角</h1><span class="empty-action"></span>
+          </div>
+          <p class="eyebrow">MEMBER / READ ONLY</p>
+          <h2 class="page-title">看得到照护进度，<br>不误碰管理动作。</h2>
+          <p class="page-subtitle">示例身份：奶奶。仅展示被授权的「旺财」，不展示所有者的私有宠物「花卷」。</p>
+          <div class="card card-pad" style="margin-top:17px">
+            <div class="pet-share-top"><span class="avatar">🐕</span><span><strong>旺财</strong><small>已共享给你 · 只读</small></span><span class="pill purple">只读</span></div>
+          </div>
+          <div class="section-head"><h2>照护信息</h2></div>
+          <div class="card card-pad">
+            <div class="identity-row"><span class="icon-round orange" data-icon="medicine"></span><span class="identity-copy"><strong>疫苗记录</strong><small>示例记录 · 可查看日期和录入人</small></span></div>
+            <div class="identity-row"><span class="icon-round green" data-icon="bell"></span><span class="identity-copy"><strong>下次提醒</strong><small>可按本人通知偏好接收，不能确认完成</small></span></div>
+          </div>
+          <div class="section-head"><h2>此身份能做什么</h2></div>
+          <div class="card card-pad"><ul class="access-list">
+            <li><span>查看共享档案、记录和提醒</span><strong>可以</strong></li>
+            <li><span>设置本人的提醒接收偏好</span><strong>可以</strong></li>
+            <li><span>新增、修改或完成待办</span><strong class="no">无权限</strong></li>
+            <li><span>生成健康摘要、删除或转移宠物</span><strong class="no">仅所有者</strong></li>
+          </ul></div>
+          <button class="secondary-button" type="button" data-go="denied" style="margin-top:18px">查看撤权与无权页面</button>
+          <p class="demo-note" style="margin-top:12px">只读视角不提供可提交的编辑、完成或导出入口。私有数据在无权时不先加载再遮盖。</p>
+        </section>
+
+        <section class="page" data-view="denied" id="denied" hidden>
+          <div class="topline">
+            <button class="icon-button" type="button" data-go="readonly" aria-label="返回只读视角"><span data-icon="arrowLeft"></span></button>
+            <h1>无权访问</h1><span class="empty-action"></span>
+          </div>
+          <p class="eyebrow">ACCESS REMOVED / DEEP LINK</p>
+          <h2 class="page-title">权限变化后，<br>私有资料即刻收起。</h2>
+          <p class="page-subtitle">包括成员被移除、共享解除、宠物归档或登录身份变化。</p>
+          <div class="no-access-frame">
+            <span class="icon-round" data-icon="lock"></span>
+            <h2>此宠物暂不可查看</h2>
+            <p>你目前没有访问权限。可联系宠物所有者确认是否仍向你共享。</p>
+          </div>
+          <div class="card card-pad" style="margin-top:13px">
+            <div class="mini-note"><span data-icon="shield"></span><span>无权深链只显示通用拒绝信息；不露出宠物名字、照片、记录标题、过敏或用药内容。</span></div>
+          </div>
+          <div class="muted-panel" style="margin-top:11px">示例处理：取消该成员后续待办推送，清理其设备上缓存的共享档案和待同步敏感副本；历史录入人留痕不因此删除。</div>
+          <button class="primary-button" type="button" data-go="family" style="margin-top:18px">返回家庭概况</button>
+          <p class="demo-note" style="margin-top:12px">此页展示撤权后的结果状态；按钮不会撤销真实权限。权限校验和清理仍需服务端及设备端实现。</p>
+        </section>
+
+        <section class="page" data-view="summary" id="summary" hidden>
+          <div class="topline">
+            <button class="icon-button" type="button" data-go="family" aria-label="返回家庭概况"><span data-icon="arrowLeft"></span></button>
+            <h1>健康摘要</h1><span class="empty-action"></span>
+          </div>
+          <p class="eyebrow">OWNER ONLY / STATIC SNAPSHOT</p>
+          <h2 class="page-title">给医生看的资料，<br>由所有者决定范围。</h2>
+          <p class="page-subtitle">只有宠物所有者在完成身份核验后才能真实生成。下方为静态样张预览，不执行核验或分享。</p>
+          <div class="card card-pad soft-orange" style="margin-top:16px">
+            <div class="mini-note" style="color:#754523"><span data-icon="lock"></span><span><strong>真实流程需要本人核验。</strong> 普通家庭成员无导出入口；管理员身份也不能绕过所有者限制。</span></div>
+          </div>
+          <div class="section-head"><h2>选择样张内容</h2></div>
+          <div class="checklist">
+            <label class="checkline"><input type="checkbox" data-summary-part="profile" checked>基本档案</label>
+            <label class="checkline"><input type="checkbox" data-summary-part="allergy" checked>仍有效的过敏（长期信息）</label>
+            <label class="checkline"><input type="checkbox" data-summary-part="medicine" checked>当前用药（长期信息）</label>
+            <label class="checkline"><input type="checkbox" data-summary-part="events" checked>近期健康事件</label>
+            <label class="checkline"><input type="checkbox" data-summary-part="reminder" checked>未来提醒</label>
+          </div>
+          <div class="field">
+            <label for="summaryWindow">近期健康事件范围</label>
+            <select id="summaryWindow"><option value="30">近 30 天</option><option value="90">近 90 天</option><option value="all">全部</option></select>
+          </div>
+          <button class="primary-button" type="button" id="previewSummary" style="margin-top:18px">查看静态样张 <span data-icon="arrowRight"></span></button>
+          <p class="demo-note" style="margin-top:12px">未模拟验证码通过；样张内容均为虚构，不能用于诊疗。分享图不包含主人电话、机构联系人、附件或私有实时链接。</p>
+        </section>
+
+        <section class="page" data-view="summaryPreview" id="summaryPreview" hidden>
+          <div class="topline">
+            <button class="icon-button" type="button" data-go="summary" aria-label="返回摘要选择"><span data-icon="arrowLeft"></span></button>
+            <h1>静态样张预览</h1><span class="empty-action"></span>
+          </div>
+          <p class="eyebrow">SAMPLE IMAGE / NOT GENERATED</p>
+          <h2 class="page-title">生成前，先看清<br>会带走哪些信息。</h2>
+          <p class="page-subtitle">这是可分享图片的排版样张。它不会随着档案更新，也不打开私有实时详情。</p>
+          <div class="sample-sheet" style="margin-top:17px">
+            <header><small>CUTEPET · 示例健康摘要</small><h2>旺财的健康资料</h2><p>示例生成时间：2026-09-23 14:20 · <span id="windowCopy">近 30 天</span></p></header>
+            <div class="sample-body" id="summaryParts"></div>
+          </div>
+          <p class="caption muted" style="margin:10px 1px 0">样张仅用于信息核对，不提供疾病诊断或用药建议。</p>
+          <div class="card card-pad soft-orange" style="margin-top:12px">
+            <div class="mini-note" style="color:#754523"><span data-icon="info"></span><span id="omittedCopy">预览中会明确标出你主动省略的模块；长期过敏与当前用药不会受“近 30 天”窗口自动过滤。</span></div>
+          </div>
+          <button class="secondary-button" type="button" data-go="summary" style="margin-top:17px">返回调整范围</button>
+          <p class="demo-note" style="margin-top:12px">设计样张，不执行生成、保存到相册或分享。正式产品需在本人核验、服务端取数和用户确认后导出。</p>
+        </section>
+      </main>
+      <nav class="tabbar" aria-label="移动端主导航">
+        <a class="tab-item" href="./index.html#home"><span data-icon="home"></span><span>首页</span></a>
+        <a class="tab-item" href="./资讯探索与用品.html#news"><span data-icon="news"></span><span>资讯</span></a>
+        <a class="tab-item" href="./资讯探索与用品.html#explore"><span data-icon="compass"></span><span>探索</span></a>
+        <a class="tab-item" href="./index.html#me" aria-current="page"><span data-icon="user"></span><span>我的</span></a>
+      </nav>
+      <div class="home-indicator"></div>
+      <div class="sheet-backdrop" id="permissionDialog" hidden>
+        <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+          <div class="sheet-handle"></div>
+          <h2 id="dialogTitle">变更影响预览</h2>
+          <p>真实授权前，应让所有者核对宠物、成员和权限，并在服务端完成身份与版本校验。</p>
+          <div class="comparison"><div><small>现有示例</small><strong id="dialogBefore">—</strong></div><div><small>本页预览</small><strong id="dialogAfter">—</strong></div></div>
+          <div class="muted-panel" id="dialogImpact"></div>
+          <p class="demo-note">这里只展示设计决策，没有保存权限、通知成员或修改服务器数据。</p>
+          <button class="primary-button" type="button" id="closeDialog">返回调整</button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="studio-guide">
+      <p class="studio-kicker">UX DECISIONS</p>
+      <h2>关系清楚，授权才可信。</h2>
+      <div class="note"><strong>01 · 家庭 ≠ 共享</strong>每人最多加入一个家庭。加入后先显示可理解的空态，宠物由所有者主动逐只分享。</div>
+      <div class="note"><strong>02 · 身份 ≠ 所有权</strong>家庭管理员处理家庭成员；宠物所有者决定该宠物授权、摘要、归档与转移。</div>
+      <div class="note"><strong>03 · 撤权即时收口</strong>拒绝页不先暴露私有标题和照片；设备缓存与离线敏感副本也应清理。</div>
+      <div class="note"><strong>04 · 摘要是快照</strong>只限所有者核验后生成，明确模块范围、时间窗口、遗漏和生成时刻，不生成私有实时链接。</div>
+      <p>操作为本页本地演示。发邀请、加入、授权、核验、生成图片和撤权都没有接入真实服务。</p>
+      <a href="./index.html#me">查看移动端「我的」 →</a>
+    </aside>
+  </div>
+  <script>
+    (() => {
+      const views = new Set(['family','invite','join','joinedEmpty','permission','readonly','denied','summary','summaryPreview']);
+      const screen = document.getElementById('screen');
+      const dialog = document.getElementById('permissionDialog');
+      const current = { pet: 'wangcai', member: 'dad', level: 'MANAGE' };
+      const names = { pet: { wangcai: '旺财', huajuan: '花卷' }, member: { dad: '豆豆爸', grandma: '奶奶' }, level: { READONLY: '只读', MANAGE: '可管理', NONE: '无权限' } };
+      const rights = { wangcai: { dad: 'MANAGE', grandma: 'READONLY' }, huajuan: { dad: 'NONE', grandma: 'NONE' } };
+      let activeView = 'family';
+      let beforeDialogFocus = null;
+
+      function currentRight() { return rights[current.pet][current.member]; }
+      function syncPermission() {
+        document.querySelectorAll('[data-pet-pick]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.petPick === current.pet)));
+        document.querySelectorAll('[data-member-pick]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.memberPick === current.member)));
+        document.querySelectorAll('[data-level]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.level === current.level)));
+        const level = currentRight();
+        document.getElementById('currentRightTitle').textContent = '现有示例 · ' + names.pet[current.pet] + ' → ' + names.member[current.member] + '：' + names.level[level];
+        document.getElementById('currentRightDetail').textContent = level === 'MANAGE'
+          ? '可新增记录和处理提醒；不能导出摘要、归档或转移所有权。'
+          : level === 'READONLY'
+            ? '可查看已共享记录并设置自己的通知偏好；不能提交照护或导出。'
+            : '这只宠物尚未共享给该成员，对方无权查看私有资料。';
+      }
+      function show(view, updateHash) {
+        if (!views.has(view)) view = 'family';
+        activeView = view;
+        document.querySelectorAll('[data-view]').forEach((section) => { section.hidden = section.dataset.view !== view; });
+        document.querySelectorAll('.studio-intro [data-go]').forEach((button) => {
+          const currentView = button.dataset.go === view || (button.dataset.go === 'join' && view === 'joinedEmpty') || (button.dataset.go === 'summary' && view === 'summaryPreview');
+          button.setAttribute('aria-current', String(currentView));
+        });
+        if (screen) screen.scrollTop = 0;
+        if (updateHash && location.hash.slice(1) !== view) location.hash = view;
+        document.title = '家庭共享与隐私 · cutePet 移动端设计稿';
+      }
+      function setJoinCase(value) {
+        const other = value === 'other';
+        document.getElementById('joinNormal').hidden = other;
+        document.getElementById('joinOther').hidden = !other;
+        document.querySelectorAll('[data-join-case]').forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.joinCase === value)));
+      }
+      function openDialog() {
+        beforeDialogFocus = document.activeElement;
+        const existing = currentRight();
+        document.getElementById('dialogTitle').textContent = names.pet[current.pet] + ' · ' + names.member[current.member] + '的权限';
+        document.getElementById('dialogBefore').textContent = names.level[existing];
+        document.getElementById('dialogAfter').textContent = names.level[current.level];
+        let impact = '';
+        if (current.level === existing) impact = '权限没有变化。仍需以实际服务端权限为准。';
+        else if (current.level === 'NONE') impact = '若真实撤权，对方将无法查看此宠物，相关待办推送停止；设备上的共享资料与待同步敏感副本需清理。历史录入人留痕保留。';
+        else if (current.level === 'MANAGE') impact = '若真实授权，对方可新增健康记录并完成提醒；仅能更正自己录入的条目。摘要导出、归档、删除及转移仍属于所有者。';
+        else impact = '若真实调整为只读，对方可看共享档案和提醒，但不能新增记录、处理待办或导出健康摘要。';
+        document.getElementById('dialogImpact').textContent = impact;
+        dialog.hidden = false;
+        screen.inert = true;
+        document.querySelector('.phone .tabbar').inert = true;
+        document.getElementById('closeDialog').focus();
+      }
+      function closeDialog() {
+        dialog.hidden = true;
+        screen.inert = false;
+        document.querySelector('.phone .tabbar').inert = false;
+        if (beforeDialogFocus && typeof beforeDialogFocus.focus === 'function') beforeDialogFocus.focus();
+      }
+      function previewSummary() {
+        const selected = new Set(Array.from(document.querySelectorAll('[data-summary-part]:checked'), (input) => input.dataset.summaryPart));
+        const windowValue = document.getElementById('summaryWindow').value;
+        const windowText = windowValue === '30' ? '近 30 天' : windowValue === '90' ? '近 90 天' : '全部事件';
+        document.getElementById('windowCopy').textContent = windowText;
+        const parts = [
+          ['profile','基本档案','旺财 · 犬 · 柯基。'],
+          ['allergy','仍有效的过敏','鸡肉（示例，未解除）。'],
+          ['medicine','当前用药','暂无进行中的用药记录。'],
+          ['events','健康事件','疫苗记录 1 条（示例）。'],
+          ['reminder','未来提醒','下次疫苗：示例日期 2026-10-21。']
+        ];
+        const output = document.getElementById('summaryParts');
+        output.replaceChildren();
+        parts.forEach(([key,label,content]) => {
+          if (!selected.has(key)) return;
+          const p = document.createElement('p');
+          const strong = document.createElement('strong');
+          strong.textContent = label;
+          p.append(strong, document.createTextNode(content));
+          output.append(p);
+        });
+        if (selected.size === 0) {
+          const p = document.createElement('p');
+          p.textContent = '未选择任何模块。真实流程应提示重新选择，不能导出空白摘要。';
+          output.append(p);
+        }
+        const omitted = parts.filter(([key]) => !selected.has(key)).map(([,label]) => label);
+        document.getElementById('omittedCopy').textContent = omitted.length
+          ? '本次主动省略：' + omitted.join('、') + '。预览会提醒遗漏；长期过敏与当前用药不会被时间窗口自动排除。'
+          : '已选择全部模块。长期过敏与当前用药不会被近期时间窗口自动过滤；此处仍仅为虚构样张。';
+        show('summaryPreview', true);
+      }
+
+      document.addEventListener('click', (event) => {
+        const target = event.target.closest('button');
+        if (!target) return;
+        if (target.dataset.go) {
+          if (target.dataset.pet) { current.pet = target.dataset.pet; current.level = currentRight(); syncPermission(); }
+          show(target.dataset.go, true);
+        } else if (target.dataset.petPick) {
+          current.pet = target.dataset.petPick;
+          current.level = currentRight();
+          syncPermission();
+        } else if (target.dataset.memberPick) {
+          current.member = target.dataset.memberPick;
+          current.level = currentRight();
+          syncPermission();
+        } else if (target.dataset.level) {
+          current.level = target.dataset.level;
+          syncPermission();
+        } else if (target.dataset.joinCase) {
+          setJoinCase(target.dataset.joinCase);
+        } else if (target.id === 'reviewPermission') {
+          openDialog();
+        } else if (target.id === 'closeDialog') {
+          closeDialog();
+        } else if (target.id === 'previewSummary') {
+          previewSummary();
+        }
+      });
+      dialog.addEventListener('click', (event) => { if (event.target === dialog) closeDialog(); });
+      document.addEventListener('keydown', (event) => {
+        if (dialog.hidden) return;
+        if (event.key === 'Escape') closeDialog();
+        if (event.key === 'Tab') {
+          event.preventDefault();
+          document.getElementById('closeDialog').focus();
+        }
+      });
+      window.addEventListener('hashchange', () => show(location.hash.slice(1), false));
+      syncPermission();
+      setJoinCase('normal');
+      show(location.hash.slice(1), false);
+    })();
+  </script>
+</body>
+</html>

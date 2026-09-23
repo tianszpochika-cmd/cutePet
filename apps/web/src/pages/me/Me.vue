@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { ME_GALLERY, galleryGate, RULE_DOCS } from '../../domain/settings';
-import { ME_GALLERY as GALLERY, galleryGate as gate } from '../../domain/family';
+import { getAccessToken } from '@cutepet/api-client';
+import { RULE_DOCS } from '../../domain/settings';
+import { ME_GALLERY, galleryGate } from '../../domain/family';
 
 const router = useRouter();
-const loggedIn = ref(false); // 会话态接线随本地阶段（#45 未登录统一回跳）
+const loggedIn = ref(Boolean(getAccessToken()));
 
 function nav(to: string) {
-  void router.push(gate(loggedIn.value, to));
+  void router.push(to === '/login' ? to : galleryGate(loggedIn.value, to));
 }
-void GALLERY;
-void gate;
-void ME_GALLERY;
 </script>
 
 <template>
@@ -54,7 +52,7 @@ void ME_GALLERY;
 .avatar { width: 56px; height: 56px; border-radius: 999px; background: #fff1e8; display: grid; place-items: center; font-size: 26px; }
 .meta { color: #7a6e63; font-size: 13px; margin: 4px 0 0; }
 .login-guide { background: linear-gradient(180deg, #fff1e8, #fff); border-radius: 20px; padding: 24px; text-align: center; display: grid; gap: 12px; }
-.primary { height: 44px; border: none; border-radius: 999px; background: #ff7a2f; color: #fff; font-weight: 600; }
+.primary { height: 44px; border: none; border-radius: 999px; background: #b85111; color: #fff; font-weight: 600; }
 .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .gallery button { background: #fff; border: none; box-shadow: inset 0 0 0 1px #f0e6dc; border-radius: 16px; padding: 16px 8px; display: grid; gap: 6px; justify-items: center; font-size: 13px; color: #2b2118; cursor: pointer; }
 .icon { font-size: 22px; }

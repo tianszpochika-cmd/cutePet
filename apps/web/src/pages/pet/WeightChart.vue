@@ -23,14 +23,28 @@ const router = useRouter();
 const petId = String(route.params.id);
 const curve = ref<Curve | null>(null);
 const error = ref('');
+const loading = ref(true);
 
-onMounted(async () => {
+onMounted(() => { void loadCurve(); });
+
+async function loadCurve() {
+  loading.value = true;
+  error.value = '';
   try {
-    curve.value = (await api.petWeights({ path: { id: petId } })) as unknown as Curve;
+    const result = (await api.petWeights({ path: { id: petId } })) as unknown;
+    if (!result || typeof result !== 'object' || !('points' in result) || !Array.isArray(result.points) ||
+        !result.points.every((point) => point && typeof point.at === 'string' &&
+          Number.isFinite(Date.parse(point.at)) && typeof point.kg === 'number' && Number.isFinite(point.kg))) {
+      throw new Error('体重曲线格式异常');
+    }
+    curve.value = result as Curve;
   } catch (e) {
-    error.value = e instanceof Error ? e.message : '加载失败（dev 需启动 pet-service）';
+    curve.value = null;
+    error.value = e instanceof Error ? e.message : '体重曲线读取失败';
+  } finally {
+    loading.value = false;
   }
-});
+}
 
 const path = computed(() => {
   if (!curve.value || curve.value.points.length === 0) return '';
@@ -57,11 +71,12 @@ const path = computed(() => {
       <h1>体重曲线</h1>
     </header>
 
-    <p v-if="error" class="err">{{ error }}</p>
-    <p v-else-if="!curve" class="muted">加载中…</p>
-    <p v-else-if="curve.points.length === 0" class="muted" data-testid="empty">
-      暂无数据 —— 到「＋ 记录 · 体重」录入第一条（0.1–200kg）。
-    </p>
+    <p v-if="loading" class="muted" role="status">正在读取体重曲线…</p>
+    <div v-else-if="error" class="error-state" role="alert"><p>{{ error }}</p><button type="button" class="ghost" @click="loadCurve">重试</button></div>
+    <div v-else-if="!curve || curve.points.length === 0" class="empty" data-testid="empty">
+      <h2>还没有体重数据</h2>
+      <p>体重写入接口尚未纳入当前前端契约。曲线只展示平台已有数据，录入功能接通后才能添加基线。</p>
+    </div>
 
     <template v-else>
       <div class="stats">
@@ -89,7 +104,7 @@ const path = computed(() => {
           {{ p.at.slice(0, 10) }} · {{ p.kg }} kg
         </li>
       </ul>
-      <button type="button" class="primary" @click="router.push(`/pets/${petId}/record`)">＋ 记录体重</button>
+      <p class="notice">当前仅展示平台已有体重数据；新增体重待接口接入。</p>
     </template>
   </div>
 </template>
@@ -110,7 +125,9 @@ header {
 .back {
   background: none;
   border: none;
-  color: #ff7a2f;
+  color: #a8470c;
+  min-height: 44px;
+  cursor: pointer;
 }
 .stats {
   display: flex;
@@ -120,7 +137,7 @@ header {
   color: #7a6e63;
 }
 .stats .hl {
-  color: #ff7a2f;
+  color: #a8470c;
   font-weight: 600;
 }
 .chart {
@@ -137,14 +154,12 @@ header {
   font-size: 14px;
   color: #7a6e63;
 }
-.primary {
-  height: 48px;
-  border: none;
-  border-radius: 999px;
-  background: #ff7a2f;
-  color: #fff;
-  font-weight: 600;
-}
+.empty, .error-state { background: #fff; border: 1px solid #f0e6dc; border-radius: 16px; padding: 20px; color: #604b3b; }
+.empty h2 { margin: 0 0 8px; font-size: 18px; }
+.empty p, .error-state p { margin: 0; line-height: 1.6; }
+.ghost { margin-top: 10px; min-height: 44px; padding: 0 16px; border: 1px solid #dacabc; border-radius: 999px; color: #684b39; background: #fff; cursor: pointer; }
+.notice { color: #706255; font-size: 13px; }
+.ghost:focus-visible, .back:focus-visible { outline: 3px solid #6f320c; outline-offset: 2px; }
 .muted {
   color: #7a6e63;
 }

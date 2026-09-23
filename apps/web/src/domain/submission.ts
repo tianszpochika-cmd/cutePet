@@ -57,16 +57,10 @@ export function unsavedGuard(dirty: boolean): { block: boolean; message: string 
     : { block: false, message: '' };
 }
 
-/** 驳回 → 质量退修提示（U76：3 次暂停 7 天，质量问题不进违规） */
+/** BR-06：质量退修只给修改意见，不计入违规暂停。 */
 export function rejectCopy(rejectCount: number): { message: string; suspended: boolean } {
-  if (rejectCount >= 3) {
-    return {
-      message: `累计 ${rejectCount} 次质量退修，投稿资格暂停 7 天（质量问题不计违规），可联系编辑沟通。`,
-      suspended: true,
-    };
-  }
   return {
-    message: `第 ${rejectCount} 次修改意见，请按编辑意见调整后重提（累计 3 次将暂停 7 天）。`,
+    message: `第 ${Math.max(1, rejectCount)} 次质量退修，请按编辑意见调整后重提。质量退修不暂停投稿；经人工确认的违规另按独立规则处理。`,
     suspended: false,
   };
 }

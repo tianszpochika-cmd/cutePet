@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="cutePet 移动 H5 UI/UX 设计预览：今日照护与我的。所有数据均为设计示例。">
+  <title>今日照护 · cutePet 移动端 UI/UX 设计稿</title>
+  <link rel="stylesheet" href="mobile.css">
+  <style>
+    .brandline{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .brand-mini{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:850;letter-spacing:-.04em}
+    .brand-mini .brand-icon{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:var(--action);color:#fff;transform:rotate(-7deg)}
+    .brand-mini .brand-icon svg{width:19px;height:19px}
+    .header-actions{display:flex;align-items:center;gap:2px}
+    .icon-button.notice-bell{position:relative}
+    .notice-bell::after{content:"";position:absolute;right:8px;top:7px;width:7px;height:7px;border:2px solid var(--bg);border-radius:50%;background:var(--danger)}
+    .greeting{margin-top:24px}.greeting .eyebrow{margin-bottom:5px}.greeting h1{margin:0;font-size:25px;line-height:1.32;letter-spacing:-.05em}.greeting p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.5}
+    .today-card{position:relative;overflow:hidden;margin-top:20px;padding:17px;border:1px solid #efdbca;border-radius:20px;background:linear-gradient(145deg,#fff1e8,#fff8ef 65%,#fff)}
+    .today-card::before{content:"";position:absolute;right:-42px;top:-60px;width:170px;height:170px;border:1px solid rgba(184,81,17,.13);border-radius:43% 57% 48% 52%;transform:rotate(24deg)}
+    .today-top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;color:#654b3b;font-size:12px;font-weight:750}
+    .today-top .pill{background:#fff;color:var(--action)}
+    .today-main{position:relative;display:flex;align-items:flex-start;gap:12px;margin-top:15px}
+    .today-icon{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:13px;background:#fff;color:var(--action)}
+    .today-icon svg{width:22px;height:22px}
+    .today-main strong{display:block;font-size:18px;line-height:1.38}
+    .today-main p{margin:5px 0 0;color:#705949;font-size:13px;line-height:1.5}
+    .today-card .primary-button{position:relative;margin-top:16px}
+    .today-card.is-empty{background:linear-gradient(145deg,#eff8f0,#fff)}
+    .today-card.is-empty .today-icon{color:var(--green)}
+    .today-card.is-empty .today-top .pill{color:var(--green)}
+    .today-card.is-empty .primary-button{border-color:var(--green);background:var(--green)}
+    .pet-switch{display:flex;align-items:center;gap:8px;margin:20px 0 10px;overflow-x:auto;scrollbar-width:none}
+    .pet-switch::-webkit-scrollbar{display:none}
+    .pet-switch button{display:inline-flex;align-items:center;gap:7px;flex:none;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#6d5b4e;font-size:13px;font-weight:720}
+    .pet-switch button[aria-pressed="true"]{border-color:#ca885c;background:var(--orange-soft);color:var(--action)}
+    .pet-dot{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#f8dabe;color:#754725;font-size:13px}
+    .pet-dot.cat{background:#f4e9fb;color:var(--purple)}
+    .pet-switch .add-pet{color:var(--action);font-weight:800}
+    .pet-hero{display:grid;grid-template-columns:112px minmax(0,1fr);gap:13px;align-items:center;overflow:hidden;min-height:142px;padding:13px;border:1px solid var(--line);border-radius:20px;background:#fff}
+    .portrait{display:grid;place-items:center;height:113px;border-radius:16px;background:linear-gradient(155deg,#fce2c5,#fff0df)}
+    .portrait svg{width:102px;height:102px}
+    .pet-hero.cat .portrait{background:linear-gradient(155deg,#e9dff6,#fff5f6)}
+    .pet-hero h2{margin:0;font-size:20px;line-height:1.2}
+    .pet-hero p{margin:6px 0 8px;color:var(--muted);font-size:12px;line-height:1.4}
+    .pet-hero .pill{margin-bottom:7px}
+    .pet-hero a{display:inline-flex;align-items:center;min-height:44px;color:var(--action);font-size:13px;font-weight:800}
+    .pet-hero a svg{width:16px;height:16px;margin-left:2px}
+    .quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+    .quick-card{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:6px;min-height:100px;padding:13px 10px;border:1px solid var(--line);border-radius:16px;background:#fff;color:var(--ink);text-align:left}
+    .quick-card svg{width:21px;height:21px;color:var(--action)}
+    .quick-card strong{font-size:13px;line-height:1.3}
+    .quick-card small{color:var(--muted);font-size:11px;line-height:1.35}
+    .quick-card.family svg{color:var(--purple)}
+    .quick-card.plan svg{color:var(--blue)}
+    .care-list{overflow:hidden}.care-row{display:flex;align-items:flex-start;gap:10px;padding:14px 15px;border-top:1px solid var(--line)}.care-row:first-child{border-top:0}
+    .care-ring{display:grid;place-items:center;flex:none;width:26px;height:26px;margin-top:2px;border:2px solid #c7a489;border-radius:50%;color:var(--action)}
+    .care-ring svg{width:15px;height:15px}
+    .care-ring.done{border-color:#a6d5b8;background:var(--green-soft);color:var(--green)}
+    .care-row strong{display:block;font-size:14px;line-height:1.35}
+    .care-row p{margin:3px 0 0;color:var(--muted);font-size:12px;line-height:1.45}
+    .care-row a{display:grid;place-items:center;align-self:center;flex:none;width:44px;height:44px;margin-left:auto;color:var(--action)}
+    .care-row a svg{width:18px;height:18px}
+    .discover{display:flex;gap:10px;margin:0 -16px;padding:0 16px 3px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+    .discover::-webkit-scrollbar{display:none}
+    .discover-card{display:flex;flex-direction:column;justify-content:space-between;flex:none;width:178px;min-height:156px;padding:15px;border:1px solid var(--line);border-radius:16px;scroll-snap-align:start}
+    .discover-card span[data-icon] svg{width:24px;height:24px}
+    .discover-card strong{display:block;font-size:15px;line-height:1.35}
+    .discover-card small{display:block;color:#65574d;font-size:11px;line-height:1.45}
+    .discover-card a{display:flex;align-items:center;min-height:44px;color:var(--action);font-size:12px;font-weight:800}
+    .discover-card a svg{width:16px;height:16px;margin-left:2px}
+    .profile{display:flex;align-items:center;gap:13px;margin-top:22px;padding:17px}
+    .profile-avatar{display:grid;place-items:center;width:55px;height:55px;border-radius:17px;background:#ffddc4;color:var(--action)}
+    .profile-avatar svg{width:29px;height:29px}
+    .profile strong{font-size:18px}.profile p{margin:2px 0 0;color:var(--muted);font-size:12px}
+    .profile .pill{margin-left:auto}
+    .menu-card{overflow:hidden}
+    .menu-icon{display:grid;place-items:center;flex:none;width:34px;height:34px;border-radius:10px;background:var(--orange-soft);color:var(--action)}
+    .menu-icon svg{width:20px;height:20px}
+    .menu-icon.purple{background:var(--purple-soft);color:var(--purple)}
+    .menu-icon.blue{background:var(--blue-soft);color:var(--blue)}
+    .menu-icon.green{background:var(--green-soft);color:var(--green)}
+    .message-tabs{display:flex;gap:8px;margin:15px 0}
+    .message-tabs button{flex:1;min-height:44px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--muted);font-size:13px;font-weight:750}
+    .message-tabs button[aria-pressed="true"]{border-color:var(--action);background:var(--orange-soft);color:var(--action)}
+    .message-item{padding:14px 15px;border-top:1px solid var(--line)}
+    .message-item:first-child{border-top:0}
+    .message-item strong{font-size:14px}.message-item p{margin:4px 0 0;color:var(--muted);font-size:12px}.message-item a{display:inline-flex;align-items:center;min-height:44px;color:var(--action);font-size:12px;font-weight:800}
+    .message-empty{padding:32px 20px;text-align:center;color:var(--muted);font-size:13px}
+    .message-empty svg{width:38px;height:38px;margin:0 auto 9px;color:var(--action)}
+    .creative-intro{padding:16px;margin-top:17px;background:linear-gradient(130deg,#eff3ff,#fff);border-color:#dce7f8}.creative-intro strong{display:block;font-size:17px}.creative-intro p{margin:5px 0 0;color:var(--muted);font-size:12px}.creative-types{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.creative-types div{display:grid;justify-items:center;gap:6px;padding:13px 5px;border:1px solid var(--line);border-radius:13px;background:#fff;color:var(--ink);font-size:12px;font-weight:750}.creative-types svg{width:22px;height:22px;color:var(--blue)}.submission-line{display:flex;gap:10px;padding:13px 0;border-top:1px solid var(--line)}.submission-line:first-child{border-top:0}.submission-line span[data-icon]{flex:none;color:var(--action)}.submission-line strong{display:block;font-size:13px}.submission-line small{display:block;margin-top:2px;color:var(--muted);font-size:12px}.favorites-tabs{display:flex;gap:7px;overflow:auto;margin:15px 0 10px}.favorites-tabs button{flex:none;min-height:44px;padding:0 11px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted);font-size:12px}.favorites-tabs button[aria-pressed="true"]{border-color:var(--action);background:var(--orange-soft);color:var(--action)}.favs-empty{padding:24px 16px;text-align:center;color:var(--muted);font-size:13px}
+    @media(max-width:340px){.pet-hero{grid-template-columns:94px minmax(0,1fr)}.portrait{height:100px}.portrait svg{width:88px;height:88px}.quick-card{padding:11px 8px}.quick-card small{font-size:10px}}
+  </style>
+</head>
+<body>
+  <div class="studio">
+    <aside class="studio-intro">
+      <div class="studio-kicker">cutePet / Mobile H5 · 01</div>
+      <h1>照护先行，<br>好内容随后。</h1>
+      <p>以 375px 手机体验为基准。今天的待办、当前宠物和一步记录在首屏；资讯、探索和用品作为需要时才进入的第二层。</p>
+      <div class="studio-links">
+        <a href="首次使用与建档.html">查看首次使用与建档 →</a>
+        <a href="照护记录与提醒.html">查看照护闭环 →</a>
+        <a href="家庭共享与隐私.html">查看家庭与隐私 →</a>
+        <a href="资讯探索与用品.html#news">查看发现内容 →</a>
+        <a href="评审说明.md">阅读评审说明 →</a>
+      </div>
+    </aside>
+    <div class="phone">
+      <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="device-status">●●●　◕ <i class="battery"></i></span></div>
+      <main class="screen" id="screen">
+        <section id="home-view" class="page">
+          <div class="brandline"><div class="brand-mini"><span class="brand-icon" data-icon="pawBrand"></span>cutePet<span style="color:var(--primary)">.</span></div><div class="header-actions"><a class="icon-button notice-bell" href="#messages" aria-label="查看消息中心"><span data-icon="bell"></span></a><a class="icon-button" href="首次使用与建档.html#privacy" aria-label="查看首次使用体验"><span data-icon="user"></span></a></div></div>
+          <header class="greeting"><p class="eyebrow">TODAY · 2026.09.23</p><h1>今天，也一起照顾好它。</h1><p>先看本次安排，再记录已经做过的事。</p></header>
+          <p class="demo-note" style="margin:15px 0 0">交互设计示例 · 宠物、日期和状态均非真实账号数据</p>
+          <section id="today-card" class="today-card" aria-label="今日待办示例"><div class="today-top"><span id="today-date">今天 · 18:00 前</span><span class="pill orange" id="today-state">待处理</span></div><div class="today-main"><span class="today-icon" data-icon="bell"></span><div><strong id="today-title">旺财的疫苗加强针</strong><p id="today-copy">已有本次记录可关联 · 确认后再安排下次</p></div></div><a id="today-link" class="primary-button" href="照护记录与提醒.html#todo">查看本次待办 <span data-icon="arrowRight"></span></a></section>
+          <div class="pet-switch" role="group" aria-label="切换示例宠物"><button type="button" data-pet="dog" aria-pressed="true"><span class="pet-dot">旺</span>旺财</button><button type="button" data-pet="cat" aria-pressed="false"><span class="pet-dot cat">栗</span>栗子</button><a class="add-pet quiet-button" href="首次使用与建档.html#wizard"><span data-icon="plus"></span> 新建档案</a></div>
+          <section id="pet-hero" class="pet-hero" aria-label="当前宠物"><div class="portrait" aria-hidden="true"><svg id="pet-illustration" viewBox="0 0 112 112" fill="none"><path d="M32 43 16 18c-5 16-4 36 7 46m57-21 16-25c5 16 4 36-7 46" fill="#ba763d" stroke="#8d5129" stroke-width="2"/><ellipse cx="56" cy="61" rx="39" ry="37" fill="#d9a16d"/><path d="M24 60c0-23 15-39 32-39s32 16 32 39" fill="#e6b784"/><ellipse cx="56" cy="75" rx="23" ry="19" fill="#fff0db"/><circle cx="42" cy="59" r="3" fill="#392a20"/><circle cx="70" cy="59" r="3" fill="#392a20"/><path d="m52 70 4 3 4-3" stroke="#60402e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M56 73v5m0 0c-4 4-8 4-11 0m11 0c4 4 8 4 11 0" stroke="#60402e" stroke-width="2" stroke-linecap="round"/></svg></div><div><span id="pet-badge" class="pill purple">家人协作中</span><h2 id="pet-name">旺财</h2><p id="pet-details">犬 · 柯基 · 最近体重 12.5 kg</p><a id="pet-profile-link" href="照护记录与提醒.html#pet">打开宠物档案 <span data-icon="chevronRight"></span></a></div></section>
+          <div class="section-head"><h2>做过的事，顺手记下</h2></div><div class="quick-grid"><a class="quick-card" id="quick-record-link" href="照护记录与提醒.html#record"><span data-icon="plus"></span><strong>快速记录</strong><small>体重、疫苗、驱虫…</small></a><a class="quick-card plan" id="quick-plan-link" href="照护记录与提醒.html#plan"><span data-icon="calendar"></span><strong>提醒计划</strong><small>看下次安排</small></a><a class="quick-card family" id="quick-family-link" href="家庭共享与隐私.html#family"><span data-icon="users"></span><strong>家庭交接</strong><small>看处理人与权限</small></a></div>
+          <div class="section-head"><h2>照护时间线</h2><a href="照护记录与提醒.html#pet">查看全部 <span data-icon="chevronRight"></span></a></div><div class="card care-list"><div class="care-row"><span class="care-ring" data-icon="clock"></span><div><strong id="timeline-first">疫苗提醒 · 本次待办</strong><p id="timeline-first-sub">今天 18:00 前 · 仍待核对</p></div><a id="timeline-first-link" href="照护记录与提醒.html#todo" aria-label="查看疫苗待办"><span data-icon="chevronRight"></span></a></div><div class="care-row"><span class="care-ring done" data-icon="check"></span><div><strong id="timeline-second">体重记录 · 12.5 kg</strong><p id="timeline-second-sub">9 月 18 日 · 由你录入</p></div><a id="timeline-second-link" href="照护记录与提醒.html#pet" aria-label="查看宠物时间线"><span data-icon="chevronRight"></span></a></div></div>
+          <div class="section-head"><h2>有空再看看</h2><span class="caption muted">不打断照护</span></div><div class="discover"><article class="discover-card" style="background:var(--pink-soft)"><span data-icon="news" style="color:var(--pink)"></span><div><strong>读一点靠谱经验</strong><small>给新手的照护知识</small></div><a href="资讯探索与用品.html#news">去资讯 <span data-icon="arrowRight"></span></a></article><article class="discover-card" style="background:var(--green-soft)"><span data-icon="mapPin" style="color:var(--green)"></span><div><strong>找附近友好场所</strong><small>拒绝定位也可选城市</small></div><a href="资讯探索与用品.html#explore">去探索 <span data-icon="arrowRight"></span></a></article><article class="discover-card" style="background:var(--blue-soft)"><span data-icon="bag" style="color:var(--blue)"></span><div><strong>选用品先看资料</strong><small>内容导购，无交易</small></div><a href="资讯探索与用品.html#goods">看好物 <span data-icon="arrowRight"></span></a></article></div>
+        </section>
+        <section id="cat-view" class="page" hidden><div class="topline"><a class="icon-button" href="#home" aria-label="返回今日照护"><span data-icon="chevronLeft"></span></a><h1>栗子的档案</h1><span style="width:44px"></span></div><div class="card card-pad soft-purple" style="margin-top:17px"><span class="pill purple">仅自己可见 · 示例</span><h2 style="margin:10px 0 5px;font-size:22px">栗子</h2><p class="caption muted" style="margin:0">猫 · 英短 · 最近体重 4.2 kg</p></div><div class="section-head"><h2>当前安排</h2></div><div class="card card-pad"><strong>今天没有待处理事项</strong><p class="caption muted" style="margin:5px 0 0">没有待办时保持平静；计划、记录与权限仍需按这只宠物单独读取。</p></div><div class="section-head"><h2>最近记录</h2></div><div class="card card-pad"><strong>体重 4.2 kg</strong><p class="caption muted" style="margin:5px 0 0">9 月 18 日 · 由你录入 · 仅示例</p></div><p class="demo-note" style="margin-top:17px">本页只演示多宠切换后的对象隔离。照护闭环专项稿使用旺财；不会把栗子的操作跳到旺财档案。</p><a class="secondary-button" href="#home" style="margin-top:12px">返回今日照护</a></section><section id="me-view" class="page" hidden>
+          <div class="topline"><span class="brand-mini"><span class="brand-icon" data-icon="pawBrand"></span>cutePet<span style="color:var(--primary)">.</span></span><span style="margin-left:auto;color:var(--muted);font-size:12px">设计示例</span></div><h1 class="page-title" style="margin-top:21px">我的</h1><p class="page-subtitle">宠物、家庭与个人资料，各有清楚的边界。</p>
+          <div class="card profile"><span class="profile-avatar" data-icon="user"></span><div><strong>示例用户</strong><p>照护 2 只宠物 · 1 个家庭</p></div><span class="pill orange">体验账号</span></div>
+          <div class="section-head"><h2>照护与协作</h2></div><div class="card menu-card"><a class="cell" href="照护记录与提醒.html#pet"><span class="menu-icon" data-icon="paw"></span><span><strong>我的宠物</strong><small>档案、记录、提醒</small></span><span class="end" data-icon="chevronRight"></span></a><a class="cell" href="家庭共享与隐私.html#family"><span class="menu-icon purple" data-icon="users"></span><span><strong>我的家庭</strong><small>逐宠共享与成员权限</small></span><span class="end" data-icon="chevronRight"></span></a><a class="cell" href="#messages"><span class="menu-icon blue" data-icon="bell"></span><span><strong>消息中心</strong><small>提醒、审核结果、家庭</small></span><span class="end" data-icon="chevronRight"></span></a><a class="cell" href="照护记录与提醒.html#sync"><span class="menu-icon green" data-icon="refresh"></span><span><strong>待同步</strong><small>只显示本机草稿与冲突</small></span><span class="end" data-icon="chevronRight"></span></a></div>
+          <div class="section-head"><h2>内容与账户</h2></div><div class="card menu-card"><a class="cell" href="#creative"><span class="menu-icon blue" data-icon="edit"></span><span><strong>创作与收藏</strong><small>稿件状态与内容收藏入口</small></span><span class="end" data-icon="chevronRight"></span></a><a class="cell" href="家庭共享与隐私.html#summary"><span class="menu-icon purple" data-icon="shield"></span><span><strong>宠物健康摘要</strong><small>仅所有者核验后可生成静态快照</small></span><span class="end" data-icon="chevronRight"></span></a><a class="cell" href="首次使用与建档.html#guest"><span class="menu-icon" data-icon="lock"></span><span><strong>登录与访问状态</strong><small>协议、年龄与返回原任务</small></span><span class="end" data-icon="chevronRight"></span></a></div><p class="demo-note" style="margin-top:18px">姓名、家庭、宠物和消息仅用于评审布局；此页不读取账户资料。</p>
+        </section>
+        <section id="creative-view" class="page" hidden><div class="topline"><a class="icon-button" href="#me" aria-label="返回我的"><span data-icon="chevronLeft"></span></a><h1>创作与收藏</h1><span style="width:44px"></span></div><p class="page-subtitle">投稿、评测与好物清单都需看清审核状态；收藏只跟个人账号走。</p><div class="card creative-intro"><strong>把经验写得有依据。</strong><p>正式编辑器要保留草稿、来源与线上版本。这里先评审入口及结果状态。</p></div><div class="creative-types"><div><span data-icon="news"></span>写文章</div><div><span data-icon="edit"></span>写评测</div><div><span data-icon="list"></span>做清单</div></div><div class="section-head"><h2>我的投稿</h2><span class="pill orange">示例</span></div><a class="card cell" href="#submission"><span class="menu-icon blue" data-icon="news"></span><span><strong>幼犬换粮时，我记录了什么</strong><small>质量退修 · 补充资料来源后可重提</small></span><span class="end" data-icon="chevronRight"></span></a><div class="section-head"><h2>我的收藏</h2></div><div class="favorites-tabs" role="group" aria-label="收藏类型"><button type="button" data-favorite="内容" aria-pressed="true">内容</button><button type="button" data-favorite="商品" aria-pressed="false">商品</button><button type="button" data-favorite="清单" aria-pressed="false">清单</button><button type="button" data-favorite="场所" aria-pressed="false">场所</button><button type="button" data-favorite="路线" aria-pressed="false">路线</button></div><div class="card favs-empty" id="favorites-copy">示例账号暂无内容收藏。<br>可以先阅读公开资讯，再决定是否收藏。</div><p class="demo-note" style="margin-top:14px">分类与投稿均为本地设计示例；编辑器、真实收藏和审核服务仍需独立细化。</p></section><section id="submission-view" class="page" hidden><div class="topline"><a class="icon-button" href="#creative" aria-label="返回创作与收藏"><span data-icon="chevronLeft"></span></a><h1>投稿状态</h1><span style="width:44px"></span></div><span class="pill orange" style="margin-top:17px">质量退修 · 非违规处罚</span><h2 style="font-size:21px;margin:10px 0 4px">幼犬换粮时，我记录了什么</h2><p class="caption muted" style="margin:0 0 16px">示例文章 · 本次修改版本待补来源</p><div class="card card-pad"><div class="submission-line"><span data-icon="check"></span><div><strong>已提交</strong><small>9 月 21 日 15:20 · 版本 2</small></div></div><div class="submission-line"><span data-icon="clock"></span><div><strong>人工审核</strong><small>核对描述与资料来源</small></div></div><div class="submission-line"><span data-icon="info"></span><div><strong>需要补充后重提</strong><small>补全资料来源，不计入违规驳回次数。</small></div></div></div><div class="card card-pad soft-orange" style="margin-top:12px"><strong>审核意见 · 示例</strong><p class="caption" style="margin:5px 0 0;color:#624c3e">第二段关于换粮速度的说法缺少来源。请标明参考资料，并把个人经验与专业建议区分。</p></div><p class="demo-note" style="margin-top:15px">线上已发布版本与待审修改版应分别显示；此稿不提交或发布文章。完整编辑器与版本对比仍需后续细化。</p><a class="secondary-button" href="#creative" style="margin-top:12px">返回创作中心</a></section><section id="messages-view" class="page" hidden>
+          <div class="topline"><a class="icon-button" href="#me" aria-label="返回我的"><span data-icon="chevronLeft"></span></a><h1>消息中心</h1><span style="width:44px"></span></div><p class="page-subtitle">通知请求、站内消息和实际送达是不同状态。</p><div class="message-tabs" role="group" aria-label="消息分类"><button type="button" data-message="reminder" aria-pressed="true">提醒</button><button type="button" data-message="family" aria-pressed="false">家庭</button><button type="button" data-message="review" aria-pressed="false">审核</button></div><div class="card" id="message-reminder"><div class="message-item"><strong>旺财的疫苗加强针今天待处理</strong><p>站内提醒示例 · 9 月 23 日 09:00</p><a href="照护记录与提醒.html#todo">查看本次待办 →</a></div><div class="message-item"><strong>系统通知状态待核验</strong><p>不能把消息创建写成已送达到设备。</p></div></div><div class="card" id="message-family" hidden><div class="message-item"><strong>家庭成员想查看共享范围</strong><p>加入和授权均需独立确认。</p><a href="家庭共享与隐私.html#invite">查看邀请告知 →</a></div></div><div class="card" id="message-review" hidden><div class="message-empty"><span data-icon="news"></span>示例账号暂无审核结果。<br>正式页面应说明空态与失败加载的区别。</div></div><p class="demo-note" style="margin-top:15px">全部消息为示例；没有真实推送或已读写入。</p>
+        </section>
+      </main>
+      <nav class="tabbar" aria-label="移动端主导航"><a class="tab-item" data-tab="home" href="#home" aria-current="page"><span data-icon="home"></span><span>首页</span></a><a class="tab-item" href="资讯探索与用品.html#news"><span data-icon="news"></span><span>资讯</span></a><a class="tab-item" href="资讯探索与用品.html#explore"><span data-icon="compass"></span><span>探索</span></a><a class="tab-item" data-tab="me" href="#me"><span data-icon="user"></span><span>我的</span></a></nav>
+      <div class="home-indicator" aria-hidden="true"></div>
+    </div>
+    <aside class="studio-guide">
+      <div class="studio-kicker">评审焦点</div>
+      <div class="note"><strong>一眼看本次任务</strong>待办入口只进入确认流程。必须先核对或新增健康记录，平台确认后才能说完成。</div>
+      <div class="note"><strong>切换宠物不带出私有数据</strong>体验按钮可换成第二只宠物；真实产品要按当前账号和共享权限返回资料。</div>
+      <div class="note"><strong>内容让位给照护</strong>资讯、场所和用品放在首屏任务之后；用品只做资料参考，没有购物车与下单。</div>
+      <a href="全站页面蓝图.md">查看完整移动页面蓝图 →</a>
+    </aside>
+  </div>
+  <script src="mobile-icons.js"></script>
+  <script>
+    const screen = document.getElementById('screen');
+    const homeView = document.getElementById('home-view'), catView = document.getElementById('cat-view'), meView = document.getElementById('me-view'), messagesView = document.getElementById('messages-view'), creativeView=document.getElementById('creative-view'), submissionView=document.getElementById('submission-view');
+    const petData = {
+      dog: { name:'旺财', details:'犬 · 柯基 · 最近体重 12.5 kg', badge:'家人协作中', title:'旺财的疫苗加强针', copy:'已有本次记录可关联 · 确认后再安排下次', state:'待处理', date:'今天 · 18:00 前', action:'查看本次待办', first:'疫苗提醒 · 本次待办', firstSub:'今天 18:00 前 · 仍待核对', second:'体重记录 · 12.5 kg', secondSub:'9 月 18 日 · 由你录入' },
+      cat: { name:'栗子', details:'猫 · 英短 · 最近体重 4.2 kg', badge:'仅自己可见', title:'栗子今天没有待办', copy:'下次提醒可在计划里查看；不要制造紧急感。', state:'暂无待办', date:'照护节奏刚刚好', action:'查看栗子档案', first:'今天没有待处理事项', firstSub:'你可以回看最近记录或安排下一次', second:'体重记录 · 4.2 kg', secondSub:'9 月 18 日 · 由你录入' }
+    };
+    function showView() {
+      const hash = location.hash.slice(1);
+      const view = ['me','messages','cat','creative','submission'].includes(hash) ? hash : 'home';
+      homeView.hidden = view !== 'home'; catView.hidden=view!=='cat'; meView.hidden = view !== 'me'; messagesView.hidden = view !== 'messages';creativeView.hidden=view!=='creative';submissionView.hidden=view!=='submission';
+      document.querySelectorAll('[data-tab]').forEach(link => { if (link.dataset.tab === ((view === 'home'||view==='cat') ? 'home' : 'me')) link.setAttribute('aria-current','page'); else link.removeAttribute('aria-current'); });
+      screen.scrollTop = 0;
+    }
+    function renderPet(kind) {
+      const pet = petData[kind];
+      document.querySelectorAll('[data-pet]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.pet === kind)));
+      document.getElementById('pet-name').textContent = pet.name;
+      document.getElementById('pet-details').textContent = pet.details;
+      document.getElementById('pet-badge').textContent = pet.badge;
+      document.getElementById('today-title').textContent = pet.title;
+      document.getElementById('today-copy').textContent = pet.copy;
+      document.getElementById('today-state').textContent = pet.state;
+      document.getElementById('today-date').textContent = pet.date;
+      document.getElementById('today-link').firstChild.textContent = pet.action + ' ';
+      document.getElementById('today-link').href = kind === 'dog' ? '照护记录与提醒.html#todo' : '#cat';
+      document.getElementById('pet-profile-link').href=kind==='dog'?'照护记录与提醒.html#pet':'#cat';
+      document.getElementById('quick-record-link').href=kind==='dog'?'照护记录与提醒.html#record':'#cat';document.getElementById('quick-plan-link').href=kind==='dog'?'照护记录与提醒.html#plan':'#cat';document.getElementById('quick-family-link').href=kind==='dog'?'家庭共享与隐私.html#family':'#cat';
+      document.getElementById('timeline-first-link').href=kind==='dog'?'照护记录与提醒.html#todo':'#cat';document.getElementById('timeline-second-link').href=kind==='dog'?'照护记录与提醒.html#pet':'#cat';
+      document.getElementById('timeline-first').textContent = pet.first;
+      document.getElementById('timeline-first-sub').textContent = pet.firstSub;
+      document.getElementById('timeline-second').textContent = pet.second;
+      document.getElementById('timeline-second-sub').textContent = pet.secondSub;
+      document.getElementById('today-card').classList.toggle('is-empty', kind === 'cat');
+      document.getElementById('pet-hero').classList.toggle('cat', kind === 'cat');
+      document.getElementById('pet-illustration').innerHTML = kind === 'dog'
+        ? '<path d="M32 43 16 18c-5 16-4 36 7 46m57-21 16-25c5 16 4 36-7 46" fill="#ba763d" stroke="#8d5129" stroke-width="2"/><ellipse cx="56" cy="61" rx="39" ry="37" fill="#d9a16d"/><path d="M24 60c0-23 15-39 32-39s32 16 32 39" fill="#e6b784"/><ellipse cx="56" cy="75" rx="23" ry="19" fill="#fff0db"/><circle cx="42" cy="59" r="3" fill="#392a20"/><circle cx="70" cy="59" r="3" fill="#392a20"/><path d="m52 70 4 3 4-3" stroke="#60402e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M56 73v5m0 0c-4 4-8 4-11 0m11 0c4 4 8 4 11 0" stroke="#60402e" stroke-width="2" stroke-linecap="round"/>'
+        : '<path d="M20 53 18 17l25 17m49 19 2-36-25 17" fill="#bba2cc" stroke="#806e99" stroke-width="2"/><ellipse cx="56" cy="63" rx="38" ry="36" fill="#ddcbe8"/><path d="M20 53 18 17l25 17m49 19 2-36-25 17" fill="#d8c2e7" stroke="#806e99" stroke-width="2"/><circle cx="43" cy="61" r="3" fill="#392a20"/><circle cx="69" cy="61" r="3" fill="#392a20"/><path d="m52 72 4 3 4-3m-4 3v4m0 0c-4 3-8 3-11 0m11 0c4 3 8 3 11 0M35 72l-13-2m13 6-13 2m55-6 13-2m-13 6 13 2" stroke="#745f79" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+    }
+    document.querySelectorAll('[data-pet]').forEach(button => button.addEventListener('click', () => renderPet(button.dataset.pet)));
+    document.querySelectorAll('[data-message]').forEach(button => button.addEventListener('click', () => {
+      document.querySelectorAll('[data-message]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+      ['reminder','family','review'].forEach(type => document.getElementById('message-' + type).hidden = type !== button.dataset.message);
+    }));
+    document.querySelectorAll('[data-favorite]').forEach(button=>button.addEventListener('click',()=>{document.querySelectorAll('[data-favorite]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));document.getElementById('favorites-copy').innerHTML=button.dataset.favorite==='内容'?'示例账号暂无内容收藏。<br>可以先阅读公开资讯，再决定是否收藏。':'示例账号暂无'+button.dataset.favorite+'收藏。<br>此分类的独立细页仍需继续设计。'}));
+    window.addEventListener('hashchange', showView);
+    showView();
+  </script>
+</body>
+</html>

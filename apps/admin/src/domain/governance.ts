@@ -69,12 +69,12 @@ export function opsTodoOverdue(todo: OpsTodo, nowIso: string, overdueHours = 24)
   return new Date(nowIso).getTime() - new Date(todo.createdAtIso).getTime() > overdueHours * 3600_000;
 }
 
-/** 主管升级：逾期 → 标记升级并通知主管（不得只显示“任务已运行”） */
+/** 只判定是否达到升级阈值；真正升级、通知及回执必须由服务端完成。 */
 export function escalateOpsTodo(todo: OpsTodo, nowIso: string): { escalated: boolean; visible: string } {
   const overdue = opsTodoOverdue(todo, nowIso);
   return {
     escalated: overdue,
-    visible: overdue ? `${todo.kind} 逾期，已升级主管处理（含失败原因与重试入口）` : '',
+    visible: overdue ? `${todo.kind} 已逾期，需核对失败原因并升级主管；等待服务端受理与回执` : '',
   };
 }
 
@@ -134,7 +134,7 @@ export function versionDiffRequired(submissionKind: string): boolean {
   return submissionKind === 'ARTICLE' || submissionKind === 'REVIEW' || submissionKind === 'LIST';
 }
 
-/** 审核仅对当前提交版本生效；明确区分质量退修 vs 违规 */
+/** 审核仅对当前提交版本生效；rejectCount 在违规分支须为滚动 180 天内经人工确认的违规次数。 */
 export function reviewDisposition(input: {
   kind: 'quality' | 'violation';
   rejectCount: number;
@@ -143,10 +143,10 @@ export function reviewDisposition(input: {
     return {
       label: `质量退修第 ${input.rejectCount} 次（不计违规）`,
       countsAsViolation: false,
-      suspended: input.rejectCount >= 3,
+      suspended: false,
     };
   }
-  return { label: '确认违规', countsAsViolation: true, suspended: false };
+  return { label: '确认违规', countsAsViolation: true, suspended: input.rejectCount >= 3 };
 }
 
 // ---------- T8.6 健康私有证据最小化（闭环 §3） ----------
@@ -161,7 +161,7 @@ export function canViewHealthEvidence(input: {
     allowed,
     requiresAudit: allowed, // 工单绑定最小范围 + 说明用途 + 留痕
     reason: allowed
-      ? '仅展示该工单绑定的最小证据范围，查看已留痕'
+      ? '仅可查看该工单绑定的最小证据范围，服务端须返回查看审计回执'
       : '普通运营页不开放健康档案浏览（闭环 §3）',
   };
 }

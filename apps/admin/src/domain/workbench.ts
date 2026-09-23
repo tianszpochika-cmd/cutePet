@@ -71,6 +71,8 @@ export function loginBlockersAdmin(input: { username: string; password: string; 
 // ---------- T8.2 审核工作台 ----------
 
 export type QueueTab = 'SUBMISSIONS' | 'COMMENTS' | 'REVIEWS' | 'REPORTS' | 'APPEALS';
+export type QueueStateFilter = 'ALL' | 'UNCLAIMED' | 'MINE' | 'OTHER' | 'HANDLED';
+export type QueueSlaFilter = 'ALL' | 'URGENT' | 'ESCALATE' | 'BREACH' | 'OK' | 'UNKNOWN';
 
 export const QUEUE_TABS: { id: QueueTab; label: string; perm: Permission }[] = [
   { id: 'SUBMISSIONS', label: '投稿（文章/评测/清单）', perm: 'review.article' },
@@ -97,16 +99,74 @@ export interface QueueRow {
   waitedHours: number;
   reports: number;
   claimedBy: number | null;
+  /** 扩展字段均为可选，兼容已有的队列纯逻辑调用者。 */
+  queue?: QueueTab;
+  state?: 'PENDING' | 'HANDLED';
+  code?: string;
+  version?: string;
+  batchable?: boolean;
+  requiresProfessionalReview?: boolean;
+}
+
+/** 不把评测投稿与场所评价抽审混在一个权限队列里。 */
+export function queueTabOf(row: QueueRow): QueueTab {
+  if (row.queue) return row.queue;
+  if (row.type === 'COMMENT') return 'COMMENTS';
+  if (row.type === 'POI_REVIEW') return 'REVIEWS';
+  if (row.type === 'REPORT' || row.type === 'COPYRIGHT') return 'REPORTS';
+  if (row.type === 'APPEAL') return 'APPEALS';
+  return 'SUBMISSIONS';
+}
+
+/** 版权合格通知立即处理；普通举报和申诉使用独立的 48 小时反馈时限。 */
+export function queueSla(row: QueueRow): { tier: Exclude<QueueSlaFilter, 'ALL'>; label: string } {
+  if (row.type === 'COPYRIGHT') return { tier: 'URGENT', label: '立即核查' };
+  if (row.type === 'REPORT' || row.type === 'APPEAL') {
+    return row.waitedHours >= 48
+      ? { tier: 'ESCALATE', label: '反馈超 48 小时' }
+      : { tier: 'OK', label: '48 小时反馈窗内' };
+  }
+  if (row.type === 'COMMENT' || row.type === 'POI_REVIEW') {
+    return { tier: 'UNKNOWN', label: '时限待核对' };
+  }
+  const tier = slaStatus(row.waitedHours);
+  return {
+    tier,
+    label: tier === 'ESCALATE' ? '超 48 小时 · 升级' : tier === 'BREACH' ? '超 24 小时' : '目标时限内',
+  };
+}
+
+export function queueStateOf(row: QueueRow, sampleOperatorId: number): Exclude<QueueStateFilter, 'ALL'> {
+  if (row.state === 'HANDLED') return 'HANDLED';
+  if (row.claimedBy === null) return 'UNCLAIMED';
+  return row.claimedBy === sampleOperatorId ? 'MINE' : 'OTHER';
+}
+
+export function queueMatches(row: QueueRow, filters: {
+  tab: QueueTab;
+  state: QueueStateFilter;
+  type: string;
+  sla: QueueSlaFilter;
+  query: string;
+  sampleOperatorId: number;
+}): boolean {
+  if (queueTabOf(row) !== filters.tab) return false;
+  if (filters.state !== 'ALL' && queueStateOf(row, filters.sampleOperatorId) !== filters.state) return false;
+  if (filters.type !== 'ALL' && row.type !== filters.type) return false;
+  if (filters.sla !== 'ALL' && queueSla(row).tier !== filters.sla) return false;
+  const term = filters.query.trim().toLocaleLowerCase();
+  return !term || [row.title, row.code ?? String(row.id)].some((value) => value.toLocaleLowerCase().includes(term));
 }
 
 export function queueSort(rows: QueueRow[]): QueueRow[] {
   return [...rows].sort((a, b) => {
-    const sla = rank(slaStatus(b.waitedHours)) - rank(slaStatus(a.waitedHours));
-    if (sla !== 0) return sla; // ESCALATE → BREACH → OK
-    return b.reports - a.reports; // 同 SLA 按举报数
+    const sla = rank(queueSla(b).tier) - rank(queueSla(a).tier);
+    if (sla !== 0) return sla; // URGENT → ESCALATE → BREACH → OK
+    const reports = b.reports - a.reports;
+    return reports !== 0 ? reports : b.waitedHours - a.waitedHours;
   });
   function rank(s: string): number {
-    return s === 'ESCALATE' ? 2 : s === 'BREACH' ? 1 : 0;
+    return s === 'URGENT' ? 4 : s === 'ESCALATE' ? 3 : s === 'BREACH' ? 2 : s === 'OK' ? 1 : 0;
   }
 }
 
@@ -122,7 +182,7 @@ export function canOperateRow(row: QueueRow, operatorId: number): { allowed: boo
 export function reviewActionBlockers(action: 'approve' | 'reject', note: string): string[] {
   const out: string[] = [];
   if (action === 'reject' && !note.trim()) out.push('REJECT_NOTE_REQUIRED');
-  if (action === 'approve' && note.length > 500) out.push('NOTE_TOO_LONG');
+  if (note.length > 500) out.push('NOTE_TOO_LONG');
   return out;
 }
 
@@ -132,12 +192,20 @@ export const REJECT_TEMPLATES = [
   '内容与频道不符，请修改分类',
 ] as const;
 
-/** 批量操作：仅同队列同状态可批量；批量驳回必须模板意见（防误伤） */
+/** 批量操作仅用于同类型、待处理、低风险且未认领的对象；最终还须服务端复核。 */
 export function batchEligible(rows: QueueRow[], sameTabType: boolean): boolean {
-  return rows.length > 0 && sameTabType && rows.every((r) => r.claimedBy === null);
+  return rows.length > 0 && sameTabType && rows.every((row) =>
+    queueTabOf(row) === queueTabOf(rows[0]!) &&
+    row.type === rows[0]!.type &&
+    row.state !== 'HANDLED' &&
+    row.claimedBy === null &&
+    row.reports === 0 &&
+    row.batchable !== false &&
+    row.requiresProfessionalReview !== true,
+  );
 }
 
-/** 快捷键（交互设计 §5：Enter 打开、A 通过、R 驳回、Esc 关闭） */
+/** 键位语义；只读预览页中的 A/R 仅聚焦条件，不执行审核。 */
 export const REVIEW_SHORTCUTS: Record<string, string> = {
   Enter: 'open',
   a: 'approve',

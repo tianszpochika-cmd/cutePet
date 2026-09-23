@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { isPreviewActive } from './adminPreview';
 
 /**
  * 管理端路由（信息架构 §7 侧边栏结构）。
- * 权限过滤在 AdminLayout（visibleNav）；路由本身按 T 编号标注任务归属。
+ * 当前仅允许显式进入内存只读预览；真实权限仍须由服务端逐路由及逐对象校验。
  */
 export const router = createRouter({
-  history: createWebHistory('/admin/'),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/login', name: 'adminLogin', component: () => import('./pages/AdminLogin.vue'), meta: { task: 'T8.1' } },
     {
@@ -27,4 +28,9 @@ export const router = createRouter({
     },
     { path: '/:pathMatch(.*)*', redirect: '/dashboard' },
   ],
+});
+
+router.beforeEach((to) => {
+  if (to.name === 'adminLogin' || isPreviewActive()) return true;
+  return { name: 'adminLogin', query: { return: to.fullPath } };
 });

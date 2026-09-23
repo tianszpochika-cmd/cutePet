@@ -5,10 +5,10 @@
 // ---------- 4-Tab（决议：用品并入首页，不做独立 Tab） ----------
 
 export const TABS = [
-  { id: 'home', label: '首页', icon: '🏠', path: '/' },
-  { id: 'pet', label: '宠物', icon: '🐾', path: '/pets' },
-  { id: 'explore', label: '探索', icon: '🧭', path: '/explore' },
-  { id: 'me', label: '我的', icon: '👤', path: '/me' },
+  { id: 'home', label: '首页', icon: 'home', path: '/' },
+  { id: 'news', label: '资讯', icon: 'news', path: '/news' },
+  { id: 'explore', label: '探索', icon: 'explore', path: '/explore' },
+  { id: 'me', label: '我的', icon: 'me', path: '/me' },
 ] as const;
 
 export type TabId = (typeof TABS)[number]['id'];

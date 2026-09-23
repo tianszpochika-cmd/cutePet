@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="cutePet 官网产品能力 UI/UX 设计预览：从宠物档案、照护记录到提醒与家庭协作。">
+  <title>产品能力 · cutePet 官网 UI/UX 设计稿</title>
+  <style>
+    :root {
+      --orange: #ff7a2f;
+      --orange-dark: #b85111;
+      --orange-soft: #fff1e8;
+      --ink: #2b2118;
+      --muted: #64574d;
+      --muted-light: #756254;
+      --cream: #fff9f3;
+      --line: #eadfd4;
+      --surface: #fff;
+      --shadow: 0 22px 56px rgba(69,41,19,.10);
+      --ease: cubic-bezier(.22,1,.36,1);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; min-width: 320px; background: var(--cream); color: var(--ink); font-family: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    button { font: inherit; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    img, svg { display: block; }
+    [hidden] { display: none !important; }
+    :focus-visible { outline: 3px solid var(--orange-dark); outline-offset: 4px; }
+    section[id], div[id] { scroll-margin-top: 92px; }
+    .wrap { width: min(100% - 48px, 1200px); margin-inline: auto; }
+    .skip { position: absolute; top: -60px; left: 16px; z-index: 100; padding: 10px 15px; border-radius: 9px; background: var(--ink); color: #fff; }
+    .skip:focus { top: 12px; }
+    .preview-bar { padding: 9px 16px; background: #f9e8d9; color: #69432e; text-align: center; font-size: 12px; font-weight: 700; }
+    .preview-bar span { opacity: .7; }
+
+    .site-header { position: sticky; top: 0; z-index: 40; border-bottom: 1px solid rgba(234,223,212,.75); background: rgba(255,249,243,.94); backdrop-filter: blur(18px); }
+    .header-inner { min-height: 76px; display: flex; align-items: center; gap: 58px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; white-space: nowrap; font-size: 23px; font-weight: 850; letter-spacing: -.065em; }
+    .brand-mark { width: 39px; height: 39px; display: grid; place-items: center; border-radius: 13px; background: var(--orange); color: #fff; transform: rotate(-8deg); }
+    .brand-mark svg { width: 26px; height: 26px; }
+    .brand-dot { color: var(--orange); }
+    .nav { display: flex; gap: 29px; align-items: center; }
+    .nav a, .header-back { color: #584b40; font-size: 14px; font-weight: 650; transition: color .2s; }
+    .nav a:hover, .header-back:hover { color: var(--orange-dark); }
+    .header-right { margin-left: auto; display: flex; align-items: center; gap: 25px; }
+    .menu-button { display: none; width: 44px; height: 44px; padding: 10px; border: 0; background: transparent; }
+    .menu-button span { display: block; width: 24px; height: 2px; margin: 5px auto; border-radius: 2px; background: var(--ink); }
+    .mobile-shade { position: fixed; inset: 0; z-index: 38; background: rgba(43,33,24,.42); }
+    .mobile-menu { position: fixed; top: 0; right: 0; bottom: 0; z-index: 39; width: min(87vw, 390px); display: flex; flex-direction: column; gap: 2px; padding: 93px 25px 28px; background: var(--cream); box-shadow: -30px 0 70px rgba(43,33,24,.17); }
+    .mobile-menu a { padding: 13px 4px; font-size: 20px; font-weight: 800; }
+    .mobile-menu .mobile-note { margin-top: auto; padding: 17px; border-radius: 15px; background: #fff0e4; color: #765343; font-size: 12px; line-height: 1.7; }
+    .button { min-height: 51px; display: inline-flex; justify-content: center; align-items: center; gap: 13px; padding: 0 25px; border: 1px solid transparent; border-radius: 999px; font-size: 15px; font-weight: 780; transition: transform .22s var(--ease), box-shadow .22s, background .22s; }
+    .button:hover { transform: translateY(-2px); }
+    .button:active { transform: scale(.98); }
+    .button-primary { background: var(--orange-dark); color: #fff; box-shadow: 0 10px 22px rgba(184,81,17,.19); }
+    .button-primary:hover { background: #963e0a; box-shadow: 0 16px 30px rgba(184,81,17,.25); }
+    .button-outline { border-color: #d6b9a3; background: #fff9f3; color: #533a2b; }
+    .button-outline:hover { background: var(--orange-soft); }
+    .button-sm { min-height: 42px; padding-inline: 19px; font-size: 13px; }
+    .button svg { width: 17px; height: 17px; }
+
+    .eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 17px; color: var(--orange-dark); font-size: 12px; font-weight: 850; letter-spacing: .16em; }
+    .eyebrow:before { content: ""; width: 22px; height: 2px; background: currentColor; }
+    .section-title { margin: 0; font-size: clamp(33px,4vw,49px); line-height: 1.23; letter-spacing: -.055em; }
+    .section-lead { max-width: 590px; margin: 18px 0 0; color: var(--muted); font-size: 16px; line-height: 1.9; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 28px; margin-bottom: 35px; }
+    .section-head .section-lead { margin-top: 14px; }
+    .text-link { display: inline-flex; align-items: center; gap: 10px; border-bottom: 1px solid currentColor; padding-bottom: 6px; color: var(--orange-dark); font-size: 14px; font-weight: 800; white-space: nowrap; }
+    .text-link:hover span { transform: translateX(4px); }
+    .text-link span { transition: transform .2s; }
+
+    .hero { position: relative; overflow: hidden; padding: 62px 0 90px; background: radial-gradient(circle at 88% 32%, #ffe6d1, transparent 32%), linear-gradient(145deg,#fff9f3 43%,#fff2e6); }
+    .hero:after { content: ""; position: absolute; width: 770px; height: 770px; right: -290px; top: -370px; border: 1px solid #f3d8c0; border-radius: 50%; pointer-events: none; }
+    .crumb { display: flex; align-items: center; gap: 9px; color: #907967; font-size: 12px; font-weight: 650; }
+    .crumb a:hover { color: var(--orange-dark); text-decoration: underline; }
+    .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr .94fr; gap: 50px; align-items: center; min-height: 535px; }
+    .hero-copy { padding: 25px 0 10px; }
+    .hero-kicker { display: inline-flex; align-items: center; gap: 8px; padding: 9px 13px; border: 1px solid #f4dfcd; border-radius: 999px; background: white; color: #925029; font-size: 12px; font-weight: 800; box-shadow: 0 6px 18px rgba(87,54,30,.04); }
+    .hero-kicker b { color: var(--orange); }
+    .hero h1 { max-width: 700px; margin: 24px 0 23px; font-size: clamp(45px,5.1vw,72px); line-height: 1.16; font-weight: 850; letter-spacing: -.072em; }
+    .hero h1 em { color: var(--orange-dark); font-style: normal; }
+    .hero-sub { max-width: 560px; margin: 0; color: var(--muted); font-size: 18px; line-height: 1.9; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin: 32px 0 28px; }
+    .hero-foot { display: flex; align-items: center; gap: 9px; color: #756254; font-size: 12px; }
+    .hero-foot i { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: #fff0e3; color: #d66624; font-size: 11px; font-style: normal; }
+    .hero-art { position: relative; min-height: 525px; display: grid; place-items: center; }
+    .hero-art-blob { position: absolute; inset: 40px 5px 20px 28px; border-radius: 47% 53% 45% 55% / 49% 45% 55% 51%; background: linear-gradient(135deg,#ffdaae,#fff0dc 55%,#eadbc5); box-shadow: inset 0 0 0 1px rgba(241,177,119,.30); }
+    .hero-art-blob:after { content: ""; position: absolute; inset: 18px; border: 1px solid rgba(255,255,255,.72); border-radius: inherit; }
+    .hero-pets { position: relative; z-index: 2; width: 102%; max-height: 500px; object-fit: contain; filter: drop-shadow(0 23px 22px rgba(121,76,47,.13)); }
+    .hero-fallback { position: absolute; font-size: 95px; letter-spacing: -.27em; opacity: .8; }
+    .float-note { position: absolute; z-index: 3; display: grid; gap: 5px; min-width: 164px; padding: 13px 16px; border: 1px solid #f3e3d6; border-radius: 17px; background: rgba(255,255,255,.96); box-shadow: var(--shadow); transform: rotate(-5deg); }
+    .float-note small { color: #756254; font-size: 10px; font-weight: 750; }
+    .float-note strong { font-size: 13px; }
+    .float-note.first { top: 65px; left: -8px; }
+    .float-note.second { right: -12px; bottom: 57px; transform: rotate(5deg); }
+    .hero-caption { position: absolute; right: 25px; bottom: -4px; color: #756254; font-size: 10px; letter-spacing: .1em; }
+
+    .value-strip { position: relative; z-index: 2; margin-top: -47px; }
+    .value-box { display: grid; grid-template-columns: repeat(3,1fr); padding: 24px 18px; border: 1px solid var(--line); border-radius: 25px; background: white; box-shadow: 0 20px 45px rgba(55,35,22,.07); }
+    .value-item { display: flex; align-items: center; gap: 16px; padding: 4px 23px; }
+    .value-item + .value-item { border-left: 1px solid var(--line); }
+    .value-icon { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border-radius: 14px; background: #fff2e6; color: var(--orange-dark); font-size: 21px; }
+    .value-item strong { display: block; margin-bottom: 4px; font-size: 15px; }
+    .value-item span:last-child { color: var(--muted-light); font-size: 12px; }
+
+    .abilities { padding: 125px 0 120px; }
+    .ability-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 22px; }
+    .ability-card { --accent:#a8450d; --card-bg:#fff0e4; position: relative; overflow: hidden; width: 100%; min-height: 296px; display: flex; flex-direction: column; align-items: flex-start; padding: 30px 32px; border: 2px solid transparent; border-radius: 28px; background: var(--card-bg); color: var(--ink); text-align: left; transition: transform .3s var(--ease), box-shadow .3s, border-color .3s; }
+    .ability-card:hover { transform: translateY(-4px); box-shadow: 0 16px 35px rgba(52,34,22,.08); }
+    .ability-card[aria-selected="true"] { border-color: var(--accent); box-shadow: 0 18px 40px rgba(52,34,22,.09); }
+    .ability-card.news { --accent:#a63157; --card-bg:#ffedf0; }
+    .ability-card.explore { --accent:#18734b; --card-bg:#e9f7ee; }
+    .ability-card.supplies { --accent:#2e5cad; --card-bg:#eaf2ff; }
+    .ability-card:after { content: attr(data-number); position: absolute; right: -8px; bottom: -60px; color: rgba(255,255,255,.62); font-size: 190px; font-weight: 900; letter-spacing: -.11em; line-height: 1; pointer-events: none; }
+    .ability-icon { position: relative; z-index: 1; width: 47px; height: 47px; display: grid; place-items: center; border-radius: 15px; background: #fff; color: var(--accent); font-size: 22px; font-weight: 850; box-shadow: 0 5px 14px rgba(43,33,24,.05); }
+    .ability-tag { position: absolute; z-index: 1; top: 32px; right: 32px; padding: 6px 11px; border: 1px solid currentColor; border-radius: 999px; color: var(--accent); font-size: 11px; font-weight: 800; }
+    .ability-card strong { position: relative; z-index: 1; margin-top: 22px; font-size: 27px; letter-spacing: -.04em; }
+    .ability-card .card-copy { position: relative; z-index: 1; max-width: 415px; margin-top: 8px; color: #65574c; font-size: 14px; line-height: 1.75; }
+    .ability-card .card-list { position: relative; z-index: 1; margin-top: 13px; color: #76675d; font-size: 12px; line-height: 1.6; }
+    .ability-card .card-action { position: relative; z-index: 1; display: inline-flex; gap: 10px; align-items: center; margin-top: auto; padding-top: 20px; color: var(--accent); font-size: 13px; font-weight: 850; }
+    .ability-note { margin: 17px 0 0; color: #756254; font-size: 12px; }
+
+    .detail-shell { padding: 103px 0 110px; background: #fff3e9; }
+    .detail-head { display: grid; grid-template-columns: .9fr 1.1fr; gap: 80px; align-items: end; margin-bottom: 37px; }
+    .detail-head .section-lead { margin: 0; }
+    .detail-panel { --panel-tint:#ffcfaa; --panel-accent:#b85111; padding: 38px; border: 1px solid #efd9c7; border-radius: 35px; background: white; box-shadow: 0 23px 55px rgba(70,41,22,.07); }
+    .detail-panel[data-theme="news"] { --panel-tint:#ffd5df; --panel-accent:#a63157; }
+    .detail-panel[data-theme="explore"] { --panel-tint:#c8efd7; --panel-accent:#18734b; }
+    .detail-panel[data-theme="supplies"] { --panel-tint:#d0e1ff; --panel-accent:#2e5cad; }
+    .detail-top { display: flex; align-items: start; justify-content: space-between; gap: 24px; padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+    .detail-label { display: inline-flex; align-items: center; gap: 8px; color: var(--panel-accent); font-size: 12px; font-weight: 850; letter-spacing: .1em; }
+    .detail-label:before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+    .detail-top h3 { margin: 12px 0 8px; font-size: clamp(27px,3vw,38px); line-height: 1.28; letter-spacing: -.05em; }
+    .detail-top p { max-width: 680px; margin: 0; color: var(--muted); font-size: 15px; line-height: 1.75; }
+    .detail-top .detail-count { flex: none; padding: 10px 13px; border-radius: 10px; background: #fff8f2; color: #756254; font-size: 11px; font-weight: 800; }
+    .detail-grid { display: grid; grid-template-columns: minmax(0,.98fr) minmax(0,1.02fr); gap: 40px; align-items: start; padding-top: 38px; }
+    .detail-intro { margin: 0 0 22px; color: var(--muted); font-size: 14px; line-height: 1.8; }
+    .flow-list { display: grid; gap: 10px; }
+    .flow-step { width: 100%; display: flex; align-items: flex-start; gap: 15px; padding: 16px; border: 1px solid transparent; border-radius: 17px; background: #fff9f4; color: var(--ink); text-align: left; transition: border-color .2s, background .2s, transform .2s; }
+    .flow-step:hover { background: #fff2e7; }
+    .flow-step[aria-pressed="true"] { border-color: #efd4c1; background: #fff1e5; transform: translateX(3px); }
+    .detail-panel[data-theme="news"] .flow-step[aria-pressed="true"] { border-color: #f0c5d0; background: #fff1f4; }
+    .detail-panel[data-theme="explore"] .flow-step[aria-pressed="true"] { border-color: #b8e2c8; background: #effaf2; }
+    .detail-panel[data-theme="supplies"] .flow-step[aria-pressed="true"] { border-color: #bed4f4; background: #f0f5ff; }
+    .flow-num { width: 35px; height: 35px; flex: none; display: grid; place-items: center; border-radius: 11px; background: #ffe1ca; color: #7b3c13; font-size: 11px; font-weight: 850; }
+    .flow-step[aria-pressed="true"] .flow-num { background: var(--panel-accent); color: white; }
+    .flow-step strong { display: block; margin: 1px 0 4px; font-size: 15px; }
+    .flow-step small { display: block; color: #705d50; font-size: 12px; line-height: 1.5; }
+    .flow-arrow { align-self: center; margin-left: auto; color: #a18b7b; font-size: 18px; }
+    .detail-tip { margin: 19px 0 0; color: #756254; font-size: 12px; line-height: 1.7; }
+    .stage { min-width: 0; overflow: hidden; border-radius: 27px; background: linear-gradient(145deg,var(--panel-tint),#ffeedf 64%,#fff6ee); }
+    .detail-panel[data-theme="news"] .stage { background: linear-gradient(145deg,var(--panel-tint),#fff4f7); }
+    .detail-panel[data-theme="explore"] .stage { background: linear-gradient(145deg,var(--panel-tint),#f1fbf4); }
+    .detail-panel[data-theme="supplies"] .stage { background: linear-gradient(145deg,var(--panel-tint),#f3f7ff); }
+    .stage-art { position: relative; min-height: 370px; display: grid; place-items: center; overflow: hidden; }
+    .stage-art:before { content: ""; position: absolute; width: 440px; height: 440px; top: -100px; right: -140px; border: 1px solid rgba(255,255,255,.78); border-radius: 50%; }
+    .stage-art:after { content: ""; position: absolute; width: 280px; height: 280px; bottom: -160px; left: -75px; border: 1px solid rgba(255,255,255,.65); border-radius: 50%; }
+    .stage-num { position: absolute; top: 23px; left: 25px; color: #7b3c13; font-size: 11px; font-weight: 850; letter-spacing: .16em; }
+    .phone { position: relative; z-index: 1; width: 224px; height: 316px; overflow: hidden; border: 7px solid #3d3028; border-radius: 30px; background: #fffbf7; box-shadow: 17px 24px 40px rgba(83,47,24,.18); transform: rotate(-5deg); }
+    .phone-notch { width: 70px; height: 12px; margin: -1px auto 0; border-radius: 0 0 11px 11px; background: #3d3028; }
+    .phone-inner { padding: 16px 14px; }
+    .phone-top { display: flex; justify-content: space-between; color: #756254; font-size: 9px; font-weight: 800; }
+    .phone-avatar { width: 23px; height: 23px; display: grid; place-items: center; border-radius: 50%; background: #ffe4d0; }
+    .phone h4 { margin: 24px 0 7px; font-size: 18px; letter-spacing: -.045em; }
+    .phone p { margin: 0 0 16px; color: #756254; font-size: 9px; line-height: 1.5; }
+    .phone-pet { display: flex; align-items: center; gap: 9px; padding: 11px; border-radius: 13px; background: #fff0e4; }
+    .phone-pet b { width: 33px; height: 33px; display: grid; place-items: center; border-radius: 50%; background: #f8cba8; font-size: 19px; }
+    .phone-pet span { display: block; font-size: 10px; font-weight: 800; }
+    .phone-pet small { display: block; margin-top: 3px; color: #705d50; font-size: 8px; }
+    .detail-panel[data-theme="news"] .phone-pet { background: #ffedf0; }
+    .detail-panel[data-theme="explore"] .phone-pet { background: #e9f7ee; }
+    .detail-panel[data-theme="supplies"] .phone-pet { background: #eaf2ff; }
+    .phone-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding: 9px; border: 1px solid #f2e7dd; border-radius: 10px; background: #fff; color: #715f52; font-size: 9px; font-weight: 750; }
+    .phone-row i { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 7px; background: #fff1e6; color: var(--panel-accent); font-size: 12px; font-style: normal; }
+    .phone-row:last-child { margin-top: 6px; }
+    .stage-copy { padding: 25px 28px 29px; background: rgba(255,255,255,.73); }
+    .stage-copy span { color: var(--panel-accent); font-size: 11px; font-weight: 850; letter-spacing: .13em; }
+    .stage-copy h4 { margin: 8px 0; font-size: 21px; letter-spacing: -.04em; }
+    .stage-copy p { margin: 0; color: #725f51; font-size: 13px; line-height: 1.75; }
+    .stage-copy ul { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
+    .stage-copy li { padding: 6px 10px; border-radius: 999px; background: white; color: #71584a; font-size: 11px; font-weight: 700; }
+    .detail-bottom { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); }
+    .detail-bottom p { max-width: 620px; margin: 0; color: #756254; font-size: 12px; line-height: 1.7; }
+
+    .principles { padding: 112px 0; }
+    .principles-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    .principle { min-height: 240px; padding: 29px; border: 1px solid var(--line); border-radius: 24px; background: white; }
+    .principle-icon { width: 43px; height: 43px; display: grid; place-items: center; border-radius: 13px; background: #fff0e4; color: var(--orange-dark); font-size: 21px; }
+    .principle:nth-child(2) .principle-icon { background: #efebff; color: #765bc5; }
+    .principle:nth-child(3) .principle-icon { background: #eaf2ff; color: #4878c7; }
+    .principle h3 { margin: 20px 0 8px; font-size: 20px; letter-spacing: -.035em; }
+    .principle p { margin: 0; color: #736459; font-size: 14px; line-height: 1.8; }
+
+    .faq { padding: 91px 0 103px; background: #fff; }
+    .faq-grid { display: grid; grid-template-columns: .84fr 1.16fr; gap: 100px; }
+    .faq-list { border-top: 1px solid var(--line); }
+    .faq details { padding: 18px 0; border-bottom: 1px solid var(--line); }
+    .faq summary { display: flex; justify-content: space-between; align-items: center; gap: 20px; list-style: none; font-size: 16px; font-weight: 750; cursor: pointer; }
+    .faq summary::-webkit-details-marker { display: none; }
+    .faq summary:after { content: "+"; color: var(--orange-dark); font-size: 26px; font-weight: 400; }
+    .faq details[open] summary:after { content: "−"; }
+    .faq details p { margin: 13px 34px 2px 0; color: var(--muted); font-size: 14px; line-height: 1.8; }
+
+    .start { padding: 95px 0 107px; background: var(--ink); color: #fff; }
+    .start-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 65px; align-items: center; }
+    .start .eyebrow { color: #ffa46f; }
+    .start .section-title { font-size: clamp(34px,4vw,54px); }
+    .start .section-lead { color: #d5c5b9; }
+    .entry-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .entry-card { min-height: 211px; display: flex; flex-direction: column; align-items: flex-start; padding: 22px; border: 1px solid #665344; border-radius: 22px; background: #3d3028; }
+    .entry-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px; background: #654734; color: #ffb37e; font-size: 22px; }
+    .entry-card h3 { margin: 17px 0 6px; font-size: 16px; }
+    .entry-card p { margin: 0; color: #c6b2a2; font-size: 12px; line-height: 1.6; }
+    .entry-card button { margin-top: auto; padding: 13px 0 0; border: 0; background: none; color: #ffa66d; font-size: 12px; font-weight: 800; }
+    .entry-note { grid-column: 1 / -1; margin: 3px 0 0; color: #b49b87; font-size: 11px; line-height: 1.6; }
+    .footer { padding: 54px 0 25px; background: #211913; color: #f9f1eb; }
+    .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 40px; padding-bottom: 44px; }
+    .footer p { max-width: 360px; color: #cbb7a8; font-size: 13px; line-height: 1.7; }
+    .footer small { color: #a68e7b; font-size: 11px; }
+    .footer-col { display: flex; flex-direction: column; gap: 12px; }
+    .footer-col strong { margin-bottom: 7px; font-size: 13px; }
+    .footer-col a { color: #bda696; font-size: 12px; }
+    .footer-col a:hover { color: #fff; }
+    .footer-bottom { display: flex; justify-content: space-between; gap: 20px; padding-top: 21px; border-top: 1px solid #4b3a2e; color: #a68e7b; font-size: 11px; }
+    .toast { position: fixed; left: 50%; bottom: 26px; z-index: 100; max-width: min(90vw,520px); padding: 13px 18px; border-radius: 12px; background: var(--ink); color: white; box-shadow: var(--shadow); font-size: 13px; opacity: 0; pointer-events: none; transform: translate(-50%,20px); transition: opacity .2s, transform .2s; }
+    .toast.show { opacity: 1; transform: translate(-50%,0); }
+
+    @media (max-width: 1050px) {
+      .header-inner { gap: 24px; }
+      .nav { gap: 16px; }
+      .header-back { display: none; }
+      .hero-grid { gap: 12px; }
+      .detail-head { gap: 40px; }
+      .faq-grid { gap: 55px; }
+      .start-grid { gap: 35px; }
+    }
+    @media (max-width: 760px) {
+      .wrap { width: min(100% - 32px,1200px); }
+      .header-inner { min-height: 66px; }
+      .nav, .header-right > .button { display: none; }
+      .menu-button { display: block; }
+      .hero { padding: 38px 0 76px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 8px; min-height: auto; }
+      .hero-copy { padding-top: 35px; }
+      .hero h1 { font-size: clamp(42px,11vw,58px); }
+      .hero-sub { font-size: 16px; }
+      .hero-art { min-height: 360px; }
+      .hero-art-blob { inset: 10px 22px 9px; }
+      .hero-pets { max-height: 360px; }
+      .float-note { padding: 10px 12px; min-width: 128px; }
+      .float-note.first { top: 9px; left: 0; }
+      .float-note.second { right: 0; bottom: 19px; }
+      .float-note strong { font-size: 11px; }
+      .hero-caption { right: 15px; bottom: -7px; }
+      .value-box { grid-template-columns: 1fr; gap: 0; padding: 5px 18px; }
+      .value-item { padding: 15px 3px; }
+      .value-item + .value-item { border-left: 0; border-top: 1px solid var(--line); }
+      .abilities { padding: 96px 0; }
+      .section-head { align-items: flex-start; flex-direction: column; }
+      .ability-grid { grid-template-columns: 1fr; gap: 13px; }
+      .ability-card { min-height: 264px; padding: 26px; }
+      .ability-card strong { font-size: 24px; }
+      .detail-shell { padding: 84px 0; }
+      .detail-head { grid-template-columns: 1fr; gap: 16px; }
+      .detail-panel { padding: 23px; border-radius: 26px; }
+      .detail-grid { grid-template-columns: 1fr; gap: 23px; padding-top: 27px; }
+      .detail-top h3 { font-size: 29px; }
+      .detail-top .detail-count { display: none; }
+      .flow-step { min-height: 64px; }
+      .stage-art { min-height: 325px; }
+      .principles { padding: 87px 0; }
+      .principles-grid { grid-template-columns: 1fr; gap: 13px; }
+      .principle { min-height: auto; }
+      .faq { padding: 82px 0 90px; }
+      .faq-grid { grid-template-columns: 1fr; gap: 28px; }
+      .start { padding: 84px 0 92px; }
+      .start-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-grid > div:first-child { grid-column: 1 / -1; }
+    }
+    @media (max-width: 480px) {
+      .hero-actions { flex-direction: column; }
+      .hero-actions .button { width: 100%; }
+      .hero-art { min-height: 310px; }
+      .hero-pets { max-height: 295px; }
+      .float-note.first { left: -6px; }
+      .float-note.second { right: -4px; }
+      .detail-panel { padding: 18px; }
+      .detail-top { display: block; }
+      .stage-art { min-height: 300px; }
+      .phone { transform: rotate(-3deg) scale(.91); }
+      .entry-grid { grid-template-columns: 1fr; }
+      .entry-note { grid-column: auto; }
+      .footer-bottom { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *:before, *:after { scroll-behavior: auto !important; animation-duration: .1s !important; animation-iteration-count: 1 !important; transition-duration: .1s !important; }
+      .button:hover, .ability-card:hover, .flow-step[aria-pressed="true"] { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要内容</a>
+  <div class="preview-bar">官网产品能力 UI/UX 设计预览 <span>· 页面、内容与使用入口待评审</span></div>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html" aria-label="cutePet 首页设计预览">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="currentColor"><circle cx="7" cy="11" r="3"/><circle cx="14" cy="7" r="3"/><circle cx="22" cy="8" r="3"/><circle cx="27" cy="14" r="2.7"/><path d="M8 22c1.2-2.5 4-7 8-7s6.8 4.5 8 7c1.1 2.5-.3 5.2-2.8 5.2-2.3 0-3.5-1.5-5.2-1.5s-2.9 1.5-5.2 1.5C8.3 27.2 6.9 24.5 8 22Z"/></svg></span>
+        <span>cutePet<span class="brand-dot">.</span></span>
+      </a>
+      <nav class="nav" aria-label="产品页面导航">
+        <a href="#abilities">四大能力</a><a href="#detail">能力详情</a><a href="#principles">使用边界</a><a href="#faq">常见问题</a>
+      </nav>
+      <div class="header-right">
+        <a class="header-back" href="index.html">返回首页预览</a>
+        <a class="button button-primary button-sm" href="#start">开始使用 <span aria-hidden="true">↗</span></a>
+        <button class="menu-button" id="menu-button" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+  <div class="mobile-shade" id="mobile-shade" hidden></div>
+  <nav class="mobile-menu" id="mobile-menu" aria-label="移动端页面导航" hidden>
+    <a href="index.html">首页预览</a><a href="#abilities">四大能力</a><a href="#detail">能力详情</a><a href="#principles">使用边界</a><a href="#faq">常见问题</a><a href="#start">开始使用</a>
+    <div class="mobile-note">这是产品能力设计稿。正式 Web 与手机入口仍待运行验收后接入。</div>
+  </nav>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="page-title">
+      <div class="wrap">
+        <div class="crumb"><a href="index.html">官网首页预览</a><span aria-hidden="true">/</span><span>产品能力</span></div>
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <span class="hero-kicker"><b aria-hidden="true">✦</b> 一起把照护的小事做好</span>
+            <h1 id="page-title">它的每一天，<br><em>都有迹可循。</em></h1>
+            <p class="hero-sub">从第一份宠物档案，到每次健康记录、下一次提醒和家人的接力照顾。管理、资讯、探索、用品四种能力，陪你把日常过得更清楚。</p>
+            <div class="hero-actions"><a class="button button-primary" href="#abilities">认识四大能力 <span aria-hidden="true">↓</span></a><a class="button button-outline" href="#detail">看照护流程 <span aria-hidden="true">↘</span></a></div>
+            <div class="hero-foot"><i aria-hidden="true">♥</i><span>本页为设计示意；人物、宠物与产品画面不代表真实用户数据。</span></div>
+          </div>
+          <div class="hero-art">
+            <div class="hero-art-blob" aria-hidden="true"></div>
+            <span class="hero-fallback" aria-hidden="true">🐶🐱</span>
+            <img class="hero-pets" src="hero-pets.png" alt="一只狗和一只猫并肩的温暖插画" onerror="this.hidden=true">
+            <div class="float-note first" aria-hidden="true"><small>今天的照护</small><strong>下一件事，看得清楚</strong></div>
+            <div class="float-note second" aria-hidden="true"><small>家庭协作</small><strong>进度同步，少一点重复</strong></div>
+            <span class="hero-caption">VISUAL CONCEPT · 界面示意</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="value-strip" aria-label="产品价值概览"><div class="wrap value-box">
+      <div class="value-item"><span class="value-icon" aria-hidden="true">✎</span><div><strong>上次照护，有记录</strong><span>档案和健康变化集中查看</span></div></div>
+      <div class="value-item"><span class="value-icon" aria-hidden="true">◷</span><div><strong>下一件事，有安排</strong><span>周期提醒需要确认，节奏更清楚</span></div></div>
+      <div class="value-item"><span class="value-icon" aria-hidden="true">♡</span><div><strong>一家人，有同步</strong><span>按权限协作，减少重复处理</span></div></div>
+    </div></div>
+
+    <section class="abilities" id="abilities" aria-labelledby="abilities-title"><div class="wrap">
+      <div class="section-head"><div><p class="eyebrow">WHAT YOU CAN DO</p><h2 class="section-title" id="abilities-title">一个平台，<br>照顾它的四件事。</h2><p class="section-lead">先从每天真正用得上的照护开始；想看知识、出门走走或比较用品时，也能顺着同一条路径找到。</p></div><a class="text-link" href="#detail">查看能力详情 <span aria-hidden="true">→</span></a></div>
+      <div class="ability-grid" role="tablist" aria-label="四大产品能力">
+        <button class="ability-card manage" type="button" role="tab" id="tab-manage" aria-controls="capability-panel" aria-selected="true" tabindex="0" data-ability="manage" data-number="01"><span class="ability-icon" aria-hidden="true">✚</span><span class="ability-tag">日常照护</span><strong>宠物管理</strong><span class="card-copy">把档案、健康记录、下一次提醒放在一起，让家人知道怎样接力。</span><span class="card-list">档案 · 记录 · 提醒 · 家庭协作</span><span class="card-action">查看这项能力 <span aria-hidden="true">↗</span></span></button>
+        <button class="ability-card news" type="button" role="tab" id="tab-news" aria-controls="capability-panel" aria-selected="false" tabindex="-1" data-ability="news" data-number="02"><span class="ability-icon" aria-hidden="true">▤</span><span class="ability-tag">学习与分享</span><strong>宠物资讯</strong><span class="card-copy">按主题阅读养宠知识与经验；公开内容遵循先审后发的规则。</span><span class="card-list">七个频道 · 文章 · 评测与清单</span><span class="card-action">查看这项能力 <span aria-hidden="true">↗</span></span></button>
+        <button class="ability-card explore" type="button" role="tab" id="tab-explore" aria-controls="capability-panel" aria-selected="false" tabindex="-1" data-ability="explore" data-number="03"><span class="ability-icon" aria-hidden="true">⌖</span><span class="ability-tag">带宠出门</span><strong>宠物探索</strong><span class="card-copy">找附近的宠物友好场所，查路线与活动，为一起出门做好准备。</span><span class="card-list">附近场所 · 遛宠路线 · 本地活动</span><span class="card-action">查看这项能力 <span aria-hidden="true">↗</span></span></button>
+        <button class="ability-card supplies" type="button" role="tab" id="tab-supplies" aria-controls="capability-panel" aria-selected="false" tabindex="-1" data-ability="supplies" data-number="04"><span class="ability-icon" aria-hidden="true">◇</span><span class="ability-tag">理性选择</span><strong>宠物用品</strong><span class="card-copy">从资料、评测和好物清单里找依据；第一版只做内容参考。</span><span class="card-list">资料 · 评测 · 清单 · 无站内交易</span><span class="card-action">查看这项能力 <span aria-hidden="true">↗</span></span></button>
+      </div>
+      <p class="ability-note">选择任一能力可切换下方示意详情；默认展示最核心的宠物管理照护链。</p>
+    </div></section>
+
+    <section class="detail-shell" id="detail" aria-labelledby="detail-title"><div class="wrap">
+      <div class="detail-head"><div><p class="eyebrow">A CLOSER LOOK</p><h2 class="section-title" id="detail-title">选一种能力，<br>看看怎样开始。</h2></div><p class="section-lead">下面是可切换的能力详情视图。默认展示宠物管理；选择上方四张能力卡，可对照看每项能力如何帮助完成一件具体的事。</p></div>
+      <div class="detail-panel" id="capability-panel" role="tabpanel" aria-labelledby="tab-manage" data-theme="manage">
+        <div class="detail-top"><div><span class="detail-label" id="detail-label">宠物管理 · 日常照护</span><h3 id="detail-heading">把上一次和下一次，连成一条线。</h3><p id="detail-description">先建档，再留下每次照护记录；提醒明确下一步，家庭协作让处理进度能按权限同步。</p></div><span class="detail-count">01 / 04 能力示意</span></div>
+        <div class="detail-grid">
+          <div><p class="detail-intro" id="detail-intro">点选任一步，看看界面怎样解释这段照护流程。示意画面没有连接私人档案或实时数据。</p><div class="flow-list" id="flow-list" role="group" aria-label="能力流程四步"></div><p class="detail-tip" id="detail-tip">家庭成员的可管理与只读权限不同；敏感健康摘要只由所有者处理。</p></div>
+          <div class="stage" aria-label="交互画面示意"><div class="stage-art" aria-hidden="true"><span class="stage-num" id="stage-num">01 / 04</span><div class="phone"><div class="phone-notch"></div><div class="phone-inner"><div class="phone-top"><span>cutePet · 界面示意</span><span class="phone-avatar">🐾</span></div><h4 id="screen-title">先认识它</h4><p id="screen-subtitle">从基础信息开始建立档案</p><div class="phone-pet"><b id="screen-icon">🐶</b><div><span id="screen-card">宠物档案</span><small id="screen-card-sub">信息逐步补全</small></div></div><div class="phone-row"><i>✓</i><span id="screen-row-1">记录基础信息</span></div><div class="phone-row"><i>→</i><span id="screen-row-2">设置第一条提醒</span></div></div></div></div><div class="stage-copy" aria-live="polite"><span id="stage-kicker">01 · 从档案开始</span><h4 id="stage-heading">先把它的情况记清楚</h4><p id="stage-copy">按步骤建立基础档案，照片可以稍后补充。完成后，自然衔接第一次提醒。</p><ul id="stage-points"><li>犬 / 猫 / 异宠</li><li>四步建档</li><li>照片可跳过</li></ul></div></div>
+        </div>
+        <div class="detail-bottom"><p>此处呈现产品设计意图。实际业务流程、数据同步与通知送达仍需在对应端完成运行验证。</p><a class="button button-primary button-sm" href="#start">查看使用方式 <span aria-hidden="true">↗</span></a></div>
+      </div>
+    </div></section>
+
+    <section class="principles" id="principles" aria-labelledby="principles-title"><div class="wrap">
+      <div class="section-head"><div><p class="eyebrow">CLEAR BY DESIGN</p><h2 class="section-title" id="principles-title">把能力说清楚，<br>也把边界说清楚。</h2><p class="section-lead">每一项设计都应让用户知道能做什么、由谁操作，以及什么时候需要进入用户端确认。</p></div></div>
+      <div class="principles-grid"><article class="principle"><span class="principle-icon" aria-hidden="true">◷</span><h3>提醒跟着记录走</h3><p>疫苗、驱虫等健康待办与相应记录关联；周期和下一次日期由用户确认，不悄悄替用户作决定。</p></article><article class="principle"><span class="principle-icon" aria-hidden="true">♧</span><h3>家庭按权限协作</h3><p>所有者决定共享范围。成员可以按授予的权限查看或管理；私人档案与敏感摘要不在官网公开。</p></article><article class="principle"><span class="principle-icon" aria-hidden="true">◇</span><h3>内容参考有范围</h3><p>公开投稿先审后发，已下架内容不再展示。用品只提供资料、评测和清单，第一版没有订单与支付。</p></article></div>
+    </div></section>
+
+    <section class="faq" id="faq" aria-labelledby="faq-title"><div class="wrap faq-grid"><div><p class="eyebrow">GOOD TO KNOW</p><h2 class="section-title" id="faq-title">开始之前，<br>再多了解一点。</h2><p class="section-lead">这些问题对应真实的功能边界；设计稿中的界面与流程仍需后续验证。</p></div><div class="faq-list"><details><summary>建档后能直接设置提醒吗？</summary><p>可以从建档完成引导进入第一条提醒。健康类提醒和记录相关联，周期及下一次日期需要用户确认。</p></details><details><summary>家人会看到我所有宠物资料吗？</summary><p>不会。共享范围与成员权限由所有者管理；未共享的宠物资料保持私有，敏感健康摘要仅由所有者处理。</p></details><details><summary>官网能替我记录或报名吗？</summary><p>官网用于介绍能力与浏览可公开的内容。记录、提醒处理和活动报名都需要进入用户端，报名仍需再次确认。</p></details><details><summary>用品页面可以购买吗？</summary><p>第一版是纯内容导购：可以浏览资料、评测与清单，不提供站内订单、支付或售后。</p></details></div></div></section>
+
+    <section class="start" id="start" aria-labelledby="start-title"><div class="wrap start-grid"><div><p class="eyebrow">START YOUR EVERYDAY CARE</p><h2 class="section-title" id="start-title">从第一份宠物档案，<br>开始有条理地照顾。</h2><p class="section-lead">选择电脑或手机上的使用方式。正式地址会在运行验收与发布准备完成后接入。</p></div><div class="entry-grid"><div class="entry-card" id="entry-web"><span class="entry-icon" aria-hidden="true">▣</span><h3>在电脑上使用</h3><p>进入用户端 Web，集中查看档案、记录与照护安排。</p><button type="button" data-entry="web">查看入口说明 ↗</button></div><div class="entry-card" id="entry-mobile"><span class="entry-icon" aria-hidden="true">▯</span><h3>在手机上使用</h3><p>移动 H5 适合随时查看安排与快速记录。</p><button type="button" data-entry="mobile">查看入口说明 ↗</button></div><p class="entry-note">设计预览：不提供未验证的下载包、二维码或外部跳转。</p></div></div></section>
+  </main>
+
+  <footer class="footer"><div class="wrap"><div class="footer-grid"><div><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">●</span><span>cutePet<span class="brand-dot">.</span></span></a><p>把每一份在意，变成有条理的照顾。</p><small>品牌名与 Logo 为设计阶段占位</small></div><div class="footer-col"><strong>本页导航</strong><a href="#abilities">四大能力</a><a href="#detail">能力详情</a><a href="#principles">使用边界</a><a href="#faq">常见问题</a></div><div class="footer-col"><strong>设计预览</strong><a href="index.html">官网首页</a><a href="#start">使用入口</a><a href="#top">回到顶部</a></div></div><div class="footer-bottom"><span>© 2026 cutePet · 产品能力 UI/UX 设计稿</span><span>正式条款与备案信息待上线前补齐</span></div></div></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const abilityData = {
+      manage: {
+        label: '宠物管理 · 日常照护', heading: '把上一次和下一次，连成一条线。', description: '先建档，再留下每次照护记录；提醒明确下一步，家庭协作让处理进度能按权限同步。',
+        intro: '点选任一步，看看界面怎样解释这段照护流程。示意画面没有连接私人档案或实时数据。',
+        tip: '家庭成员的可管理与只读权限不同；敏感健康摘要只由所有者处理。',
+        steps: [
+          { title: '建立宠物档案', short: '把基础信息放在一起', kicker: '01 · 从档案开始', heading: '先把它的情况记清楚', copy: '按步骤建立基础档案，照片可以稍后补充。完成后，自然衔接第一次提醒。', points: ['犬 / 猫 / 异宠','四步建档','照片可跳过'], screen: ['先认识它','从基础信息开始建立档案','宠物档案','信息逐步补全','记录基础信息','设置第一条提醒'] },
+          { title: '留下照护记录', short: '健康变化接在时间线上', kicker: '02 · 留下每一次变化', heading: '回看上次，不再靠记忆', copy: '体重、疫苗、驱虫、体检、就医、用药和过敏信息按类型留存，时间线帮助回顾。', points: ['七类记录','时间线回看','体重趋势'], screen: ['今天留下了什么','照护信息接在同一条时间线上','健康记录','按类型整理','新增体重记录','查看最近的变化'] },
+          { title: '确认下一次提醒', short: '排期由用户看过再确定', kicker: '03 · 安排下一次', heading: '知道下一步何时要做', copy: '从记录关联到提醒计划。疫苗或驱虫的下一次日期及周期由用户确认，待办状态也能看清。', points: ['记录关联提醒','周期需确认','待办状态清楚'], screen: ['下一件照护小事','提醒先确认，再按计划进行','照护安排','下一次日期待确认','查看提醒计划','确认处理结果'] },
+          { title: '与家人接力照顾', short: '按权限同步处理进度', kicker: '04 · 家人一起照顾', heading: '同一件事，不用做两遍', copy: '所有者邀请家人参与，按可管理或只读权限协作；处理结果与下一次安排保持一致。', points: ['成员权限明确','进度同步','减少重复处理'], screen: ['家人一起照顾','接力之前先看处理进度','家庭协作','按权限查看','查看待办状态','确认下一次安排'] }
+        ]
+      },
+      news: {
+        label: '宠物资讯 · 学习与分享', heading: '需要知识的时候，找得到、看得懂。', description: '按主题读养宠内容，收藏值得回看的信息；公开投稿经过审核后展示。',
+        intro: '资讯从阅读延伸到创作。预览仅解释内容路径，不展示虚构文章或作者。', tip: '投稿先审后发；未审核、已驳回或已下架的内容不作为公开推荐。',
+        steps: [
+          { title: '按主题查找', short: '七个频道组织内容', kicker: '01 · 发现内容', heading: '从需要的主题开始', copy: '用犬、猫、异宠等主题频道缩小范围，更容易找到当前想了解的内容。', points: ['七个频道','按主题浏览','公开内容'], screen: ['今天想了解什么','从频道开始找养宠内容','资讯频道','按主题浏览','查看主题文章','切换其他频道'] },
+          { title: '阅读公开内容', short: '只看仍可展示的版本', kicker: '02 · 仔细阅读', heading: '内容状态看得明白', copy: '文章在审核通过后公开展示；下架后不继续留在官网宣传。', points: ['先审后发','下架同步','来源清楚'], screen: ['读一篇养宠文章','公开内容按当前状态展示','文章详情','内容已发布','查看正文','返回频道'] },
+          { title: '收藏以后回看', short: '把有用信息留住', kicker: '03 · 回到重要信息', heading: '有用的内容，随时再看', copy: '收藏和清单帮助整理以后还会用到的参考；互动操作需要进入用户端。', points: ['收藏回看','清单整理','互动需登录'], screen: ['留住有用的内容','以后需要时能再次找到','我的收藏','内容分类整理','查看收藏','继续阅读'] },
+          { title: '投稿并等待审核', short: '文章、评测和清单', kicker: '04 · 分享经验', heading: '写下经验，也看得到状态', copy: '创作文章、评测或清单后进入审核流程，作者可以看到投稿状态与反馈。', points: ['文章 / 评测 / 清单','投稿状态','审核反馈'], screen: ['分享自己的经验','投稿状态可以追踪','创作中心','稿件等待审核','查看投稿状态','返回草稿'] }
+        ]
+      },
+      explore: {
+        label: '宠物探索 · 带宠出门', heading: '出门之前，先把路线和去处看一看。', description: '附近场所、友好属性、遛宠路线和本地活动组成一份出门前的参考。',
+        intro: '探索能力围绕真实的出门准备展开；地图、评价和活动以实际公开数据为准。', tip: '活动报名在用户端完成，用户需要阅读告知并再次确认；领养信息不提供交易入口。',
+        steps: [
+          { title: '找附近场所', short: '地图与列表都能查看', kicker: '01 · 找到去处', heading: '从附近开始探索', copy: '地图或列表帮助发现周边场所；实际位置与营业信息需要以当前数据为准。', points: ['附近场所','地图 / 列表','信息待核实'], screen: ['和它去哪里','先看看附近可去的地方','附近场所','位置与范围筛选','查看场所','切换列表'] },
+          { title: '看宠物友好属性', short: '再判断是否适合', kicker: '02 · 看清条件', heading: '把重要条件先问清', copy: '结合场所信息和宠物友好属性筛选，出发前仍可核实现场规则。', points: ['属性筛选','详情信息','评价纠错'], screen: ['这家适合它吗','查看场所的友好条件','场所详情','信息按当前版本展示','查看属性','反馈信息问题'] },
+          { title: '参考遛宠路线', short: '安排一段出门时间', kicker: '03 · 看看路线', heading: '让出门更有准备', copy: '浏览路线与路径说明，为散步选择适合的地点和时长。', points: ['路线浏览','路线详情','分享参考'], screen: ['今天走哪条路','路线上重要信息集中看','遛宠路线','查看路线详情','查看路径','返回探索'] },
+          { title: '了解本地活动', short: '报名仍需进入用户端', kicker: '04 · 参与活动', heading: '想参加，再认真确认', copy: '活动信息可以公开了解；真正报名需进入用户端并确认相关信息。', points: ['活动详情','告知同意','报名再确认'], screen: ['看看本地活动','先读详情，再决定参与','活动详情','公开信息按状态展示','查看时间地点','进入用户端报名'] }
+        ]
+      },
+      supplies: {
+        label: '宠物用品 · 内容参考', heading: '不急着买，先把差别看明白。', description: '商品资料、评测和清单帮助比较与回看；第一版没有站内交易。',
+        intro: '用品能力是信息整理和内容导购示意。这里没有价格承诺、库存或下单流程。', tip: '兽药与处方类不进入用品内容库；第一版不提供订单、支付和售后。',
+        steps: [
+          { title: '查用品资料', short: '先看基础参数', kicker: '01 · 了解资料', heading: '把参数看清，再做选择', copy: '用品资料帮助快速了解分类与关键参数，不把内容展示当成购买承诺。', points: ['分类浏览','参数要点','资料参考'], screen: ['先看看用品资料','按类别了解关键差别','用品资料','资料按当前版本展示','查看参数','返回分类'] },
+          { title: '读评测内容', short: '对照使用体验', kicker: '02 · 参考评测', heading: '从实际写下的经验里比较', copy: '评测与商品信息关联；公开内容按审核结果展示，帮助理解使用场景。', points: ['关联评测','审核后公开','使用场景'], screen: ['看看相关评测','从内容中理解适用情况','用品评测','只展示公开内容','阅读评测','查看资料'] },
+          { title: '整理好物清单', short: '把想比较的放一起', kicker: '03 · 整理清单', heading: '留一份可回看的参考', copy: '清单把相关用品与说明放在一起，方便以后重新比较。', points: ['清单整理','内容关联','便于回访'], screen: ['我的参考清单','把想比较的内容放在一起','好物清单','内容仅作参考','查看清单','继续浏览'] },
+          { title: '收藏以后回访', short: '没有下单压力', kicker: '04 · 再次回看', heading: '需要时再看，不必当场决定', copy: '收藏资料和清单用于回访；第一版不提供订单、支付或站内购买。', points: ['收藏回访','无站内订单','无支付流程'], screen: ['下次再来看看','资料与清单留待以后参考','我的收藏','不提供购买入口','查看收藏','返回用品'] }
+        ]
+      }
+    };
+
+    const abilityButtons = [...document.querySelectorAll('[data-ability]')];
+    const flowList = document.getElementById('flow-list');
+    const panel = document.getElementById('capability-panel');
+    let activeAbility = 'manage';
+    let activeStep = 0;
+
+    function showStep(index) {
+      const data = abilityData[activeAbility];
+      const step = data.steps[index];
+      activeStep = index;
+      [...flowList.querySelectorAll('.flow-step')].forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
+      document.getElementById('stage-num').textContent = `0${index + 1} / 04`;
+      document.getElementById('stage-kicker').textContent = step.kicker;
+      document.getElementById('stage-heading').textContent = step.heading;
+      document.getElementById('stage-copy').textContent = step.copy;
+      document.getElementById('stage-points').replaceChildren(...step.points.map(point => { const li = document.createElement('li'); li.textContent = point; return li; }));
+      ['screen-title','screen-subtitle','screen-card','screen-card-sub','screen-row-1','screen-row-2'].forEach((id, i) => { document.getElementById(id).textContent = step.screen[i]; });
+    }
+
+    function showAbility(key, scrollToPanel = false) {
+      activeAbility = key;
+      const data = abilityData[key];
+      abilityButtons.forEach(button => { const selected = button.dataset.ability === key; button.setAttribute('aria-selected', String(selected)); button.tabIndex = selected ? 0 : -1; });
+      panel.dataset.theme = key;
+      panel.setAttribute('aria-labelledby', `tab-${key}`);
+      document.getElementById('screen-icon').textContent = { manage: '🐶', news: '▤', explore: '⌖', supplies: '◇' }[key];
+      document.getElementById('detail-label').textContent = data.label;
+      document.getElementById('detail-heading').textContent = data.heading;
+      document.getElementById('detail-description').textContent = data.description;
+      document.getElementById('detail-intro').textContent = data.intro;
+      document.getElementById('detail-tip').textContent = data.tip;
+      flowList.replaceChildren(...data.steps.map((step, index) => {
+        const button = document.createElement('button'); button.type = 'button'; button.className = 'flow-step'; button.setAttribute('aria-pressed', String(index === 0));
+        const number = document.createElement('span'); number.className = 'flow-num'; number.textContent = `0${index + 1}`;
+        const text = document.createElement('span'); const title = document.createElement('strong'); title.textContent = step.title; const short = document.createElement('small'); short.textContent = step.short; text.append(title, short);
+        const arrow = document.createElement('span'); arrow.className = 'flow-arrow'; arrow.setAttribute('aria-hidden','true'); arrow.textContent = '→';
+        button.append(number, text, arrow); button.addEventListener('click', () => showStep(index));
+        return button;
+      }));
+      showStep(0);
+      if (scrollToPanel) document.getElementById('detail').scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    }
+
+    abilityButtons.forEach((button, index) => {
+      button.addEventListener('click', () => showAbility(button.dataset.ability, true));
+      button.addEventListener('keydown', event => {
+        const moves = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+        let next;
+        if (Object.prototype.hasOwnProperty.call(moves, event.key)) next = (index + moves[event.key] + abilityButtons.length) % abilityButtons.length;
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = abilityButtons.length - 1;
+        else return;
+        event.preventDefault(); showAbility(abilityButtons[next].dataset.ability); abilityButtons[next].focus();
+      });
+    });
+    showAbility('manage');
+
+    const menuButton = document.getElementById('menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileShade = document.getElementById('mobile-shade');
+    function setMenu(open, restoreFocus = false) {
+      mobileMenu.hidden = !open; mobileShade.hidden = !open;
+      menuButton.setAttribute('aria-expanded', String(open)); menuButton.setAttribute('aria-label', open ? '关闭菜单' : '打开菜单');
+      document.body.style.overflow = open ? 'hidden' : '';
+      if (open) mobileMenu.querySelector('a').focus();
+      else if (restoreFocus) menuButton.focus();
+    }
+    menuButton.addEventListener('click', () => setMenu(menuButton.getAttribute('aria-expanded') !== 'true', true));
+    mobileShade.addEventListener('click', () => setMenu(false, true));
+    mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenu(false)));
+    document.addEventListener('keydown', event => { if (event.key === 'Escape' && !mobileMenu.hidden) setMenu(false, true); });
+
+    let toastTimer;
+    document.querySelectorAll('[data-entry]').forEach(button => button.addEventListener('click', () => {
+      const toast = document.getElementById('toast');
+      toast.textContent = '此处为入口交互示意；正式地址将在运行验收后接入。';
+      toast.classList.add('show'); clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove('show'), 4200);
+    }));
+  </script>
+</body>
+</html>

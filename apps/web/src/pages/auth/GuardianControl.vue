@@ -1,71 +1,56 @@
-<script setup lang="ts">
-import { ref } from 'vue';
-import { guardianControlFlow, GUARDIAN_REVOKE_EFFECTS } from '../../domain/closedLoop';
-
-const phone = ref('');
-const linked = ref(true); // 演示：是否存在关联账号
-const result = ref<{ ok: boolean; display: string; leak: boolean } | null>(null);
-const consentState = ref('CONSENTED');
-
-function verify() {
-  // X16：无关联不泄露账号存在性
-  result.value = guardianControlFlow({ guardianPhoneMatches: phone.value === '13900000001', minorLinked: linked.value });
-}
-
-function revoke() {
-  if (!confirm('撤回同意后将：限制孩子账号会话、关闭其推送。确认撤回？')) return;
-  consentState.value = 'REVOKED';
-}
-</script>
-
 <template>
-  <div class="x16">
+  <div class="guardian-control">
+    <nav class="crumb" aria-label="当前位置">
+      <router-link to="/login">登录入口</router-link><span aria-hidden="true">/</span><span aria-current="page">监护人服务</span>
+    </nav>
     <header>
-      <button type="button" class="back" onclick="history.back()">‹ 返回</button>
-      <h1>监护人控制（X16）</h1>
+      <p class="eyebrow">GUARDIAN SERVICE</p>
+      <h1>监护人服务</h1>
+      <p>监护人需要能够独立核验身份、查看同意状态并撤回同意。这些动作不能由儿童账号代为确认。</p>
     </header>
 
-    <section class="card">
-      <p class="hint">从登录页「监护人服务」进入。仅需监护人手机号核验；不会要求登录儿童账号。</p>
-      <label class="field">监护人手机号（演示：13900000001）
-        <input v-model="phone" data-testid="g-phone" placeholder="11 位手机号" />
-      </label>
-      <label class="switch"><input v-model="linked" type="checkbox" /> 存在关联的儿童账号（演示开关）</label>
-      <button type="button" class="primary" data-testid="verify" @click="verify">核验并查询</button>
-      <p v-if="result" class="result" data-testid="result" :class="{ warn: !result.ok }">
-        {{ result.display }}
-      </p>
-      <p v-if="result && result.leak" class="err">不应出现：泄露了账号存在性</p>
+    <section class="notice" aria-labelledby="control-status" role="status">
+      <strong id="control-status">在线控制暂未开放</strong>
+      <p>当前服务尚未提供可验证的监护人身份确认与完整撤回结果。此页不会查询儿童账号是否存在，不会收集手机号，也不会显示“已核验”“已撤回”等未经平台确认的状态。</p>
     </section>
 
-    <section v-if="result?.ok" class="card">
-      <h2>同意状态</h2>
-      <span :class="['badge', consentState === 'CONSENTED' ? 'ok' : 'off']">{{ consentState === 'CONSENTED' ? '已同意' : '已撤回' }}</span>
-      <button type="button" class="danger" data-testid="revoke" @click="revoke">撤回同意</button>
-      <ul class="effects">
-        <li v-for="e in GUARDIAN_REVOKE_EFFECTS" :key="e">· {{ e }}</li>
-      </ul>
+    <section class="tasks" aria-labelledby="tasks-title">
+      <h2 id="tasks-title">正式入口需要完成的三件事</h2>
+      <ol>
+        <li><span>01</span><div><strong>独立核验</strong><p>确认操作人为监护人；仅填写手机号不足以证明身份。</p></div></li>
+        <li><span>02</span><div><strong>查看同意</strong><p>仅在核验通过后展示与本人相关的同意状态，不泄露无关联儿童账号。</p></div></li>
+        <li><span>03</span><div><strong>撤回并查看结果</strong><p>由平台确认撤回，说明对儿童账号会话、提醒和资料可见性的影响。</p></div></li>
+      </ol>
     </section>
+
+    <div class="actions">
+      <router-link class="primary" to="/help">查看帮助与联系信息</router-link>
+      <router-link class="secondary" to="/legal/children">阅读儿童规则状态</router-link>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.x16 { max-width: 520px; margin: 32px auto; padding: 16px; display: grid; gap: 12px; }
-header { display: flex; gap: 12px; align-items: center; }
-.back { background: none; border: none; color: #ff7a2f; }
-.card { background: #fff; border-radius: 16px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 16px; display: grid; gap: 10px; }
-.card h2 { margin: 0; font-size: 15px; }
-.hint { color: #7a6e63; font-size: 13px; margin: 0; }
-.field { display: grid; gap: 6px; font-size: 14px; font-weight: 600; }
-.field input { height: 44px; border: 1px solid #f0e6dc; border-radius: 12px; padding: 0 12px; font-weight: 400; }
-.switch { display: flex; gap: 8px; font-size: 13px; color: #7a6e63; align-items: center; }
-.primary { height: 46px; border: none; border-radius: 999px; background: #9b8cff; color: #fff; font-weight: 600; }
-.result { background: #e7f8ef; color: #15803d; border-radius: 8px; padding: 10px 12px; font-size: 13px; }
-.result.warn { background: #fdecec; color: #b91c1c; }
-.badge { border-radius: 999px; padding: 3px 12px; font-size: 13px; font-weight: 600; justify-self: start; }
-.badge.ok { background: #e7f8ef; color: #22c55e; }
-.badge.off { background: #f0e6dc; color: #7a6e63; }
-.danger { height: 44px; border: none; border-radius: 999px; background: #ef4444; color: #fff; font-weight: 600; }
-.effects { margin: 0; padding-left: 16px; font-size: 13px; color: #7a6e63; display: grid; gap: 4px; }
-.err { color: #ef4444; font-size: 13px; }
+.guardian-control { width: min(100% - 32px, 760px); margin: 34px auto 92px; }
+.crumb { display: flex; gap: 9px; align-items: center; color: #7a6e63; font-size: 13px; }
+.crumb a { color: #9b470e; }
+header { padding: 55px 0 30px; }
+.eyebrow { margin: 0 0 10px; color: #a0440b; font-size: 12px; font-weight: 800; letter-spacing: .12em; }
+h1 { margin: 0; font-size: clamp(29px, 4vw, 40px); letter-spacing: -.04em; }
+header p:last-child { max-width: 62ch; margin: 11px 0 0; color: #64574d; line-height: 1.85; }
+.notice { padding: 22px 24px; border: 1px solid #e8d2bd; border-left: 4px solid #b85111; border-radius: 16px; background: #fff7ef; }
+.notice strong { color: #8e3b0c; font-size: 18px; }
+.notice p { margin: 7px 0 0; color: #704b37; font-size: 14px; line-height: 1.8; }
+.tasks { margin-top: 36px; padding: 26px 28px; border: 1px solid #eadfd4; border-radius: 20px; background: #fff; }
+.tasks h2 { margin: 0 0 23px; font-size: 21px; }
+.tasks ol { display: grid; gap: 18px; margin: 0; padding: 0; list-style: none; }
+.tasks li { display: flex; gap: 14px; }
+.tasks li > span { color: #a0440b; font-size: 13px; font-weight: 800; }
+.tasks strong { font-size: 15px; }
+.tasks li p { margin: 4px 0 0; color: #7a6e63; font-size: 13px; line-height: 1.75; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.primary, .secondary { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 22px; border: 1px solid #b85111; border-radius: 999px; font-weight: 750; text-decoration: none; }
+.primary { background: #b85111; color: #fff; }
+.secondary { background: #fff; color: #b85111; }
+@media (max-width: 600px) { .actions { flex-direction: column; }.actions a { width: 100%; }.tasks { padding: 22px; } }
 </style>

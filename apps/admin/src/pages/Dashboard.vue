@@ -1,93 +1,71 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { dashboardWidgets, slaStatus } from '../domain/workbench';
-
-const granted = ref<string[]>([
-  'dashboard.view.all',
-  'review.article',
-  'product.create.edit',
-  'poi.create.edit',
-  'report.handle',
-  'user.ban',
-]);
-const widgets = computed(() => dashboardWidgets(granted.value));
-
-const metrics = ref({
-  openReports: 12,
-  oldestWaitHours: 30,
-  backlog: 62,
-  reportOnTime: 92.5,
-  dau: 1280,
-  weeklyActive: 5400,
-  buildComplete: 312,
-  reminderCompletion: 71.4,
-  queueP50: 6.5,
-  queueP90: 28,
-});
-
-const sla = computed(() => slaStatus(metrics.value.oldestWaitHours));
-const backlogAlert = computed(() => metrics.value.backlog > 50);
-
-const domainCards: Record<string, { label: string; value: string }[]> = {
-  内容域: [
-    { label: '审核队列 P50/P90(h)', value: `${metrics.value.queueP50} / ${metrics.value.queueP90}` },
-    { label: '投稿通过率', value: '90%' },
-  ],
-  导购域: [
-    { label: '商品浏览/收藏', value: '8.2k / 640' },
-    { label: '参考价巡检', value: '本月已完成' },
-  ],
-  探索域: [
-    { label: 'POI 覆盖', value: '200 / 5 城' },
-    { label: '纠错平均处理时长', value: '5.4h' },
-  ],
-  治理域: [
-    { label: '未结举报', value: String(metrics.value.openReports) },
-    { label: '按时结案率', value: `${metrics.value.reportOnTime}%` },
-  ],
-  留存域: [
-    { label: 'DAU / WAU', value: `${metrics.value.dau} / ${metrics.value.weeklyActive}` },
-    { label: '建档完成 / 提醒完成率', value: `${metrics.value.buildComplete} / ${metrics.value.reminderCompletion}%` },
-  ],
-};
+const priority = [
+  { title: '审核与举报', description: '核对对象版本、处理锁、原因及处置影响。', to: '/review', tag: '审核' },
+  { title: '运行异常待办', description: '失败通知、清理任务和专业复核的处理入口。', to: '/todos', tag: '异常' },
+  { title: '用户治理', description: '先看工单范围，再检查独立的限制和申诉。', to: '/governance', tag: '治理' },
+];
+const domains = [
+  { title: '内容运营', description: '文章、分类与推荐位', to: '/content' },
+  { title: '商品导购', description: '商品、清单与本地 CSV 预检', to: '/products' },
+  { title: '探索运营', description: '场所、纠错、路线与活动', to: '/explore' },
+  { title: '机构资质', description: '申请材料与核验边界', to: '/credentials' },
+  { title: '审计日志', description: '操作与结果追溯', to: '/audit' },
+  { title: '角色权限', description: '权限点与预置角色说明', to: '/roles' },
+];
+const indicators = [
+  { label: '待审核对象', note: '需服务端聚合、权限裁剪与当前状态' },
+  { label: '超时与升级', note: '需对象时间窗、24/48 小时规则与回执' },
+  { label: '失败通知', note: '需送达结果与人工接手任务' },
+  { label: '活跃与完成率', note: '需分子、分母、观察窗和数据成熟状态' },
+];
 </script>
 
 <template>
-  <div class="dash">
-    <div :class="['alert', sla.toLowerCase()]" data-testid="sla">
-      最久未处理举报等待 {{ metrics.oldestWaitHours }}h · SLA：{{ sla }}
-      <span v-if="backlogAlert" class="backlog-alert" data-testid="backlog">积压 {{ metrics.backlog }} ＞50 告警</span>
-    </div>
+  <div class="dashboard">
+    <header class="page-head"><div><p class="eyebrow">WORKSPACE OVERVIEW</p><h1>先看需要判断的事</h1><p>按任务进入对应工作区。当前为只读界面预览，卡片不代表存在待办或获得处理权限。</p></div><span class="edition">预览版本 · 2026.09</span></header>
 
-    <section class="grid">
-      <article v-for="w in widgets" :key="w" class="card" :data-testid="`widget-${w}`">
-        <h3>{{ w }}</h3>
-        <ul>
-          <li v-for="c in domainCards[w]" :key="c.label">
-            <span>{{ c.label }}</span>
-            <strong>{{ c.value }}</strong>
-          </li>
-        </ul>
-      </article>
+    <section aria-labelledby="priority-title">
+      <div class="section-head"><h2 id="priority-title">重点工作入口</h2><span>对象与状态以正式平台返回为准</span></div>
+      <div class="priority-grid"><router-link v-for="(item, index) in priority" :key="item.to" :to="item.to" class="priority-card"><div class="card-top"><span class="index">0{{ index + 1 }}</span><span class="tag">{{ item.tag }}</span></div><h3>{{ item.title }}</h3><p>{{ item.description }}</p><span class="card-link">查看界面 <span aria-hidden="true">↗</span></span></router-link></div>
     </section>
 
-    <p class="meta">
-      口径：零分母显示「—」不产生 0% 假象；跨日按自然日聚合；P50/P90 随跨服务聚合接入（本地阶段）。
-      各运营仅见自己权限域的卡片（§6.1）。
-    </p>
+    <section class="data-section" aria-labelledby="data-title"><div class="section-head"><h2 id="data-title">指标接入状态</h2><span>暂无可核验的管理端聚合数据</span></div><div class="indicator-grid"><article v-for="item in indicators" :key="item.label" class="indicator"><span class="indicator-label">{{ item.label }}</span><strong>—</strong><small>{{ item.note }}</small></article></div><p class="data-note">正式指标需同时给出权限范围、分子分母、观察窗、更新时间与失败状态。零分母显示“—”，不得把示例数值当作运营结果。</p></section>
+
+    <section aria-labelledby="domains-title"><div class="section-head"><h2 id="domains-title">业务工作区</h2><span>目录入口，不表示管理权限</span></div><div class="domain-grid"><router-link v-for="item in domains" :key="item.to" :to="item.to" class="domain-card"><div><h3>{{ item.title }}</h3><p>{{ item.description }}</p></div><span aria-hidden="true">→</span></router-link></div></section>
   </div>
 </template>
 
 <style scoped>
-.dash { display: grid; gap: 14px; }
-.alert { background: #fff1e8; color: #b45309; border-radius: 12px; padding: 12px 16px; font-size: 14px; display: flex; gap: 12px; align-items: center; }
-.alert.escalate { background: #fdecec; color: #7c2d12; outline: 1px solid #ef4444; }
-.backlog-alert { margin-left: auto; background: #ef4444; color: #fff; border-radius: 999px; padding: 2px 12px; font-size: 12px; font-weight: 600; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
-.card { background: #fff; border-radius: 16px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 16px; }
-.card h3 { margin: 0 0 10px; font-size: 14px; color: #7a6e63; }
-ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-li { display: flex; justify-content: space-between; font-size: 13px; color: #2b2118; }
-li strong { color: #ff7a2f; }
-.meta { margin: 0; color: #7a6e63; font-size: 12px; line-height: 1.7; }
+.dashboard { display: grid; gap: 40px; max-width: 1380px; }
+.page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.eyebrow { margin: 0 0 9px; color: var(--primary); font-size: 11px; font-weight: 800; letter-spacing: .15em; }
+h1 { margin: 0 0 10px; font-size: clamp(28px, 2.7vw, 39px); }
+.page-head p:last-child { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.7; }
+.edition { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.section-head { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; margin-bottom: 15px; }
+.section-head h2 { margin: 0; font-size: 18px; }
+.section-head span { color: var(--muted); font-size: 12px; }
+.priority-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.priority-card { display: flex; flex-direction: column; min-height: 200px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: #fff; color: var(--ink); text-decoration: none; transition: border-color .15s, transform .15s; }
+.priority-card:hover { border-color: #d09d74; transform: translateY(-2px); }
+.card-top { display: flex; justify-content: space-between; align-items: center; }
+.index { color: #d2a482; font-size: 13px; font-weight: 800; }
+.tag { padding: 4px 9px; border-radius: 7px; background: #fff1e4; color: #8e420e; font-size: 11px; font-weight: 700; }
+.priority-card h3 { margin: 26px 0 7px; font-size: 20px; }
+.priority-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.card-link { margin-top: auto; padding-top: 17px; color: var(--primary); font-size: 12px; font-weight: 800; }
+.indicator-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.indicator { min-height: 150px; display: grid; align-content: start; gap: 6px; padding: 18px; border: 1px solid var(--line); border-radius: 15px; background: #fff; }
+.indicator-label { color: var(--muted); font-size: 12px; }
+.indicator strong { font-size: 32px; font-weight: 500; }
+.indicator small { color: var(--muted); font-size: 11px; line-height: 1.5; }
+.data-note { margin: 11px 0 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+.domain-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.domain-card { min-height: 94px; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 17px 19px; border: 1px solid var(--line); border-radius: 14px; background: #fff; color: var(--ink); text-decoration: none; }
+.domain-card:hover { border-color: #d09d74; }
+.domain-card h3 { margin: 0 0 4px; font-size: 14px; }
+.domain-card p { margin: 0; color: var(--muted); font-size: 11px; }
+.domain-card > span { color: var(--primary); font-size: 18px; }
+@media (max-width: 1140px) { .priority-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .indicator-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .domain-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { .priority-card { transition: none; } .priority-card:hover { transform: none; } }
 </style>

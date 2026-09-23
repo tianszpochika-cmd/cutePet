@@ -1,98 +1,36 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import {
-  OFFLINE_COPY,
-  conflictOptions,
-  applyConflictChoice,
-  syncRowCopy,
-  LOGOUT_SYNC_CHOICES,
-  type OfflineStatus,
-} from '../domain/mobileMotion';
+import { getAccessToken } from '@cutepet/api-client';
 
 const router = useRouter();
-const status = ref<OfflineStatus>('CONFLICT');
-const rows = ref<{ id: number; label: string; state: 'PENDING' | 'FAILED' | 'SUCCESS' | 'LOST_RIGHT' }[]>([
-  { id: 1, label: '体重 12.5kg（今天）', state: 'PENDING' },
-  { id: 2, label: '疫苗记录', state: 'FAILED' },
-  { id: 3, label: '驱虫记录', state: 'SUCCESS' },
-]);
-const notice = ref('');
-
-const banner = computed(() => OFFLINE_COPY[status.value]);
-const options = () => conflictOptions(status.value);
-
-function choose(choice: 'DISCARD_LOCAL' | 'CONFIRM_OVERWRITE') {
-  notice.value = applyConflictChoice(choice).notice;
-  status.value = 'ONLINE';
+const online = ref(true);
+const hasToken = ref(Boolean(getAccessToken()));
+function refreshConnection() {
+  online.value = navigator.onLine;
+  hasToken.value = Boolean(getAccessToken());
 }
+onMounted(() => {
+  refreshConnection();
+  window.addEventListener('online', refreshConnection);
+  window.addEventListener('offline', refreshConnection);
+});
+onUnmounted(() => {
+  window.removeEventListener('online', refreshConnection);
+  window.removeEventListener('offline', refreshConnection);
+});
 </script>
 
 <template>
-  <div class="m-sync">
-    <header>
-      <button type="button" class="back" @click="router.back()">‹</button>
-      <h1>离线与同步（T10.6）</h1>
-    </header>
-
-    <section :class="['banner', banner.tone]" data-testid="banner">{{ banner.banner }}</section>
-
-    <!-- 冲突双选：永不自动覆盖（#32） -->
-    <section v-if="options().length" class="conflict" data-testid="conflict">
-      <h2>选择保留哪一份</h2>
-      <button
-        v-for="o in options()"
-        :key="o.choice"
-        type="button"
-        :class="o.danger ? 'danger' : 'ghost'"
-        :data-testid="`choice-${o.choice}`"
-        @click="choose(o.choice)"
-      >
-        {{ o.label }}
-      </button>
-    </section>
-
-    <ul class="list">
-      <li v-for="r in rows" :key="r.id" :data-testid="`sync-${r.id}`">
-        <div>
-          <strong>{{ r.label }}</strong>
-          <p>{{ syncRowCopy(r.state) }}</p>
-        </div>
-        <button v-if="r.state === 'FAILED'" type="button" class="retry" @click="r.state = 'SUCCESS'">重试</button>
-      </li>
-    </ul>
-
-    <section class="logout">
-      <h2>登出前的选择</h2>
-      <button v-for="c in LOGOUT_SYNC_CHOICES" :key="c" type="button" class="ghost" @click="notice = `已选择：${c}`">
-        {{ c }}
-      </button>
-    </section>
-
-    <p v-if="notice" class="notice" data-testid="notice">{{ notice }}</p>
+  <div class="sync-page">
+    <header class="page-head"><button type="button" class="back" aria-label="返回我的" @click="router.push('/me')">←</button><div><p class="eyebrow">OFFLINE &amp; SYNC</p><h1>离线与同步</h1></div></header>
+    <section class="network" :class="{ offline: !online }" role="status"><span aria-hidden="true">{{ online ? '◉' : '○' }}</span><div><strong>{{ online ? '设备报告网络在线' : '设备报告网络离线' }}</strong><p>此状态来自浏览器，不代表平台接口连通或草稿已上传。</p></div></section>
+    <section class="card" aria-labelledby="queue-title"><span class="symbol" aria-hidden="true">↗</span><h2 id="queue-title">待同步队列尚未接通</h2><p>当前没有可读取的本机草稿清单、逐条服务端回执与冲突版本。页面不能判断待同步数量，也不会展示演示记录或把重试标成“已同步”。</p><p v-if="!hasToken" class="subtle">当前未核验账号，私人记录不可与平台账号关联。</p><router-link class="link" to="/pets">回到宠物档案 →</router-link></section>
+    <section class="steps" aria-labelledby="steps-title"><h2 id="steps-title">真实同步需要逐条核对</h2><ol><li>确认账号、宠物和当前共享权限仍有效。</li><li>核对本机草稿编号与服务端版本，冲突时由本人选择。</li><li>逐条展示上传、失败或失权结果；只有平台确认后才显示完成。</li></ol></section>
+    <p class="footnote">登出或换号前，应先显示可核验的待同步数量与草稿去向。当前没有这个清单，因此本页不提供清除、覆盖或假重试按钮。</p>
   </div>
 </template>
 
 <style scoped>
-.m-sync { padding: 16px; display: grid; gap: 12px; }
-header { display: flex; gap: 10px; align-items: center; }
-.back { border: none; background: #fff; width: 44px; height: 44px; border-radius: 999px; color: #ff7a2f; font-size: 20px; }
-h1 { margin: 0; font-size: 17px; }
-.banner { border-radius: 14px; padding: 12px 14px; font-size: 13px; line-height: 1.7; }
-.banner.warn { background: #fff1e8; color: #b45309; }
-.banner.error { background: #fdecec; color: #b91c1c; }
-.banner.ok { background: #e7f8ef; color: #15803d; }
-.conflict { background: #fff; border-radius: 18px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 16px; display: grid; gap: 10px; }
-.conflict h2 { margin: 0; font-size: 15px; }
-.conflict button { border: none; border-radius: 14px; padding: 14px; font-size: 14px; font-weight: 600; text-align: left; min-height: 48px; }
-.ghost { background: #f7f1ea; color: #2b2118; }
-.danger { background: #fdecec; color: #b91c1c; }
-.list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-.list li { background: #fff; border-radius: 16px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 44px; }
-.list p { margin: 4px 0 0; color: #7a6e63; font-size: 12px; }
-.retry { border: none; background: #fff1e8; color: #ff7a2f; border-radius: 999px; padding: 10px 16px; font-weight: 600; min-height: 44px; }
-.logout { background: #fff; border-radius: 18px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 16px; display: grid; gap: 10px; }
-.logout h2 { margin: 0; font-size: 15px; }
-.logout button { border: none; border-radius: 14px; padding: 14px; font-size: 14px; text-align: left; min-height: 48px; }
-.notice { background: #eaf1ff; color: #2563eb; border-radius: 12px; padding: 12px; font-size: 13px; margin: 0; }
+.sync-page{width:min(100%,620px);margin:auto;padding:18px 16px calc(35px + env(safe-area-inset-bottom,0px));display:grid;gap:14px;color:#2b2118}.page-head{display:flex;align-items:center;gap:12px}.back{width:44px;height:44px;flex:none;border:1px solid #eadfd4;border-radius:12px;background:#fff;color:#b85111;font-size:20px}.eyebrow{margin:0 0 4px;color:#a84710;font-size:10px;font-weight:850;letter-spacing:.13em}.page-head h1{margin:0;font-size:23px}.network{display:flex;gap:11px;align-items:start;padding:14px;border-radius:13px;background:#eff7f0;color:#356744}.network.offline{background:#fff1e7;color:#92501e}.network>span{font-size:22px;line-height:1}.network strong{font-size:13px}.network p{margin:4px 0 0;font-size:11px;line-height:1.7}.card,.steps{padding:21px;border:1px solid #eadfd4;border-radius:19px;background:#fff}.symbol{width:47px;height:47px;display:grid;place-items:center;border-radius:13px;background:#fff0e2;color:#b85111;font-size:27px}.card h2{margin:17px 0 8px;font-size:19px}.card p,.steps li,.footnote{color:#6b5e53;font-size:12px;line-height:1.75}.card p{margin:0 0 10px}.subtle{padding:10px 12px;border-radius:9px;background:#faf7f3}.link{min-height:44px;display:inline-flex;align-items:center;color:#a1430e;font-size:13px;font-weight:750;text-decoration:none}.steps h2{margin:0;font-size:15px}.steps ol{margin:12px 0 0;padding-left:21px}.steps li{margin:5px 0}.footnote{margin:0}
 </style>

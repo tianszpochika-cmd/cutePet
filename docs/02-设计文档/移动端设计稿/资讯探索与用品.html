@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="cutePet 移动 H5 资讯、探索与用品 UI/UX 交互评审稿；全部内容与地点均为设计示例。">
+  <title>资讯、探索与用品 · cutePet 移动 H5 设计稿</title>
+  <link rel="stylesheet" href="mobile.css">
+  <style>
+    .studio-intro .brand-lockup{display:flex;align-items:center;gap:11px;color:var(--ink);font-size:16px;font-weight:850;letter-spacing:-.04em}.brand-lockup .mark{display:grid;place-items:center;width:37px;height:37px;border-radius:12px;background:var(--action);color:#fff;transform:rotate(-7deg)}.brand-lockup .mark svg{width:26px;height:26px}.studio-intro h1 span{color:var(--action)}.studio-index{display:grid;gap:6px;margin-top:24px}.studio-index button{display:flex;align-items:center;justify-content:space-between;min-height:48px;padding:0 14px;border:1px solid #e4d8cc;border-radius:12px;background:#fffaf6;color:#624d3e;text-align:left;font-size:13px;font-weight:800}.studio-index button:hover,.studio-index button[aria-pressed="true"]{border-color:#d9a27c;background:#fff1e8;color:var(--action)}.studio-index small{font-size:11px;font-weight:700}.studio-guide h2{margin:0 0 14px;font-size:20px}.studio-guide ul{padding-left:17px;color:#76685d;font-size:13px;line-height:1.8}.preview-ribbon{display:flex;align-items:center;gap:5px;padding:8px 11px;border-radius:10px;background:#f5eee7;color:#685646;font-size:11px;line-height:1.5}.preview-ribbon strong{color:var(--ink)}
+    .app-header{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px;margin-bottom:9px}.app-header .brand-mini{display:inline-flex;align-items:center;gap:7px;font-size:17px;font-weight:850;letter-spacing:-.05em}.app-header .brand-mini span[data-icon]{display:grid;place-items:center;width:29px;height:29px;border-radius:9px;background:var(--action);color:#fff;transform:rotate(-7deg)}.app-header .brand-mini span[data-icon] svg{width:21px;height:21px}.app-header .header-actions{display:flex;gap:1px}.section-kicker{margin:0 0 3px;color:var(--action);font-size:11px;font-weight:850;letter-spacing:.12em}.editorial-card{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(104px,.75fr);min-height:188px;overflow:hidden;border:1px solid #f0d9c8;border-radius:20px;background:linear-gradient(125deg,#fff2e7 0%,#fff7ed 57%,#ffead5 100%)}.editorial-copy{display:flex;flex-direction:column;align-items:flex-start;padding:20px 0 17px 18px}.editorial-copy .pill{background:#fff;color:var(--action)}.editorial-copy h2{margin:11px 0 6px;font-size:21px;line-height:1.3;letter-spacing:-.05em}.editorial-copy p{margin:0;color:#775b47;font-size:12px;line-height:1.55}.editorial-copy a{display:inline-flex;align-items:center;min-height:44px;margin-top:auto;color:var(--action);font-size:13px;font-weight:800}.editorial-art{position:relative;overflow:hidden}.editorial-art img{position:absolute;width:190px;max-width:none;right:-42px;bottom:-31px;filter:drop-shadow(0 10px 13px rgba(107,60,25,.11))}.editorial-art::before{content:"";position:absolute;width:180px;height:180px;right:-42px;bottom:-53px;border-radius:50%;background:#ffddb9}.editorial-art::after{content:"✦";position:absolute;right:16px;top:17px;color:#d9793f;font-size:19px}.news-tools{display:flex;align-items:center;justify-content:space-between;gap:7px;margin:12px 0 9px}.news-tools .section-head{margin:0}.article-list{display:grid;gap:11px}.article-card{display:flex;gap:12px;min-height:116px;padding:12px;text-align:left;color:inherit}.article-card .article-art{position:relative;display:grid;place-items:center;flex:none;width:85px;min-height:88px;overflow:hidden;border-radius:12px}.article-art.mint{background:linear-gradient(135deg,#d8eee1,#f1f9ee)}.article-art.pink{background:linear-gradient(135deg,#fce1e7,#fff4eb)}.article-art.blue{background:linear-gradient(135deg,#e3edff,#f3f7ff)}.article-art svg{width:54px;height:54px;fill:none;stroke:#6c9878;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.article-art.pink svg{stroke:#be7582}.article-art.blue svg{stroke:#6685ba}.article-card h3{margin:4px 0 6px;font-size:15px;line-height:1.45;letter-spacing:-.02em}.article-card p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}.article-meta{display:flex;align-items:center;gap:8px;margin-top:8px;color:#7a6b5d;font-size:11px}.article-card .article-copy{min-width:0;flex:1}.article-card:hover{border-color:#d6b49a}.feed-empty{padding:22px;text-align:center}.feed-empty .empty-symbol{display:grid;place-items:center;width:64px;height:64px;margin:0 auto 10px;border-radius:24px;background:var(--orange-soft);color:var(--action)}.feed-empty p{margin:0;color:var(--muted);font-size:13px}
+    .story-hero{display:grid;place-items:center;min-height:185px;margin:11px 0 19px;border-radius:18px;overflow:hidden;background:radial-gradient(circle at 70% 80%,#fff 0 11%,transparent 12%),linear-gradient(130deg,#e7f4ec,#fff0df)}.story-hero svg{width:140px;height:140px;fill:none;stroke:#57916d;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.story-head .pill{margin-bottom:10px}.story-head h1{margin:0;font-size:25px;line-height:1.34;letter-spacing:-.05em}.story-head p{margin:11px 0 0;color:var(--muted);font-size:13px}.story-body{margin-top:22px;color:#47392f;font-size:15px;line-height:1.85}.story-body h2{margin:20px 0 7px;font-size:18px;line-height:1.4}.story-body p{margin:0 0 15px}.story-callout{padding:14px;border-left:3px solid var(--action);border-radius:0 12px 12px 0;background:#fff4eb;color:#5b4535;font-size:13px;line-height:1.7}
+    .location-state{display:flex;align-items:flex-start;gap:10px;margin:14px 0 11px;padding:12px 13px;border:1px solid #dbe9df;border-radius:13px;background:#f1f9f2}.location-state>span{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:#dff0e4;color:#246b49}.location-state p{margin:0;color:#4e6755;font-size:12px;line-height:1.55}.location-state strong{display:block;color:#254e36;font-size:13px}.location-state .state-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}.location-state button{min-height:44px;padding:0 4px;border:0;background:none;color:#236b48;font-size:12px;font-weight:800}.explore-top{display:flex;align-items:center;gap:8px}.explore-top .city-button{display:inline-flex;align-items:center;gap:4px;min-height:44px;padding:0 3px;border:0;background:none;color:var(--action);font-size:13px;font-weight:800}.explore-top .search-pill{display:flex;align-items:center;gap:8px;flex:1;min-width:0;min-height:44px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#81756c;font-size:13px}.explore-top .search-pill svg{width:18px;height:18px}.map-mode{display:flex;gap:3px;margin:14px 0 10px;padding:3px;border-radius:999px;background:#ece6de}.map-mode button{flex:1;min-height:44px;border:0;border-radius:999px;background:transparent;color:#76695e;font-size:13px;font-weight:800}.map-mode button[aria-pressed="true"]{background:#fff;color:var(--action);box-shadow:0 2px 6px rgba(43,33,24,.06)}.map-card{position:relative;height:clamp(300px,47vh,410px);overflow:hidden;border:1px solid #d3e5d8;border-radius:19px;background:#e4f1e6}.map-card>svg{position:absolute;inset:0;width:100%;height:100%}.map-annotation{position:absolute;top:12px;left:11px;z-index:2;padding:7px 9px;border:1px solid #d8e8dc;border-radius:9px;background:rgba(255,255,255,.96);color:#4f7057;font-size:10px;font-weight:800}.map-pin{position:absolute;z-index:2;display:grid;place-items:center;min-width:44px;min-height:44px;padding:4px 7px;border:2px solid #fff;border-radius:16px 16px 16px 4px;background:#28875a;color:#fff;box-shadow:0 4px 12px rgba(20,81,50,.20);font-size:11px;font-weight:800;transform:translate(-50%,-50%)}.map-pin[aria-pressed="true"]{background:var(--action);box-shadow:0 0 0 3px #ffe3cf,0 4px 12px rgba(89,46,20,.20)}.map-pin[data-poi="park"]{left:30%;top:30%}.map-pin[data-poi="cafe"]{left:66%;top:48%}.map-pin[data-poi="clinic"]{left:39%;top:77%}.map-refresh{position:absolute;right:11px;bottom:12px;z-index:2;min-height:44px;padding:0 12px;border:1px solid #d7e6dc;border-radius:999px;background:#fff;color:#356347;font-size:12px;font-weight:800}.map-selected{display:flex;gap:11px;align-items:center;width:100%;min-height:79px;margin-top:10px;padding:11px 13px;color:var(--ink);text-align:left}.map-selected .poi-icon{display:grid;place-items:center;flex:none;width:45px;height:45px;border-radius:13px;background:var(--green-soft);color:var(--green)}.map-selected .poi-icon svg{width:23px;height:23px}.map-selected strong{display:block;font-size:14px}.map-selected small{display:block;color:var(--muted);font-size:12px;line-height:1.45}.map-selected .end{margin-left:auto;color:var(--action)}.poi-list{display:grid;gap:9px}.poi-list button{display:flex;align-items:center;gap:11px;width:100%;min-height:79px;padding:12px;color:var(--ink);text-align:left}.poi-list .poi-thumb{display:grid;place-items:center;flex:none;width:49px;height:49px;border-radius:13px;background:#e4f3e8;color:#267b52}.poi-list .poi-thumb.cafe{background:#fff0e4;color:var(--action)}.poi-list .poi-thumb.clinic{background:#eaf1ff;color:var(--blue)}.poi-list strong{display:block;font-size:14px}.poi-list small{display:block;margin-top:2px;color:var(--muted);font-size:12px;line-height:1.45}.poi-list .end{margin-left:auto;color:var(--action)}.map-fallback{padding:14px;margin:11px 0;border-color:#dfe9e0;background:#f5faf6;color:#42654c;font-size:13px;line-height:1.6}
+    .poi-hero{height:169px;margin:9px 0 18px;overflow:hidden;border-radius:18px;background:#e5f2e7}.poi-hero svg{width:100%;height:100%}.poi-title-row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.poi-title-row h1{margin:0;font-size:23px;line-height:1.4}.poi-title-row p{margin:3px 0 0;color:var(--muted);font-size:12px}.poi-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:15px 0}.poi-actions button{display:grid;place-items:center;align-content:center;gap:2px;min-height:62px;border:0;border-radius:12px;background:#fff;color:var(--action);font-size:11px;font-weight:750}.poi-actions button svg{width:21px;height:21px}.poi-actions button:hover{background:var(--orange-soft)}.info-grid{display:grid;gap:0;margin-top:16px}.info-grid .cell{padding-left:0;padding-right:0}.info-grid .cell>span[data-icon]{color:var(--green)}.info-grid .cell>span[data-icon] svg{width:21px;height:21px}.feedback-note{margin-top:14px;padding:13px;border-radius:12px;background:var(--blue-soft);color:#345b92;font-size:12px;line-height:1.6}.rating-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0}.rating-row strong{font-size:14px}.stars{display:flex;gap:2px}.stars button{display:grid;place-items:center;width:44px;height:44px;padding:0;border:0;background:none;color:#a89b8f;font-size:28px;line-height:1}.stars button[aria-pressed="true"]{color:#bf620e}.form-note{margin:13px 0;color:var(--muted);font-size:12px;line-height:1.6}.success-panel{padding:30px 18px;text-align:center}.success-panel .success-icon{display:grid;place-items:center;width:72px;height:72px;margin:0 auto 15px;border-radius:24px;background:var(--green-soft);color:var(--green)}.success-panel h2{margin:0 0 8px;font-size:20px}.success-panel p{margin:0 0 17px;color:var(--muted);font-size:13px;line-height:1.7}
+    .goods-head{display:grid;grid-template-columns:1fr 90px;gap:12px;align-items:center;min-height:151px;padding:17px;overflow:hidden;border:1px solid #dfe6f7;border-radius:20px;background:linear-gradient(135deg,#edf3ff,#fffdf9)}.goods-head h1{margin:4px 0 7px;font-size:22px;line-height:1.35;letter-spacing:-.04em}.goods-head p{margin:0;color:#5b6c83;font-size:12px;line-height:1.55}.goods-head .goods-graphic{position:relative;display:grid;place-items:center;width:84px;height:84px;border-radius:25px;background:#dce7ff;color:var(--blue);transform:rotate(-7deg)}.goods-head .goods-graphic::after{content:"";position:absolute;width:56px;height:12px;bottom:-12px;border-radius:50%;background:rgba(77,118,183,.12)}.goods-head .goods-graphic svg{width:46px;height:46px}.goods-feature{display:flex;align-items:center;gap:13px;min-height:98px;padding:13px;margin-top:11px;color:var(--ink)}.goods-feature .badge-icon{display:grid;place-items:center;flex:none;width:52px;height:52px;border-radius:15px;background:#fff3e5;color:var(--action)}.goods-feature strong{display:block;font-size:14px}.goods-feature small{display:block;color:var(--muted);font-size:12px;line-height:1.4}.goods-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.goods-card{display:block;min-width:0;padding:9px;color:var(--ink);text-align:left}.goods-card .product-art{position:relative;display:grid;place-items:center;aspect-ratio:1;border-radius:11px;background:linear-gradient(135deg,#e5edff,#f4f7ff);color:var(--blue)}.goods-card .product-art.warm{background:linear-gradient(135deg,#fff0df,#fff8ee);color:var(--action)}.goods-card .product-art svg{width:65px;height:65px;stroke-width:1.4}.goods-card .product-art::after{content:"资料示意";position:absolute;left:7px;bottom:7px;padding:2px 5px;border-radius:5px;background:rgba(255,255,255,.9);color:#625547;font-size:10px}.goods-card strong{display:block;margin:9px 2px 1px;font-size:13px;line-height:1.4}.goods-card small{display:block;margin:0 2px 4px;color:var(--muted);font-size:11px;line-height:1.4}.goods-detail-art{display:grid;place-items:center;aspect-ratio:1;margin:8px 0 18px;border-radius:19px;background:linear-gradient(135deg,#e7efff,#fbfcff);color:var(--blue)}.goods-detail-art svg{width:140px;height:140px;stroke-width:1.3}.goods-detail h1{margin:8px 0 4px;font-size:24px}.goods-detail .info-grid{margin-top:9px}.goods-detail .info-grid .cell{display:block;min-height:0;padding:13px 0}.goods-detail .info-grid strong{font-size:13px}.goods-detail .info-grid p{margin:4px 0 0;color:var(--muted);font-size:13px;line-height:1.6}
+    .detail-actions-row{display:flex;gap:8px}.detail-actions-row>*{flex:1}.detail-actions-row .quiet-button{min-width:72px;flex:none}.sheet .city-options{display:grid;gap:7px;margin-top:15px}.sheet .city-options button{display:flex;align-items:center;justify-content:space-between;min-height:52px;padding:0 12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font-size:14px;font-weight:700}.sheet .city-options button:hover{background:var(--orange-soft)}.sheet-close{margin-top:12px}.text-link-inline{color:var(--action);text-decoration:underline;text-underline-offset:3px}.search-field{display:flex;align-items:center;gap:7px;margin:10px 0 14px;padding-left:12px;border:1px solid var(--line);border-radius:12px;background:#fff}.search-field input{min-width:0;flex:1;height:48px;border:0;outline:0;background:transparent;color:var(--ink);font-size:16px}.search-field span[data-icon]{color:var(--muted)}
+    .goods-head h2{margin:4px 0 7px;font-size:22px;line-height:1.35;letter-spacing:-.04em}
+    .poi-actions button[aria-pressed="true"],.detail-actions-row .secondary-button[aria-pressed="true"],.detail-actions-row .quiet-button[aria-pressed="true"]{background:var(--orange-soft);color:var(--action)}
+    @media(max-width:340px){.editorial-card{grid-template-columns:minmax(0,1fr) 85px}.editorial-copy{padding-left:14px}.editorial-copy h2{font-size:19px}.editorial-art img{width:155px;right:-57px;bottom:-20px}.article-card .article-art{width:74px}.goods-head{grid-template-columns:1fr 70px}.goods-head .goods-graphic{width:68px;height:68px}.goods-head .goods-graphic svg{width:39px;height:39px}.poi-actions{gap:1px}.poi-actions button{font-size:10px}}
+  </style>
+</head>
+<body>
+  <div class="studio">
+    <aside class="studio-intro" aria-label="评审导览">
+      <div class="brand-lockup"><span class="mark" data-icon="pawBrand" aria-hidden="true"></span> cutePet · 移动 H5</div>
+      <p class="studio-kicker">MOBILE PRODUCT DESIGN / 02</p>
+      <h1>随身看内容，<br><span>安心去探索。</span></h1>
+      <p>把公开内容阅读、外出找场所和用品参考做成手机上清楚、顺手的路径。所有地点、文章与商品均为界面示例。</p>
+      <div class="studio-index" aria-label="本页场景切换">
+        <button type="button" data-jump="news" aria-pressed="true">资讯 Feed <small>阅读 / 分类</small></button>
+        <button type="button" data-jump="article" aria-pressed="false">文章详情 <small>收藏 / 分享</small></button>
+        <button type="button" data-jump="explore" aria-pressed="false">探索地图 <small>手选城市 / 列表</small></button>
+        <button type="button" data-jump="poi" aria-pressed="false">场所详情 <small>评价 / 纠错</small></button>
+        <button type="button" data-jump="goods" aria-pressed="false">逛好物 <small>内容参考</small></button>
+      </div>
+      <div class="studio-links"><a href="index.html#home">返回移动端首页评审稿 ↗</a></div>
+    </aside>
+
+    <div class="phone" aria-label="移动 H5 交互原型">
+      <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="device-status">●●●  ▰  <span class="battery"></span></span></div>
+      <main class="screen" id="screen">
+        <section class="page" id="view-news" data-screen="news" aria-labelledby="news-title">
+          <header class="app-header"><span class="brand-mini"><span data-icon="pawBrand" aria-hidden="true"></span>cutePet<span style="color:var(--primary)">.</span></span><div class="header-actions"><button class="icon-button" type="button" id="search-open" aria-label="搜索示例资讯"><span data-icon="search"></span></button><a class="icon-button" href="index.html#me" aria-label="打开我的页面"><span data-icon="user"></span></a></div></header>
+          <p class="section-kicker">READ &amp; GROW</p><h1 class="page-title" id="news-title">养宠资讯</h1><p class="page-subtitle">认真照顾，也一起学习。</p>
+          <div class="chip-row" role="group" aria-label="资讯分类" style="margin:17px 0 14px"><button class="chip news-filter" type="button" data-filter="all" aria-pressed="true">推荐</button><button class="chip news-filter" type="button" data-filter="dog" aria-pressed="false">狗狗</button><button class="chip news-filter" type="button" data-filter="cat" aria-pressed="false">猫咪</button><button class="chip news-filter" type="button" data-filter="care" aria-pressed="false">日常照护</button><button class="chip news-filter" type="button" data-filter="health" aria-pressed="false">健康</button></div>
+          <article class="editorial-card"><div class="editorial-copy"><span class="pill orange">照护小课 · 示例</span><h2>回家后的五分钟，<br>先观察再记录。</h2><p>把每天的小变化留在同一份档案里。</p><a href="#article" data-article="home">读这篇文章 <span data-icon="arrowRight" aria-hidden="true"></span></a></div><div class="editorial-art"><img src="../官网设计稿/hero-pets.png" alt="暖橘色猫狗插画"></div></article>
+          <div class="news-tools"><div class="section-head"><h2>为你推荐</h2></div><span class="pill">内容均为设计示例</span></div>
+          <div class="article-list" id="article-list">
+            <a class="card article-card" href="#article" data-category="dog care" data-article="walk"><span class="article-art mint" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M11 37c4-4 10-5 19-5h7c8 0 14 3 17 9l-4 12H16L11 37Z"/><path d="M23 32 19 17l10 7M40 32l8-15 2 21M25 44h16M28 12c3 1 5 3 6 6"/></svg></span><span class="article-copy"><span class="pill green">日常照护</span><h3>外出归来，如何留意宠物的细微变化</h3><p>从饮水、精神和活动状态开始观察。</p><span class="article-meta">示例文章 · 约 3 分钟</span></span></a>
+            <a class="card article-card" href="#article" data-category="cat care" data-article="cat"><span class="article-art pink" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M14 28 18 14l11 8h6l11-8 4 14v10c0 11-8 18-18 18s-18-7-18-18V28Z"/><path d="M24 36h.1M40 36h.1M29 44c2 2 4 2 6 0M25 46l-9 3M39 46l9 3"/></svg></span><span class="article-copy"><span class="pill">猫咪</span><h3>新环境里的猫，为什么需要安静角落</h3><p>安排饮水、休息和躲藏位置。</p><span class="article-meta">示例文章 · 约 4 分钟</span></span></a>
+            <a class="card article-card" href="#article" data-category="health care" data-article="health"><span class="article-art blue" aria-hidden="true"><svg viewBox="0 0 64 64"><rect x="12" y="15" width="40" height="40" rx="9"/><path d="M21 13v9M43 13v9M12 28h40M24 39h16M32 31v16"/></svg></span><span class="article-copy"><span class="pill purple">健康记录</span><h3>怎样把一次就医信息记得更清楚</h3><p>时间、建议与下次复诊分开记录。</p><span class="article-meta">示例文章 · 约 5 分钟</span></span></a>
+          </div><div class="card feed-empty" id="feed-empty" hidden><span class="empty-symbol" data-icon="search" aria-hidden="true"></span><strong>当前分类还没有示例内容</strong><p>可以切换分类继续浏览。</p></div>
+          <p class="demo-note" style="margin-top:17px">设计预览：文章标题、作者、阅读时间和分类均为示例，未连接真实发布内容。</p>
+        </section>
+
+        <section class="page" id="view-article" data-screen="article" aria-labelledby="article-title" hidden>
+          <div class="topline"><a class="icon-button" href="#news" aria-label="返回资讯"><span data-icon="chevronLeft"></span></a><h2>文章详情</h2><button class="icon-button" type="button" data-toast="更多操作将在正式内容中提供" aria-label="更多操作"><span data-icon="more"></span></button></div>
+          <div class="story-hero" role="img" aria-label="宠物脚印与记录本的绿色插画示意"><svg viewBox="0 0 160 160"><rect x="36" y="24" width="88" height="112" rx="13" fill="#fff" stroke="#77a486"/><path d="M56 47h48M56 61h36M56 113h49"/><circle cx="78" cy="91" r="10" fill="#d1ead9"/><circle cx="58" cy="80" r="4"/><circle cx="69" cy="70" r="4"/><circle cx="86" cy="70" r="4"/><circle cx="97" cy="80" r="4"/></svg></div>
+          <header class="story-head"><span class="pill green" id="article-category">照护小课 · 设计示例</span><h1 id="article-title">回家后的五分钟，先观察再记录。</h1><p id="article-meta">示例内容 · 约 3 分钟阅读 · 非专业诊疗建议</p></header>
+          <div class="story-body" id="article-content"><p>在忙碌的一天结束时，先给宠物一点安静的时间。观察它有没有主动饮水、愿不愿意活动，以及状态是否与平时不同。</p><h2>先看熟悉的日常</h2><p>把自己熟悉的状态作为参照，比只盯着一个数字更容易发现变化。记录具体时间和看到的情况，方便家人接力照护。</p><div class="story-callout"><strong>记录提示</strong><br>写下“看见了什么”，不要把猜测当成诊断。出现明显异常时，应联系专业兽医。</div><h2>把下一步安排连起来</h2><p>如果已有接种、驱虫或复诊计划，可以到宠物档案核对时间。处理提醒时要先确认关联记录，避免家人重复完成同一事项。</p><p>这篇文章仅用于展示手机阅读版式。正式上线时应展示真实已发布内容、作者、发布时间及必要来源。</p></div>
+          <div class="card card-pad" style="margin-top:20px"><strong>照护实践</strong><p class="caption muted" style="margin:5px 0 0">把有用的信息留到下一次，或回到首页给宠物新增一条记录。</p><a class="quiet-button" href="index.html#home" style="padding-left:0">回到首页记录 <span data-icon="arrowRight" aria-hidden="true"></span></a></div>
+        </section>
+
+        <section class="page" id="view-explore" data-screen="explore" aria-labelledby="explore-title" hidden>
+          <header class="app-header"><div><p class="section-kicker">GO OUT TOGETHER</p><h1 class="page-title" id="explore-title">附近探索</h1></div><button class="icon-button" type="button" data-toast="活动频道为下一张独立页面稿" aria-label="查看活动入口说明"><span data-icon="calendar"></span></button></header>
+          <div class="explore-top"><button class="city-button" id="city-open" type="button" aria-haspopup="dialog"><span data-icon="mapPin" aria-hidden="true"></span><span id="city-label">手选城市</span>⌄</button><button class="search-pill" type="button" data-toast="搜索将在正式地点数据接入后启用"><span data-icon="search" aria-hidden="true"></span>搜场所、服务或区域</button></div>
+          <div class="location-state" id="location-state"><span data-icon="mapPin" aria-hidden="true"></span><div><strong id="location-title">先选城市，也能探索</strong><p id="location-copy">设计预览不会读取真实定位；拒绝授权时仍可手选城市、查看列表。</p><div class="state-actions"><button type="button" id="preview-location">预览已授权状态</button><button type="button" id="deny-location">拒绝定位并手选</button></div></div></div>
+          <div class="chip-row" role="group" aria-label="地点类型筛选"><button class="chip explore-filter" type="button" data-type="all" aria-pressed="true">全部</button><button class="chip explore-filter" type="button" data-type="park" aria-pressed="false">宠物公园</button><button class="chip explore-filter" type="button" data-type="cafe" aria-pressed="false">友好餐饮</button><button class="chip explore-filter" type="button" data-type="clinic" aria-pressed="false">宠物服务</button></div>
+          <div class="map-mode" role="group" aria-label="探索查看方式"><button type="button" data-mode="map" aria-pressed="true">地图</button><button type="button" data-mode="list" aria-pressed="false">列表</button></div>
+          <div id="map-pane"><div class="map-card" role="group" aria-label="示意地图，可用地点按钮选择；也可切换到列表"><svg viewBox="0 0 350 390" preserveAspectRatio="xMidYMid slice" role="img" aria-label="非真实街区地图布局示意"><rect width="350" height="390" fill="#e5f2e8"/><path d="M-30 80 C70 120 105 100 183 175 S305 186 390 245" fill="none" stroke="#c2e2d0" stroke-width="55"/><path d="M-30 80 C70 120 105 100 183 175 S305 186 390 245" fill="none" stroke="#cce7f0" stroke-width="30"/><path d="M-15 295 C95 260 177 320 370 340M45 -20 115 400M275 -20 198 410M-20 178 370 70" fill="none" stroke="#fffdf8" stroke-width="27"/><path d="M-15 295 C95 260 177 320 370 340M45 -20 115 400M275 -20 198 410M-20 178 370 70" fill="none" stroke="#d9dfd4" stroke-width="2"/><rect x="23" y="17" width="53" height="49" rx="13" fill="#cce6cf"/><rect x="132" y="34" width="79" height="38" rx="13" fill="#d1e6d0"/><rect x="267" y="279" width="62" height="50" rx="13" fill="#d1e6d0"/><path d="M26 211c19-14 40-13 57 4m180-170c20 5 35 19 41 37" fill="none" stroke="#afd4b5" stroke-width="5" stroke-linecap="round"/></svg><span class="map-annotation">地图布局示意 · 无真实位置</span><button class="map-pin" type="button" data-poi="park" aria-label="选择橘子宠物公园，示意地点" aria-pressed="true">公园</button><button class="map-pin" type="button" data-poi="cafe" aria-label="选择爪印休憩屋，示意地点" aria-pressed="false">休憩</button><button class="map-pin" type="button" data-poi="clinic" aria-label="选择小爪服务站，示意地点" aria-pressed="false">服务</button><button class="map-refresh" type="button" id="map-fail">模拟地图不可用</button></div><a class="card map-selected" href="#poi" id="selected-poi-link"><span class="poi-icon" data-icon="mapPin" aria-hidden="true"></span><span><strong id="selected-poi-name">橘子宠物公园 · 示例</strong><small id="selected-poi-meta">宠物公园 · 设施与距离待接入</small></span><span class="end" data-icon="chevronRight" aria-hidden="true"></span></a></div>
+          <div class="card map-fallback" id="map-fallback" hidden><strong>地图暂不可用，列表仍可浏览</strong><br>正式产品中显示加载失败原因与重试入口。<button class="quiet-button" type="button" id="map-recover">恢复地图示意</button></div>
+          <div id="list-pane" hidden><p class="caption muted" style="margin:2px 0 9px">按所选城市展示的地点示例；真实距离、营业状态与评分待接入。</p><div class="poi-list" id="poi-list"><button class="card" type="button" data-poi="park"><span class="poi-thumb" data-icon="mapPin" aria-hidden="true"></span><span><strong>橘子宠物公园 · 示例</strong><small>宠物公园 · 可查看设施说明</small></span><span class="end" data-icon="chevronRight" aria-hidden="true"></span></button><button class="card" type="button" data-poi="cafe"><span class="poi-thumb cafe" data-icon="mapPin" aria-hidden="true"></span><span><strong>爪印休憩屋 · 示例</strong><small>友好餐饮 · 入店规则待核验</small></span><span class="end" data-icon="chevronRight" aria-hidden="true"></span></button><button class="card" type="button" data-poi="clinic"><span class="poi-thumb clinic" data-icon="mapPin" aria-hidden="true"></span><span><strong>小爪服务站 · 示例</strong><small>宠物服务 · 服务信息待核验</small></span><span class="end" data-icon="chevronRight" aria-hidden="true"></span></button></div><div class="card feed-empty" id="poi-empty" hidden><span class="empty-symbol" data-icon="mapPin" aria-hidden="true"></span><strong>这个分类暂没有示例地点</strong><p>可以切回“全部”或更换城市。</p></div></div>
+          <p class="demo-note" style="margin-top:12px">本页地图、名称、类型均为版式示意，不是可导航的真实地点。</p>
+        </section>
+
+        <section class="page" id="view-poi" data-screen="poi" aria-labelledby="poi-title" hidden><div class="topline"><a class="icon-button" href="#explore" aria-label="返回探索"><span data-icon="chevronLeft"></span></a><h2>场所详情</h2><button class="icon-button" type="button" data-toast="示例地点不能分享为真实地址" aria-label="分享说明"><span data-icon="share"></span></button></div>
+          <div class="poi-hero" role="img" aria-label="非真实示例地点的绿色插画"><svg viewBox="0 0 350 170" preserveAspectRatio="xMidYMid slice"><rect width="350" height="170" fill="#e8f4e6"/><circle cx="278" cy="42" r="23" fill="#ffe3b6"/><path d="M0 151q83-78 165-12t185-21v52H0Z" fill="#add8ae"/><path d="M0 170q87-66 167-22t183-11v33Z" fill="#87c594"/><path d="M48 120V61m-31 28 30-55 31 55ZM269 112V54m-27 29 27-54 28 54Z" stroke="#549469" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="#81bd8b"/><path d="M128 147v-28a18 18 0 0 1 36 0v28M138 117h15" fill="none" stroke="#fffdf6" stroke-width="10" stroke-linecap="round"/><circle cx="209" cy="137" r="12" fill="#fff0df"/><circle cx="196" cy="127" r="4" fill="#fff0df"/><circle cx="205" cy="119" r="4" fill="#fff0df"/><circle cx="215" cy="119" r="4" fill="#fff0df"/><circle cx="224" cy="127" r="4" fill="#fff0df"/></svg></div>
+          <div class="poi-title-row"><div><span class="pill green">地点资料 · 设计示例</span><h1 id="poi-title">橘子宠物公园</h1><p>示例地点 · 非真实地址 · 暂无真实评分</p></div></div>
+          <div class="poi-actions"><button type="button" id="poi-favorite" aria-pressed="false"><span data-icon="heart"></span>收藏</button><button type="button" data-toast="示例地点没有可导航的真实坐标"><span data-icon="compass"></span>导航</button><button type="button" data-route="review"><span data-icon="edit"></span>写评价</button><button type="button" data-route="correction"><span data-icon="alert"></span>纠错</button></div>
+          <div class="card card-pad"><strong>出门前值得核对</strong><p class="caption muted" style="margin:5px 0 9px">真实场所应有来源、更新日期、设施规则及营业状态；示例不提供拨号或路线。</p><div class="chip-row"><span class="pill green">草地区 · 示例</span><span class="pill green">饮水点 · 示例</span><span class="pill">牵引规则待核验</span></div></div>
+          <div class="card card-pad" style="margin-top:11px"><strong>地点信息</strong><div class="info-grid"><div class="cell"><span data-icon="mapPin" aria-hidden="true"></span><span><strong>地址</strong><small>设计示例，不展示真实地址</small></span></div><div class="cell"><span data-icon="clock" aria-hidden="true"></span><span><strong>开放时间</strong><small>真实数据待接入后核验</small></span></div><div class="cell"><span data-icon="info" aria-hidden="true"></span><span><strong>入场说明</strong><small>请以场地方公开规则为准</small></span></div></div></div>
+          <div class="feedback-note">评价和纠错在正式产品中需通过审核与状态回执。此预览只演示提交后的反馈，未公开任何新内容。</div>
+        </section>
+
+        <section class="page" id="view-review" data-screen="review" aria-labelledby="review-title" hidden><div class="topline"><a class="icon-button" href="#poi" aria-label="返回场所详情"><span data-icon="chevronLeft"></span></a><h2>写评价</h2><span style="width:44px" aria-hidden="true"></span></div><p class="section-kicker" style="margin-top:7px">YOUR EXPERIENCE</p><h1 class="page-title" id="review-title">说说现场体验</h1><p class="page-subtitle">针对示例地点填写；不会发布到公开页面。</p><div class="card card-pad" style="margin-top:17px"><strong>橘子宠物公园 · 设计示例</strong><p class="caption muted" style="margin:3px 0 0">请基于亲身经历评价真实地点。这里仅供评审流程。</p></div><form id="review-form" novalidate><div class="rating-row" data-rating="friendly"><strong>宠物友好度</strong><div class="stars" role="group" aria-label="宠物友好度评分"><button type="button" data-score="1" aria-label="宠物友好度 1 星" aria-pressed="false">☆</button><button type="button" data-score="2" aria-label="宠物友好度 2 星" aria-pressed="false">☆</button><button type="button" data-score="3" aria-label="宠物友好度 3 星" aria-pressed="false">☆</button><button type="button" data-score="4" aria-label="宠物友好度 4 星" aria-pressed="false">☆</button><button type="button" data-score="5" aria-label="宠物友好度 5 星" aria-pressed="false">☆</button></div></div><div class="rating-row" data-rating="environment"><strong>环境与设施</strong><div class="stars" role="group" aria-label="环境与设施评分"><button type="button" data-score="1" aria-label="环境与设施 1 星" aria-pressed="false">☆</button><button type="button" data-score="2" aria-label="环境与设施 2 星" aria-pressed="false">☆</button><button type="button" data-score="3" aria-label="环境与设施 3 星" aria-pressed="false">☆</button><button type="button" data-score="4" aria-label="环境与设施 4 星" aria-pressed="false">☆</button><button type="button" data-score="5" aria-label="环境与设施 5 星" aria-pressed="false">☆</button></div></div><div class="rating-row" data-rating="service"><strong>服务体验</strong><div class="stars" role="group" aria-label="服务体验评分"><button type="button" data-score="1" aria-label="服务体验 1 星" aria-pressed="false">☆</button><button type="button" data-score="2" aria-label="服务体验 2 星" aria-pressed="false">☆</button><button type="button" data-score="3" aria-label="服务体验 3 星" aria-pressed="false">☆</button><button type="button" data-score="4" aria-label="服务体验 4 星" aria-pressed="false">☆</button><button type="button" data-score="5" aria-label="服务体验 5 星" aria-pressed="false">☆</button></div></div><div class="field"><label for="review-text">体验描述</label><textarea id="review-text" minlength="10" placeholder="例如：入场规则、饮水设施和宠物活动空间如何？"></textarea></div><p class="field-error" id="review-error" role="alert" hidden>请完成三项评分，并填写至少 10 个字的体验描述。</p><p class="form-note">正式评价依据账号与风控规则，可能先进入审核；待审内容仅本人可见，不计入公开评分。</p></form></section>
+
+        <section class="page" id="view-review-done" data-screen="review-done" aria-labelledby="review-done-title" hidden><div class="topline"><a class="icon-button" href="#poi" aria-label="返回场所详情"><span data-icon="chevronLeft"></span></a><h2>提交结果</h2><span style="width:44px" aria-hidden="true"></span></div><div class="success-panel"><span class="success-icon" data-icon="clock" aria-hidden="true"></span><h1 id="review-done-title">评价已进入待审示意</h1><p>这只是设计预览，没有写入真实评价，也不会出现在地点评分里。正式产品应展示审核状态和结果通知。</p><a class="primary-button" href="#poi">返回场所详情</a></div></section>
+
+        <section class="page" id="view-correction" data-screen="correction" aria-labelledby="correction-title" hidden><div class="topline"><a class="icon-button" href="#poi" aria-label="返回场所详情"><span data-icon="chevronLeft"></span></a><h2>信息纠错</h2><span style="width:44px" aria-hidden="true"></span></div><p class="section-kicker" style="margin-top:7px">HELP KEEP IT ACCURATE</p><h1 class="page-title" id="correction-title">让地点信息更准确</h1><p class="page-subtitle">设计示例：请选择发现的问题并说明依据。</p><form id="correction-form" novalidate><div class="field"><label for="correction-type">问题类型</label><select id="correction-type"><option value="">请选择</option><option value="closed">已停业或不存在</option><option value="hours">开放时间有误</option><option value="facilities">设施或宠物规则有误</option><option value="other">其他信息有误</option></select></div><div class="field"><label for="correction-detail">正确情况与依据</label><textarea id="correction-detail" minlength="10" placeholder="请写明看到的情况、时间和可核实的信息"></textarea></div><p class="field-error" id="correction-error" role="alert" hidden>请选择问题类型，并填写至少 10 个字的说明。</p><div class="card card-pad" style="margin-top:15px"><strong>提交后会怎样？</strong><p class="caption muted" style="margin:5px 0 0">正式产品中进入人工核实；核实前不会直接覆盖公开地点资料。结果应在消息中心回执。</p></div></form></section>
+
+        <section class="page" id="view-correction-done" data-screen="correction-done" aria-labelledby="correction-done-title" hidden><div class="topline"><a class="icon-button" href="#poi" aria-label="返回场所详情"><span data-icon="chevronLeft"></span></a><h2>提交结果</h2><span style="width:44px" aria-hidden="true"></span></div><div class="success-panel"><span class="success-icon" data-icon="check" aria-hidden="true"></span><h1 id="correction-done-title">纠错已提交示意</h1><p>设计预览没有生成真实工单。正式产品需显示受理、核实和结果状态，原信息在核实前保持不变。</p><a class="primary-button" href="#poi">返回场所详情</a></div></section>
+
+        <section class="page" id="view-goods" data-screen="goods" aria-labelledby="goods-title" hidden><div class="app-header"><div><p class="section-kicker">CHOOSE WITH CARE</p><h1 class="page-title" id="goods-title">逛好物</h1></div><a class="icon-button" href="index.html#home" aria-label="返回首页"><span data-icon="home"></span></a></div><div class="goods-head"><div><span class="pill" style="background:#fff;color:var(--blue)">首页入口 · 用品频道</span><h2>为小伙伴，<br>挑得更明白。</h2><p>查资料、读评测、存清单；一期不提供交易。</p></div><span class="goods-graphic" data-icon="bag" aria-hidden="true"></span></div><a class="card goods-feature" href="#goods-detail" data-product="bottle"><span class="badge-icon" data-icon="info" aria-hidden="true"></span><span><strong>买前先看哪些信息？</strong><small>适用阶段、材料、清洁方式与资料来源</small></span><span data-icon="chevronRight" aria-hidden="true"></span></a><div class="section-head"><h2>用品资料</h2><span class="pill">均为资料示例</span></div><div class="chip-row" role="group" aria-label="用品分类"><button class="chip goods-filter" type="button" data-type="all" aria-pressed="true">全部</button><button class="chip goods-filter" type="button" data-type="outdoor" aria-pressed="false">外出</button><button class="chip goods-filter" type="button" data-type="feeding" aria-pressed="false">喂养</button><button class="chip goods-filter" type="button" data-type="play" aria-pressed="false">玩具</button></div><div class="goods-grid" id="goods-grid" style="margin-top:11px"><a class="card goods-card" href="#goods-detail" data-type="outdoor" data-product="bottle"><span class="product-art"><span data-icon="bag" aria-hidden="true"></span></span><strong>便携饮水瓶</strong><small>外出 · 关注容量与清洁</small></a><a class="card goods-card" href="#goods-detail" data-type="feeding" data-product="bowl"><span class="product-art warm"><span data-icon="medicine" aria-hidden="true"></span></span><strong>慢食餐碗</strong><small>喂养 · 关注材质与稳定</small></a><a class="card goods-card" href="#goods-detail" data-type="play" data-product="toy"><span class="product-art warm"><span data-icon="sparkles" aria-hidden="true"></span></span><strong>互动益智玩具</strong><small>玩具 · 关注尺寸与安全</small></a></div><div class="card feed-empty" id="goods-empty" hidden><span class="empty-symbol" data-icon="bag" aria-hidden="true"></span><strong>这个分类暂无示例资料</strong><p>可以切回“全部”，了解其他用品。</p></div><p class="demo-note" style="margin-top:17px">用品名称、图形和资料仅用于 UI 评审；无真实品牌、价格、库存、购物车或购买链接。</p></section>
+
+        <section class="page goods-detail" id="view-goods-detail" data-screen="goods-detail" aria-labelledby="goods-detail-title" hidden>
+          <div class="topline"><a class="icon-button" href="#goods" aria-label="返回用品频道"><span data-icon="chevronLeft"></span></a><h2>用品资料</h2><button class="icon-button" type="button" data-toast="设计示例不可分享为真实商品" aria-label="分享说明"><span data-icon="share"></span></button></div>
+          <div class="goods-detail-art" id="goods-detail-art" role="img" aria-label="便携饮水瓶的非真实图形示意">
+            <svg data-product-art="bottle" viewBox="0 0 140 140" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="49" y="38" width="42" height="78" rx="13"/><path d="M55 38v-9h30v9M62 29v-8h16v8M49 79h42M59 93h22M44 58H31v37h17"/><path d="M61 107h18"/></svg>
+            <svg data-product-art="bowl" viewBox="0 0 140 140" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" hidden><path d="M29 64h82l-12 48H41L29 64Z"/><path d="M23 64h94M46 43c5-7 10-7 15 0M70 42c5-7 10-7 15 0M55 83c8 7 23 7 31 0"/></svg>
+            <svg data-product-art="toy" viewBox="0 0 140 140" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" hidden><circle cx="70" cy="72" r="38"/><path d="M35 56c20 4 36 20 39 54M97 42c-18 13-24 31-20 66M40 86c19-11 40-10 58 2"/><path d="m103 17 4 11 11 4-11 4-4 11-4-11-11-4 11-4 4-11Z"/></svg>
+          </div>
+          <span class="pill" style="background:var(--blue-soft);color:var(--blue)">资料示例 · 非在售商品</span>
+          <h1 id="goods-detail-title">便携饮水瓶</h1><p class="page-subtitle" id="goods-detail-subtitle">外出用品 · 只提供信息参考，不提供交易。</p>
+          <div class="card card-pad" style="margin-top:17px"><strong>挑选时可以核对</strong><div class="info-grid">
+            <div class="cell"><strong id="product-point-1-title">容量和携带</strong><p id="product-point-1-copy">根据出行时长、宠物饮水习惯与携带方式比较。</p></div>
+            <div class="cell"><strong id="product-point-2-title">接触材料</strong><p id="product-point-2-copy">查看可接触食品材料说明和产品资料来源。</p></div>
+            <div class="cell"><strong id="product-point-3-title">清洁方式</strong><p id="product-point-3-copy">留意拆洗结构、容易积水的位置与使用说明。</p></div>
+          </div></div>
+          <div class="card card-pad" style="margin-top:11px;background:var(--orange-soft)"><strong>评测与清单</strong><p class="caption muted" style="margin:5px 0 0">正式内容应披露评测依据及利益关系，资料变更时及时更新。这里尚无真实评测。</p></div>
+          <p class="demo-note" style="margin-top:14px">真实参数与适用性须在内容发布后核验；本页不提供“立即购买”、价格或外链。</p>
+        </section>
+      </main>
+      <div class="bottom-action" id="detail-actions" hidden>
+        <div class="detail-actions-row" id="actions-article" hidden><button class="quiet-button" type="button" id="article-like" aria-pressed="false"><span data-icon="heart"></span><span>喜欢</span></button><button class="secondary-button" type="button" id="article-save" aria-pressed="false">收藏文章</button><button class="primary-button" type="button" data-toast="分享面板为设计示意，未生成可公开链接">分享示意</button></div>
+        <div class="detail-actions-row" id="actions-poi" hidden><a class="secondary-button" href="#correction">信息纠错</a><a class="primary-button" href="#review">写评价</a></div>
+        <div class="detail-actions-row" id="actions-review" hidden><button class="primary-button" type="submit" form="review-form">提交评价示意</button></div>
+        <div class="detail-actions-row" id="actions-correction" hidden><button class="primary-button" type="submit" form="correction-form">提交纠错示意</button></div>
+        <div class="detail-actions-row" id="actions-goods-detail" hidden><a class="secondary-button" href="#goods">查看其他用品</a><button class="primary-button" type="button" id="goods-save" aria-pressed="false">收藏参考</button></div>
+      </div>
+      <nav class="tabbar" id="tabbar" aria-label="移动端主导航"><a class="tab-item" href="index.html#home" data-tab="home"><span data-icon="home" aria-hidden="true"></span>首页</a><a class="tab-item" href="#news" data-tab="news" aria-current="page"><span data-icon="news" aria-hidden="true"></span>资讯</a><a class="tab-item" href="#explore" data-tab="explore"><span data-icon="compass" aria-hidden="true"></span>探索</a><a class="tab-item" href="index.html#me" data-tab="me"><span data-icon="user" aria-hidden="true"></span>我的</a></nav>
+      <div class="home-indicator" aria-hidden="true"></div>
+      <div class="sheet-backdrop" id="city-sheet" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="city-sheet-title"><div class="sheet-handle" aria-hidden="true"></div><h2 id="city-sheet-title">手动选择城市</h2><p>拒绝定位也能浏览。以下是虚构的版式示例区域。</p><div class="city-options"><button type="button" data-city="示例城 · 东区">示例城 · 东区 <span data-icon="chevronRight" aria-hidden="true"></span></button><button type="button" data-city="示例城 · 西区">示例城 · 西区 <span data-icon="chevronRight" aria-hidden="true"></span></button><button type="button" data-city="示例城 · 南区">示例城 · 南区 <span data-icon="chevronRight" aria-hidden="true"></span></button></div><button class="secondary-button sheet-close" type="button" id="city-close">取消</button></div></div>
+      <div class="sheet-backdrop" id="search-sheet" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="search-sheet-title"><div class="sheet-handle" aria-hidden="true"></div><h2 id="search-sheet-title">搜索示例资讯</h2><p>只查找本页几条设计示例，不连接真实内容。</p><div class="search-field"><span data-icon="search" aria-hidden="true"></span><label class="sr-only" for="search-input">文章关键词</label><input id="search-input" type="search" placeholder="试试：外出、猫咪、就医"></div><button class="primary-button" id="search-submit" type="button">查看匹配内容</button><button class="secondary-button sheet-close" type="button" id="search-close">取消</button></div></div>
+      <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    </div>
+    <aside class="studio-guide" aria-label="设计说明"><p class="studio-kicker">DESIGN NOTES</p><h2>手机上的使用节奏</h2><div class="note"><strong>阅读先于互动</strong>资讯卡保持标题、类别和摘要可扫读；文章详情留充足行距。点赞、收藏只展示本地预览状态。</div><div class="note"><strong>探索允许拒绝定位</strong>手选城市与列表一直可用；地图为 SVG 示意，失败时回到列表，地点不产生真实导航。</div><div class="note"><strong>用品没有交易按钮</strong>用品页只展示查资料、看评测和收藏参考的结构；无价格、购物车或购买外链。</div><ul><li>375px 版式基准，320px 仍能点击与阅读。</li><li>触控区域至少 44px，并避开底部安全区。</li><li>示例评价待审、纠错待核实，不能当成已公开。</li></ul><div class="preview-ribbon"><strong>边界</strong> 这是交互设计稿，未连接账号、定位、地图 SDK、发布审核或商品数据。</div></aside>
+  </div>
+  <script src="mobile-icons.js"></script>
+  <script>
+    (() => {
+      const screenEl = document.getElementById('screen');
+      const views = [...document.querySelectorAll('[data-screen]')];
+      const rootViews = new Set(['news', 'explore', 'goods']);
+      const actionNames = new Set(['article', 'poi', 'review', 'correction', 'goods-detail']);
+      const detailActions = document.getElementById('detail-actions');
+      const tabbar = document.getElementById('tabbar');
+      const searchSheet = document.getElementById('search-sheet');
+      const citySheet = document.getElementById('city-sheet');
+      const toastEl = document.getElementById('toast');
+      let toastTimer = 0;
+      let lastFocus = null;
+      let currentCity = '';
+      let mapFailed = false;
+      let currentPoi = 'park';
+      let currentProduct = 'bottle';
+      let currentArticle = 'home';
+      let currentScreen = null;
+      const scrollPositions = {};
+      const likedArticles = new Set();
+      const savedArticles = new Set();
+      const savedPois = new Set();
+      const savedProducts = new Set();
+      const poiData = {
+        park: { name: '橘子宠物公园', type: '宠物公园', meta: '设施与距离待接入' },
+        cafe: { name: '爪印休憩屋', type: '友好餐饮', meta: '入店规则待核验' },
+        clinic: { name: '小爪服务站', type: '宠物服务', meta: '服务信息待核验' }
+      };
+      const articleData = {
+        home: {
+          title: '回家后的五分钟，先观察再记录。', category: '照护小课 · 设计示例', minutes: '3',
+          sections: [
+            ['在忙碌的一天结束时，先给宠物一点安静的时间。观察它有没有主动饮水、愿不愿意活动，以及状态是否与平时不同。'],
+            ['先看熟悉的日常', '把自己熟悉的状态作为参照，比只盯着一个数字更容易发现变化。记录具体时间和看到的情况，方便家人接力照护。'],
+            ['把下一步安排连起来', '如果已有接种、驱虫或复诊计划，可以到宠物档案核对时间。处理提醒时要先确认关联记录，避免家人重复完成同一事项。']
+          ]
+        },
+        walk: {
+          title: '外出归来，如何留意宠物的细微变化', category: '日常照护 · 设计示例', minutes: '3',
+          sections: [
+            ['外出之后，不妨先让宠物休息，再留意饮水、精神和活动状态是否与平时相近。'],
+            ['按时间记下观察', '记录“什么时候、在哪里、看到了什么”。同一件事由家人接力照护时，这样的描述更容易理解。'],
+            ['出现异常时', '如果出现明显不适，应联系专业兽医；文章只能帮助整理观察，不能代替诊断。']
+          ]
+        },
+        cat: {
+          title: '新环境里的猫，为什么需要安静角落', category: '猫咪 · 设计示例', minutes: '4',
+          sections: [
+            ['搬家或短暂寄养后，给猫准备可以退回的小空间，有助于减少频繁打扰。'],
+            ['先安排基本需要', '饮水、进食、猫砂和休息位置要清楚可达。观察它是否愿意主动探索，不要强迫互动。'],
+            ['慢慢扩大活动范围', '根据猫的实际状态逐步开放更多空间。若长时间不吃不喝或状态异常，应咨询专业人士。']
+          ]
+        },
+        health: {
+          title: '怎样把一次就医信息记得更清楚', category: '健康记录 · 设计示例', minutes: '5',
+          sections: [
+            ['一次就医记录可以分成“发生了什么、医生建议什么、下次什么时候确认”三部分。'],
+            ['把日期分清楚', '就诊日期、实际用药日期和复诊日期各有含义，分别记录有助于后续查找与提醒。'],
+            ['保留资料来源', '将检查单或处方与该次记录关联，家人查阅时能看到依据。用药与复诊安排应以专业医嘱为准。']
+          ]
+        }
+      };
+      const productData = {
+        bottle: { name: '便携饮水瓶', subtitle: '外出用品 · 只提供信息参考，不提供交易。', points: [['容量和携带','根据出行时长、宠物饮水习惯与携带方式比较。'],['接触材料','查看可接触食品材料说明和产品资料来源。'],['清洁方式','留意拆洗结构、容易积水的位置与使用说明。']] },
+        bowl: { name: '慢食餐碗', subtitle: '喂养用品 · 只提供信息参考，不提供交易。', points: [['材质与尺寸','核对材料说明，按宠物体型与进食习惯选择合适规格。'],['底部稳定性','了解防滑结构与实际摆放条件，避免进食时频繁移位。'],['清洁死角','查看是否容易拆洗，以及沟槽能否清洁到位。']] },
+        toy: { name: '互动益智玩具', subtitle: '玩具用品 · 只提供信息参考，不提供交易。', points: [['尺寸与适龄','按照宠物体型、年龄和使用方式核对风险提示。'],['结构安全','留意易脱落小件、尖锐边缘和材质说明。'],['陪伴使用','互动玩具需按说明使用，注意损坏后及时停用。']] }
+      };
+      function toast(message) {
+        toastEl.textContent = message;
+        toastEl.hidden = false;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => { toastEl.hidden = true; }, 2800);
+      }
+      function show(name) {
+        if (!views.some(v => v.dataset.screen === name)) name = 'news';
+        if (currentScreen) scrollPositions[currentScreen] = screenEl.scrollTop;
+        citySheet.hidden = true;
+        searchSheet.hidden = true;
+        views.forEach(v => { v.hidden = v.dataset.screen !== name; });
+        const detail = !rootViews.has(name);
+        tabbar.hidden = detail;
+        detailActions.hidden = !actionNames.has(name);
+        document.querySelectorAll('#detail-actions > .detail-actions-row').forEach(row => { row.hidden = row.id !== 'actions-' + name; });
+        const activeTab = name === 'explore' || ['poi','review','review-done','correction','correction-done'].includes(name) ? 'explore' : name === 'goods' || name === 'goods-detail' ? 'home' : 'news';
+        document.querySelectorAll('#tabbar [data-tab]').forEach(a => { if (a.dataset.tab === activeTab) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
+        document.querySelectorAll('.studio-index [data-jump]').forEach(b => { b.setAttribute('aria-pressed', String(b.dataset.jump === name)); });
+        screenEl.scrollTop = scrollPositions[name] ?? 0;
+        currentScreen = name;
+        if (name === 'poi') updatePoiDetail();
+        if (name === 'goods-detail') updateProductDetail();
+      }
+      function updatePoiDetail() {
+        const poi = poiData[currentPoi];
+        document.getElementById('poi-title').textContent = poi.name;
+        document.querySelector('#view-review .card strong').textContent = poi.name + ' · 设计示例';
+        const favorite = document.getElementById('poi-favorite');
+        const saved = savedPois.has(currentPoi);
+        favorite.setAttribute('aria-pressed', String(saved));
+        favorite.lastChild.textContent = saved ? '已收藏' : '收藏';
+      }
+      function updateArticle(id) {
+        currentArticle = id;
+        const article = articleData[id] || articleData.home;
+        document.getElementById('article-title').textContent = article.title;
+        document.getElementById('article-category').textContent = article.category;
+        document.getElementById('article-meta').textContent = '示例内容 · 约 ' + article.minutes + ' 分钟阅读 · 非专业诊疗建议';
+        const content = document.getElementById('article-content');
+        content.replaceChildren();
+        article.sections.forEach(section => {
+          if (section.length > 1) { const heading = document.createElement('h2'); heading.textContent = section[0]; content.append(heading); }
+          const para = document.createElement('p'); para.textContent = section.length > 1 ? section[1] : section[0]; content.append(para);
+        });
+        const note = document.createElement('div'); note.className = 'story-callout'; note.textContent = '设计示例：请记录观察到的事实。出现明显异常时联系专业兽医；正式文章会提供作者、发布时间及必要来源。'; content.append(note);
+        const liked = likedArticles.has(currentArticle);
+        const saved = savedArticles.has(currentArticle);
+        document.getElementById('article-like').setAttribute('aria-pressed', String(liked));
+        document.querySelector('#article-like span:last-child').textContent = liked ? '已喜欢' : '喜欢';
+        document.getElementById('article-save').setAttribute('aria-pressed', String(saved));
+        document.getElementById('article-save').textContent = saved ? '已收藏' : '收藏文章';
+      }
+      function updateProductDetail() {
+        const product = productData[currentProduct];
+        document.getElementById('goods-detail-title').textContent = product.name;
+        document.getElementById('goods-detail-subtitle').textContent = product.subtitle;
+        document.getElementById('goods-detail-art').setAttribute('aria-label', product.name + '的非真实图形示意');
+        document.querySelectorAll('[data-product-art]').forEach(art => { art.hidden = art.dataset.productArt !== currentProduct; });
+        product.points.forEach((point, index) => {
+          document.getElementById('product-point-' + (index+1) + '-title').textContent = point[0];
+          document.getElementById('product-point-' + (index+1) + '-copy').textContent = point[1];
+        });
+        const save = document.getElementById('goods-save');
+        save.setAttribute('aria-pressed', String(savedProducts.has(currentProduct)));
+        save.textContent = savedProducts.has(currentProduct) ? '已收藏参考' : '收藏参考';
+      }
+      function route() { show(decodeURIComponent(location.hash.slice(1)) || 'news'); }
+      window.addEventListener('hashchange', route);
+      route();
+      document.querySelectorAll('[data-jump]').forEach(b => b.addEventListener('click', () => { location.hash = b.dataset.jump; }));
+      document.querySelectorAll('[data-route]').forEach(b => b.addEventListener('click', () => { location.hash = b.dataset.route; }));
+      document.querySelectorAll('[data-article]').forEach(link => link.addEventListener('click', () => { updateArticle(link.dataset.article); if (location.hash === '#article') show('article'); }));
+      document.querySelectorAll('[data-product]').forEach(link => link.addEventListener('click', () => { currentProduct = link.dataset.product; if (location.hash === '#goods-detail') show('goods-detail'); }));
+      document.querySelectorAll('[data-toast]').forEach(b => b.addEventListener('click', () => toast(b.dataset.toast)));
+      document.querySelectorAll('.news-filter').forEach(button => button.addEventListener('click', () => {
+        const selected = button.dataset.filter;
+        document.querySelectorAll('.news-filter').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+        const cards = [...document.querySelectorAll('#article-list [data-category]')];
+        cards.forEach(card => { card.hidden = selected !== 'all' && !card.dataset.category.split(' ').includes(selected); });
+        document.getElementById('feed-empty').hidden = cards.some(c => !c.hidden);
+      }));
+      document.querySelectorAll('.goods-filter').forEach(button => button.addEventListener('click', () => {
+        const selected = button.dataset.type;
+        document.querySelectorAll('.goods-filter').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+        const cards = [...document.querySelectorAll('#goods-grid [data-type]')];
+        cards.forEach(card => { card.hidden = selected !== 'all' && card.dataset.type !== selected; });
+        document.getElementById('goods-empty').hidden = cards.some(c => !c.hidden);
+      }));
+      function setMapMode(mode) {
+        if (mapFailed) mode = 'list';
+        document.getElementById('map-pane').hidden = mode !== 'map';
+        document.getElementById('list-pane').hidden = mode !== 'list';
+        document.querySelectorAll('[data-mode]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.mode === mode)));
+      }
+      document.querySelectorAll('[data-mode]').forEach(button => button.addEventListener('click', () => setMapMode(button.dataset.mode)));
+      document.querySelectorAll('.explore-filter').forEach(button => button.addEventListener('click', () => {
+        const selected = button.dataset.type;
+        document.querySelectorAll('.explore-filter').forEach(b => b.setAttribute('aria-pressed', String(b === button)));
+        const items = [...document.querySelectorAll('#poi-list [data-poi]')];
+        items.forEach(item => { item.hidden = selected !== 'all' && item.dataset.poi !== selected; });
+        document.querySelectorAll('.map-pin').forEach(pin => { pin.hidden = selected !== 'all' && pin.dataset.poi !== selected; });
+        document.getElementById('poi-empty').hidden = items.some(i => !i.hidden);
+        if (selected !== 'all') selectPoi(selected);
+      }));
+      function selectPoi(id) {
+        currentPoi = id;
+        document.querySelectorAll('.map-pin').forEach(pin => pin.setAttribute('aria-pressed', String(pin.dataset.poi === id)));
+        document.getElementById('selected-poi-name').textContent = poiData[id].name + ' · 示例';
+        document.getElementById('selected-poi-meta').textContent = poiData[id].type + ' · ' + poiData[id].meta;
+      }
+      document.querySelectorAll('.map-pin').forEach(pin => pin.addEventListener('click', () => selectPoi(pin.dataset.poi)));
+      document.querySelectorAll('#poi-list [data-poi]').forEach(item => item.addEventListener('click', () => { selectPoi(item.dataset.poi); location.hash = 'poi'; }));
+      document.getElementById('map-fail').addEventListener('click', () => { mapFailed = true; document.getElementById('map-fallback').hidden = false; setMapMode('list'); toast('地图不可用，已切换列表示意'); });
+      document.getElementById('map-recover').addEventListener('click', () => { mapFailed = false; document.getElementById('map-fallback').hidden = true; setMapMode('map'); toast('地图示意已恢复'); });
+      function openSheet(sheet) { lastFocus = document.activeElement; sheet.hidden = false; const target = sheet.querySelector('button'); if (target) target.focus(); }
+      function closeSheet(sheet) { sheet.hidden = true; if (lastFocus && typeof lastFocus.focus === 'function') lastFocus.focus(); }
+      document.getElementById('city-open').addEventListener('click', () => openSheet(citySheet));
+      document.getElementById('deny-location').addEventListener('click', () => { document.getElementById('location-title').textContent = '已拒绝定位示意 · 仍可浏览'; document.getElementById('location-copy').textContent = '请选择城市继续使用地图或列表；此预览没有请求设备权限。'; openSheet(citySheet); });
+      document.getElementById('preview-location').addEventListener('click', () => { document.getElementById('location-title').textContent = '已授权状态示意'; document.getElementById('location-copy').textContent = '正式产品会显示定位来源；此预览没有读取真实位置。'; toast('只是状态预览，未读取真实定位'); });
+      document.querySelectorAll('[data-city]').forEach(button => button.addEventListener('click', () => { currentCity = button.dataset.city; document.getElementById('city-label').textContent = currentCity; document.getElementById('location-title').textContent = '手选城市 · ' + currentCity; document.getElementById('location-copy').textContent = '未读取真实定位；可继续查看示意地图或切换列表。'; closeSheet(citySheet); toast('已切换到' + currentCity + '的设计示例'); }));
+      document.getElementById('city-close').addEventListener('click', () => closeSheet(citySheet));
+      document.getElementById('search-open').addEventListener('click', () => { openSheet(searchSheet); document.getElementById('search-input').focus(); });
+      document.getElementById('search-close').addEventListener('click', () => closeSheet(searchSheet));
+      document.getElementById('search-submit').addEventListener('click', () => {
+        const value = document.getElementById('search-input').value.trim();
+        const textCards = [...document.querySelectorAll('#article-list [data-category]')];
+        document.querySelectorAll('.news-filter').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.filter === 'all')));
+        textCards.forEach(card => { card.hidden = !!value && !card.textContent.includes(value); });
+        document.getElementById('feed-empty').hidden = textCards.some(c => !c.hidden);
+        closeSheet(searchSheet);
+        toast(value ? '仅在本页示例中搜索：' + value : '已显示全部示例文章');
+      });
+      document.getElementById('search-input').addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); document.getElementById('search-submit').click(); } });
+      [citySheet, searchSheet].forEach(sheet => sheet.addEventListener('click', event => { if (event.target === sheet) closeSheet(sheet); }));
+      document.addEventListener('keydown', event => {
+        const open = [citySheet,searchSheet].find(s => !s.hidden);
+        if (!open) return;
+        if (event.key === 'Escape') { event.preventDefault(); closeSheet(open); }
+        if (event.key === 'Tab') {
+          const focusable = [...open.querySelectorAll('button,input')].filter(el => !el.disabled);
+          const first = focusable[0], last = focusable[focusable.length - 1];
+          if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        }
+      });
+      function toggleSaved(set, key) { if (set.has(key)) set.delete(key); else set.add(key); toast('只更新本页预览状态，未保存至账号'); }
+      document.getElementById('poi-favorite').addEventListener('click', () => { toggleSaved(savedPois,currentPoi); updatePoiDetail(); });
+      document.getElementById('article-like').addEventListener('click', () => { toggleSaved(likedArticles,currentArticle); updateArticle(currentArticle); });
+      document.getElementById('article-save').addEventListener('click', () => { toggleSaved(savedArticles,currentArticle); updateArticle(currentArticle); });
+      document.getElementById('goods-save').addEventListener('click', () => { toggleSaved(savedProducts,currentProduct); updateProductDetail(); });
+      document.querySelectorAll('[data-rating] .stars button').forEach(button => button.addEventListener('click', () => {
+        const group = button.closest('[data-rating]');
+        group.dataset.value = button.dataset.score;
+        group.querySelectorAll('button').forEach(b => { const active = Number(b.dataset.score) <= Number(button.dataset.score); b.setAttribute('aria-pressed', String(active)); b.textContent = active ? '★' : '☆'; });
+      }));
+      document.getElementById('review-form').addEventListener('submit', event => {
+        event.preventDefault();
+        const valid = [...document.querySelectorAll('[data-rating]')].every(group => Number(group.dataset.value) >= 1) && document.getElementById('review-text').value.trim().length >= 10;
+        document.getElementById('review-error').hidden = valid;
+        if (valid) location.hash = 'review-done'; else document.getElementById('review-error').scrollIntoView({block:'nearest'});
+      });
+      document.getElementById('correction-form').addEventListener('submit', event => {
+        event.preventDefault();
+        const valid = !!document.getElementById('correction-type').value && document.getElementById('correction-detail').value.trim().length >= 10;
+        document.getElementById('correction-error').hidden = valid;
+        if (valid) location.hash = 'correction-done'; else document.getElementById('correction-error').scrollIntoView({block:'nearest'});
+      });
+    })();
+  </script>
+</body>
+</html>

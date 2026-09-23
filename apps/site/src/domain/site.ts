@@ -6,28 +6,50 @@
 
 export const SITE_NAV = [
   { id: 'home', label: '首页', to: '/' },
-  { id: 'products', label: '产品与服务', to: '/products' },
-  { id: 'services', label: '服务场景', to: '/services' },
-  { id: 'center', label: '内容中心', to: '/center' },
-  { id: 'download', label: '下载', to: '/download' },
-  { id: 'about', label: '关于我们', to: '/about' },
-  { id: 'contact', label: '联系', to: '/contact' },
+  { id: 'products', label: '产品', to: '/products' },
+  { id: 'services', label: '场景', to: '/services' },
+  { id: 'center', label: '资讯', to: '/center' },
+  { id: 'download', label: '开始使用', to: '/download' },
+  { id: 'about', label: '关于', to: '/about' },
+  { id: 'contact', label: '帮助与联系', to: '/help' },
 ] as const;
 
 /** 首页四板块入口（与用户端 IA 四区一致） */
 export const FOUR_SECTIONS = [
-  { id: 'manage', label: '宠物管理', desc: 'L2 生命链：建档 → 记录 → 曲线 → 摘要', to: '/services' },
-  { id: 'news', label: '宠物资讯', desc: '7 频道先审后发 + 互动与分享', to: '/center' },
-  { id: 'explore', label: '宠物探索', desc: '附近场所 / 路线 / 本地活动与领养信息', to: '/services' },
-  { id: 'goods', label: '宠物用品', desc: '纯内容导购（不交易），评测与好物清单', to: '/services' },
+  { id: 'manage', label: '宠物管理', desc: '上次照护有记录，下一次安排看得见。', to: '/products/manage' },
+  { id: 'news', label: '宠物资讯', desc: '按主题阅读经验，投稿状态有清楚反馈。', to: '/products/news' },
+  { id: 'explore', label: '宠物探索', desc: '出门前查看友好场所、路线与本地活动。', to: '/products/explore' },
+  { id: 'goods', label: '宠物用品', desc: '用资料、评测与清单辅助选择，不在站内交易。', to: '/products/goods' },
 ] as const;
+
+/** Only verified, public HTTPS entry points can become visitor-facing links. */
+export function publicEntryUrl(raw: unknown): string | null {
+  if (typeof raw !== 'string' || !raw.trim()) return null;
+  try {
+    const url = new URL(raw.trim());
+    const host = url.hostname.toLowerCase();
+    if (url.protocol !== 'https:' || url.username || url.password) return null;
+    // URL accepts several numeric IPv4 spellings and bracketed IPv6 literals.
+    // Entry links must use a public DNS name, so reject IP literals altogether.
+    if (host.startsWith('[') || host.endsWith('.')) return null;
+    const labels = host.split('.');
+    if (labels.length < 2 || labels.some((label) => !/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(label))) return null;
+    const suffix = labels.at(-1) ?? '';
+    if (!/^(?:[a-z]{2,}|xn--[a-z0-9-]{2,})$/.test(suffix)) return null;
+    if (['localhost', 'local', 'localdomain', 'internal', 'home', 'lan', 'test', 'invalid', 'example', 'arpa'].includes(suffix)) return null;
+    if (['example.com', 'example.net', 'example.org'].some((name) => host === name || host.endsWith(`.${name}`))) return null;
+    return url.href;
+  } catch {
+    return null;
+  }
+}
 
 /** 产品矩阵：四端固定信息（下载页与分享页共用同一源） */
 export const PRODUCTS = [
-  { id: 'web', label: '用户端 Web', desc: '登录/宠物/资讯/探索/用品/家庭全功能', port: 18580, cta: '打开应用', href: 'http://localhost:18580' },
-  { id: 'admin', label: '运营工作台', desc: '审核、治理、看板与 32 权限点 RBAC', port: 18581, cta: '进入工作台', href: 'http://localhost:18581' },
+  { id: 'web', label: '用户端 Web', desc: '登录/宠物/资讯/探索/用品/家庭全功能', port: 18580, cta: '查看使用方式', href: '/download?end=web' },
+  { id: 'admin', label: '运营工作台', desc: '审核、治理、看板与 32 权限点 RBAC', port: 18581, cta: '了解工作台', href: '/help' },
   { id: 'site', label: '官网', desc: '品牌、服务、内容与下载（本站）', port: 18582, cta: '浏览首页', href: '/' },
-  { id: 'mobile', label: '移动 H5', desc: '4-Tab 移动体验，复用同一契约', port: 18583, cta: '移动端体验', href: 'http://localhost:18583' },
+  { id: 'mobile', label: '移动 H5', desc: '4-Tab 移动体验，复用同一契约', port: 18583, cta: '查看使用方式', href: '/download?end=mobile' },
 ] as const;
 
 export function ctaFor(pathname: string): { label: string; to: string } {
@@ -51,18 +73,18 @@ export function contactBlockers(input: { name: string; email: string; kind: stri
 }
 
 export const CONTACT_CHANNELS = [
-  { id: 'business', label: '商务合作', info: 'business@example.com（占位，上线前替换）' },
-  { id: 'support', label: '用户支持', info: '见应用内帮助中心（48h 反馈）' },
-  { id: 'report', label: '投诉举报/版权', info: '站内举报通道 + copyright@example.com' },
+  { id: 'business', label: '商务合作', info: '正式联系渠道待核验后公布' },
+  { id: 'support', label: '用户支持', info: '请先查看帮助中心；可追踪的工单入口待核验' },
+  { id: 'report', label: '投诉举报/版权', info: '正式接收渠道待核验后公布' },
 ] as const;
 
 // ---------- T9.5 品牌展示（品牌名与 Logo 为占位——负责人决议项） ----------
 
 export const BRAND_TOKENS = {
   name: 'cutePet（占位名）',
-  logoNote: 'Logo 未定稿：本页与各端 favicon 使用 🐾 占位，待负责人提供品牌资产后替换。',
+  logoNote: 'Logo 未定稿：当前爪印图形仅为占位，待负责人提供品牌资产后替换。',
   colors: [
-    { token: 'primary', value: '#FF7A2F', usage: '主行动 / 预警' },
+    { token: 'primary', value: '#FF7A2F', usage: '品牌插画与装饰，不用于白字主按钮' },
     { token: 'blue', value: '#4D8DFF', usage: '用品 / 工具面板' },
     { token: 'green', value: '#2FBF71', usage: '探索地图 / 成功' },
     { token: 'purple', value: '#9B8CFF', usage: '家庭关系图谱' },
@@ -188,4 +210,4 @@ export function filterCases(items: CaseItem[], category: string | null): CaseIte
   return base.filter((c) => c.category === category);
 }
 
-export const CENTER_NOTICE = '内容中心与用户端资讯同源（先审后发）：DRAFT/REJECTED/TAKEDOWN 内容不出现在本页（U94）。';
+export const CENTER_NOTICE = '内容中心计划接入用户端先审后发的公开版本；当前数据源未接通，DRAFT/REJECTED/TAKEDOWN 内容不得作为已发布内容展示。';

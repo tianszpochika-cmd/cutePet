@@ -1,98 +1,73 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { shareCardModel, shareLoginHref, type SharePayload } from '../domain/site';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+type ShareKind = 'article' | 'event' | 'route' | 'summary';
 
 const route = useRoute();
-const router = useRouter();
 
-// /share/:kind/:id —— dev 演示态；真实元数据随接口（先审后发同源）
-const kindParam = String(route.params.kind ?? 'article');
-const id = String(route.params.id ?? '');
-const state = ref<'PUBLISHED' | 'DRAFT' | 'REJECTED' | 'TAKEDOWN' | 'DELETED'>(
-  (String(route.query.state ?? 'PUBLISHED')) as never,
-);
-
-const payload = computed<SharePayload>(() => ({
-  kind: kindParam === 'summary' ? 'summary' : kindParam === 'route' ? 'route' : kindParam === 'event' ? 'event' : 'article',
-  idOrSlug: id,
-  title: id.includes('food') || id === 'puppy-food' ? '幼猫换粮的七个误区' : `内容 ${id}`,
-  channelLabel: '猫',
-  authorLabel: '编辑部',
-  state: state.value,
-}));
-
-const card = computed(() => shareCardModel(payload.value));
-const loginHref = () => shareLoginHref(card.value.loginReturn);
-
-function demoSet(next: typeof state.value) {
-  void router.replace({ query: { state: next } });
-  state.value = next;
+function shareKind(value: unknown): ShareKind | null {
+  if (typeof value !== 'string') return null;
+  if (value === 'article' || value === 'a') return 'article';
+  if (value === 'event' || value === 'route' || value === 'summary') return value;
+  return null;
 }
+
+const context = computed(() => {
+  const kind = shareKind(route.params.kind);
+  switch (kind) {
+    case 'article':
+      return { label: '文章分享', detail: '文章的当前公开状态、作者和来源尚无法核验。', destination: '/center', action: '返回内容中心' };
+    case 'event':
+      return { label: '活动分享', detail: '活动的时间、地点、主办方和报名状态尚无法核验。', destination: '/events', action: '查看活动栏目' };
+    case 'route':
+      return { label: '路线分享', detail: '路线的审核状态和公开范围尚无法核验。', destination: '/products', action: '了解产品能力' };
+    case 'summary':
+      return { label: '健康摘要分享', detail: '健康摘要涉及私人资料，目前无法核验分享权限，因此不展示任何健康信息。', destination: '/family', action: '了解家庭隐私' };
+    default:
+      return { label: '分享链接', detail: '链接类型无法识别，也无法核验其内容状态。', destination: '/', action: '返回官网首页' };
+  }
+});
 </script>
 
 <template>
-  <div class="share">
-    <section class="card" data-testid="share-card">
-      <div class="head">
-        <span class="chip">{{ card.chip }}</span>
-        <span v-if="!card.visible" class="unavail-tag">不可用</span>
-      </div>
-      <h1 :class="{ muted: !card.visible }">{{ card.title }}</h1>
-      <p class="meta">{{ card.author }} · cutePet 内容中心</p>
-      <p class="source" data-testid="source">来源：编辑部整理 · 发布于 2026-09-22（公开分享与来源标注强制展示 —— T9.6/U92）</p>
+  <div class="share site-wrap">
+    <nav class="crumb" aria-label="当前位置">
+      <router-link to="/">首页</router-link><span aria-hidden="true">/</span><span aria-current="page">分享内容</span>
+    </nav>
 
-      <div v-if="card.visible" class="body">
-        <p>这是分享预览页：卡片结构与用户端文章卡同构（标题 / 频道 chip / 作者 / 操作区）。</p>
-        <div class="actions">
-          <a class="primary" :href="loginHref()" data-testid="login-cta">登录后查看完整内容</a>
-          <router-link class="ghost" :to="`/center`">返回内容中心</router-link>
-        </div>
-      </div>
-
-      <!-- T9.6 不可用四态 -->
-      <div v-else class="unavailable" data-testid="unavailable">
-        <p class="copy">{{ card.unavailable }}</p>
-        <div class="actions">
-          <router-link class="ghost" to="/center">看看其他内容</router-link>
-          <router-link v-if="state === 'TAKEDOWN'" class="ghost" to="/contact">申诉/举报入口</router-link>
-        </div>
+    <section class="card" aria-labelledby="share-title" role="status" data-testid="share-card">
+      <div class="mark" aria-hidden="true">⌁</div>
+      <p class="site-eyebrow">{{ context.label }} · 暂不可用</p>
+      <h1 id="share-title" class="site-section-title">这条分享，<br />暂时无法核验。</h1>
+      <p class="lead">{{ context.detail }}为避免展示过期或未经发布的资料，官网不会仅凭链接地址显示标题、图片或“已发布”状态。</p>
+      <div class="actions">
+        <router-link class="site-button" :to="context.destination">{{ context.action }}</router-link>
+        <router-link class="site-button outline" to="/help">查看帮助</router-link>
       </div>
     </section>
 
-    <section class="demo">
-      <span>演示态切换（真实内容由先审后发状态决定）：</span>
-      <button
-        v-for="s in ['PUBLISHED', 'DRAFT', 'REJECTED', 'TAKEDOWN', 'DELETED'] as const"
-        :key="s"
-        type="button"
-        :class="{ on: state === s }"
-        :data-testid="`state-${s}`"
-        @click="demoSet(s)"
-      >
-        {{ s }}
-      </button>
-    </section>
+    <p class="footnote">请以原应用内的当前状态为准。若内容后续接入公开数据源，此页面仍需再次核验发布状态、可见范围和来源后才能展示。</p>
   </div>
 </template>
 
 <style scoped>
-.share { max-width: 720px; margin: 40px auto; padding: 0 24px; display: grid; gap: 18px; }
-.card { background: #fff; border-radius: 28px; box-shadow: 0 16px 40px rgba(43,33,24,.08); padding: 36px 32px; display: grid; gap: 14px; }
-.head { display: flex; gap: 10px; align-items: center; }
-.chip { background: #fff1e8; color: #ff7a2f; border-radius: 999px; padding: 4px 14px; font-size: 13px; font-weight: 600; }
-.unavail-tag { background: #f0e6dc; color: #7a6e63; border-radius: 999px; padding: 4px 12px; font-size: 12px; }
-h1 { margin: 0; font-size: 28px; line-height: 1.4; }
-h1.muted { color: #a89b8f; text-decoration: line-through; text-decoration-color: #e5ddd3; }
-.meta { margin: 0; color: #7a6e63; font-size: 14px; }
-.source { margin: 0; color: #a89b8f; font-size: 12px; padding-top: 8px; border-top: 1px dashed #f0e6dc; }
-.body p { color: #7a6e63; font-size: 15px; line-height: 1.8; }
-.actions { display: flex; gap: 12px; flex-wrap: wrap; }
-.primary { background: #ff7a2f; color: #fff; border-radius: 999px; padding: 13px 26px; text-decoration: none; font-weight: 600; }
-.ghost { background: #fff; color: #7a6e63; border-radius: 999px; padding: 13px 26px; text-decoration: none; box-shadow: inset 0 0 0 1px #f0e6dc; }
-.unavailable { background: #faf7f3; border-radius: 16px; padding: 20px; display: grid; gap: 14px; }
-.copy { margin: 0; color: #7a6e63; font-size: 15px; line-height: 1.8; }
-.demo { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; color: #7a6e63; font-size: 13px; }
-.demo button { height: 30px; padding: 0 12px; border: none; border-radius: 999px; background: #fff; color: #7a6e63; box-shadow: inset 0 0 0 1px #f0e6dc; font-size: 12px; cursor: pointer; }
-.demo button.on { background: #ff7a2f; color: #fff; font-weight: 600; box-shadow: none; }
+.share { padding-block: 32px 88px; }
+.crumb { display: flex; align-items: center; gap: 10px; color: var(--site-muted); font-size: 13px; }
+.crumb a { color: inherit; text-decoration: none; }
+.crumb a:hover { color: var(--site-action); text-decoration: underline; }
+.card { position: relative; overflow: hidden; max-width: 850px; margin: clamp(48px, 7vw, 96px) auto 0; padding: clamp(32px, 6vw, 68px); border: 1px solid var(--site-line); border-radius: 28px; background: #fff; box-shadow: 0 20px 54px rgba(43, 33, 24, .06); }
+.card::after { content: ''; position: absolute; right: -100px; top: -120px; width: 300px; aspect-ratio: 1; border-radius: 50%; background: var(--site-soft); pointer-events: none; }
+.card > * { position: relative; z-index: 1; }
+.mark { display: grid; place-items: center; width: 62px; height: 62px; margin-bottom: 30px; border-radius: 18px; background: var(--site-soft); color: var(--site-action); font-size: 42px; }
+.card h1 { max-width: 650px; }
+.lead { max-width: 640px; margin: 20px 0 0; color: var(--site-muted); font-size: 16px; line-height: 1.9; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 30px; }
+.footnote { max-width: 800px; margin: 26px auto 0; color: var(--site-muted); font-size: 13px; line-height: 1.8; }
+@media (max-width: 760px) {
+  .share { padding-block: 22px 66px; }
+  .card { margin-top: 50px; }
+  .card::after { width: 220px; right: -110px; top: -95px; }
+  .actions .site-button { width: 100%; }
+}
 </style>

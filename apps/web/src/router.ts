@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { safeReturnPath } from './domain/auth';
 
 /**
  * 用户端 Web 路由总表（信息架构 §4 站点地图）。
@@ -87,13 +88,9 @@ export const router = createRouter({
 });
 
 /** 登录闸门（T7.1）：未登录写操作 → 携安全回跳进 /login（U93 由 safeReturnPath 保证） */
-export function requireLogin(
-  loggedIn: boolean,
-  currentPath: string,
-  action: string,
-): string | '/login' {
-  if (loggedIn) return '/login';
-  const sep = currentPath.includes('?') ? '&' : '?';
-  const target = encodeURIComponent(currentPath);
-  return `/login${sep}return=${target}&resume=${encodeURIComponent(action)}`;
+export function requireLogin(loggedIn: boolean, currentPath: string, action: string): string {
+  const target = safeReturnPath(currentPath);
+  if (loggedIn) return target;
+  const query = new URLSearchParams({ return: target, resume: action.slice(0, 80) });
+  return '/login?' + query.toString();
 }

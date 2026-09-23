@@ -5,7 +5,6 @@ import { RULE_DOCS } from '../../domain/settings';
 const router = useRouter();
 
 const items = [
-  { label: '资料与养宠标签', to: '/settings' },
   { label: '隐私设置', to: '/settings/privacy' },
   { label: '通知设置', to: '/settings/notifications' },
   { label: '数据导出', to: '/settings/export' },
@@ -19,6 +18,8 @@ const items = [
       <button type="button" class="back" @click="router.push('/me')">‹ 我的</button>
       <h1>设置</h1>
     </header>
+
+    <p class="intro">查看账号、隐私和通知能力的当前状态。尚未接通平台保存的选项会在对应页面说明。</p>
 
     <ul class="group">
       <li v-for="it in items" :key="it.to">
@@ -44,8 +45,9 @@ const items = [
 <style scoped>
 .settings { max-width: 640px; margin: 0 auto; padding: 24px 16px; display: grid; gap: 14px; }
 header { display: flex; gap: 12px; align-items: center; }
-.back { background: none; border: none; color: #ff7a2f; }
+.back { background: none; border: none; color: #b85111; }
 .group { list-style: none; padding: 0; display: grid; gap: 8px; margin: 0; }
 .group button { width: 100%; text-align: left; height: 48px; background: #fff; border: none; box-shadow: inset 0 0 0 1px #f0e6dc; border-radius: 12px; padding: 0 16px; font-size: 14px; color: #2b2118; }
 .group .danger { color: #ef4444; }
+.intro { margin: 0 0 8px; color: #64574d; font-size: 14px; line-height: 1.7; }
 </style>

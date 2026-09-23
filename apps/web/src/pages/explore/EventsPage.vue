@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue';
 import { api } from '@cutepet/api-client';
-import { signupBlockers, signupDenyCopyFallback, CONSENT_TEXT } from '../../domain/exploreSignupPage';
-
-const router = useRouter();
 
 interface Activity {
   id: number;
@@ -12,271 +8,146 @@ interface Activity {
   city: string;
   type: string;
   beginsAt: string;
-  quota: number;
+  endsAt?: string;
+  address?: string;
+  quota?: number;
+  signupDeadline?: string | null;
   state: string;
 }
+interface Adoption {
+  id: number;
+  city: string;
+  title: string;
+  content: string;
+  expireOn: string | null;
+}
 
-const items = ref<Activity[]>([]);
-const error = ref('');
 const tab = ref<'活动' | '领养'>('活动');
-const consentOpen = ref<number | null>(null);
-const consentChecked = ref(false);
-const message = ref('');
+const activities = ref<Activity[]>([]);
+const adoptions = ref<Adoption[]>([]);
+const activeId = ref<number | null>(null);
+const loading = ref(false);
+const error = ref('');
+const loadedActivities = ref(false);
+const loadedAdoptions = ref(false);
+let latestRequest = 0;
 
-const loggedIn = ref(false); // 会话态接线随本地阶段
-
-onMounted(async () => {
-  try {
-    items.value = (await api.activitiesList()) as unknown as Activity[];
-  } catch (e) {
-    error.value = e instanceof Error ? e.message : '加载失败（dev 需启动 explore-service）';
-  }
-});
-
-function beginSignup(a: Activity) {
-  const deny = signupBlockers({ loggedIn: loggedIn.value, state: a.state, beginsAt: a.beginsAt });
-  if (deny) {
-    message.value = signupDenyCopyFallback(deny);
-    return;
-  }
-  consentChecked.value = false;
-  consentOpen.value = a.id;
+function dateTime(value?: string | null): string {
+  if (!value) return '时间待公布';
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? value.replace('T', ' ') : date.toLocaleString('zh-CN', { hour12: false });
 }
-
-async function confirmSignup() {
-  const a = items.value.find((x) => x.id === consentOpen.value);
-  if (!a || !consentChecked.value) return;
+async function loadActivities() {
+  const request = ++latestRequest;
+  loading.value = true;
+  loadedActivities.value = false;
+  error.value = '';
   try {
-    await api.activitySignup({
-      path: { id: String(a.id) },
-      body: {
-        name: '我',
-        phone: '13800000000',
-        consentVersion: 'v1-2026',
-        consentAt: new Date().toISOString(),
-      },
-    });
-    message.value = '报名成功（同意凭证已记录），凭证见消息中心。';
-    consentOpen.value = null;
-  } catch (e) {
-    message.value = e instanceof Error ? e.message : '报名失败';
+    const response = await api.activitiesList();
+    if (request !== latestRequest) return;
+    if (!Array.isArray(response)) throw new Error('活动列表格式不完整，请稍后重试。');
+    activities.value = response as Activity[];
+    loadedActivities.value = true;
+  } catch (cause) {
+    if (request !== latestRequest) return;
+    error.value = cause instanceof Error ? cause.message : '活动加载失败，请稍后重试。';
+  } finally {
+    if (request === latestRequest) loading.value = false;
   }
 }
-
-const activeTab = computed(() => tab.value);
-void activeTab;
+async function loadAdoptions() {
+  const request = ++latestRequest;
+  loading.value = true;
+  loadedAdoptions.value = false;
+  error.value = '';
+  try {
+    const response = await api.adoptionsList();
+    if (request !== latestRequest) return;
+    if (!Array.isArray(response)) throw new Error('领养列表格式不完整，请稍后重试。');
+    adoptions.value = response as Adoption[];
+    loadedAdoptions.value = true;
+  } catch (cause) {
+    if (request !== latestRequest) return;
+    error.value = cause instanceof Error ? cause.message : '领养信息加载失败，请稍后重试。';
+  } finally {
+    if (request === latestRequest) loading.value = false;
+  }
+}
+function selectTab(next: '活动' | '领养') {
+  if (tab.value === next) return;
+  ++latestRequest;
+  tab.value = next;
+  error.value = '';
+  loading.value = false;
+  if (next === '领养' && !loadedAdoptions.value) void loadAdoptions();
+  if (next === '活动' && !loadedActivities.value) void loadActivities();
+}
+function retry() {
+  if (tab.value === '活动') void loadActivities();
+  else void loadAdoptions();
+}
+onMounted(() => void loadActivities());
 </script>
 
 <template>
   <div class="events">
-    <header>
-      <h1>本地活动</h1>
-      <nav class="tabs">
-        <button type="button" :class="{ on: tab === '活动' }" @click="tab = '活动'">活动</button>
-        <button type="button" :class="{ on: tab === '领养' }" data-testid="adoption-tab" @click="tab = '领养'">
-          领养
-        </button>
-      </nav>
-    </header>
-
-    <p v-if="error" class="err">{{ error }}</p>
-    <p v-if="message" class="msg" data-testid="signup-msg">{{ message }}</p>
-
-    <!-- 活动列表 -->
-    <ul v-if="tab === '活动'" class="list">
-      <li v-for="a in items" :key="a.id" class="card">
-        <div class="date">{{ a.beginsAt.slice(5, 10) }}</div>
-        <div>
-          <strong>{{ a.title }}</strong>
-          <p class="meta">{{ a.city }} · {{ a.type }} · 报名至开始前（90 天窗口规则）</p>
-        </div>
-        <button type="button" class="primary" :data-testid="`signup-${a.id}`" @click="beginSignup(a)">
-          立即报名
-        </button>
-      </li>
-      <li v-if="items.length === 0 && !error" class="muted">暂无已发布活动</li>
-    </ul>
-
-    <!-- 领养（U90：无报名/交易按钮） -->
-    <div v-else class="adoption">
-      <p class="notice" data-testid="adoption-notice">
-        ⚠️ 领养信息仅作展示与联系——<strong>无报名、无交易按钮</strong>；请核验检疫证明、防范诈骗，建议签订领养协议。
-      </p>
-      <p class="muted">领养列表随接口填充；过 30 天未确认自动停止公开（U90）。发现售卖信息请走举报。</p>
-      <button
-        type="button"
-        class="ghost"
-        @click="alert('举报面板：SELLING_SUSPECTED → 处置可追溯（U90）')"
-      >
-        🚩 举报售卖嫌疑
-      </button>
-    </div>
-
-    <!-- 报名：先弹告知同意（合规 B4） -->
-    <div v-if="consentOpen !== null" class="mask" @click.self="consentOpen = null">
-      <div class="dialog" data-testid="consent-card">
-        <h3>报名信息告知同意</h3>
-        <p>{{ CONSENT_TEXT }}</p>
-        <label class="agree">
-          <input v-model="consentChecked" type="checkbox" data-testid="consent-check" />
-          我已阅读并同意
-        </label>
-        <div class="actions">
-          <button type="button" class="ghost" @click="consentOpen = null">取消</button>
-          <button
-            type="button"
-            class="primary"
-            :disabled="!consentChecked"
-            data-testid="confirm-signup"
-            @click="confirmSignup"
-          >
-            确认报名
-          </button>
-        </div>
+    <div class="heading">
+      <div>
+        <p class="eyebrow">LOCAL LIFE · 本地生活</p>
+        <h1>活动与领养信息</h1>
+        <p class="lede">查看已公开的信息，安排和宠物一起出门的时间。</p>
       </div>
+      <nav class="tabs" aria-label="信息类别">
+        <button type="button" :aria-current="tab === '活动' ? 'page' : undefined" :class="{ on: tab === '活动' }" @click="selectTab('活动')">活动</button>
+        <button type="button" :aria-current="tab === '领养' ? 'page' : undefined" :class="{ on: tab === '领养' }" data-testid="adoption-tab" @click="selectTab('领养')">领养</button>
+      </nav>
     </div>
+
+    <p v-if="error" class="status error" role="alert">{{ error }} <button type="button" @click="retry">重试</button></p>
+    <p v-else-if="loading" class="status" role="status">正在读取{{ tab }}信息…</p>
+
+    <template v-if="tab === '活动'">
+      <p id="signup-reason" class="notice" data-testid="signup-msg">报名暂未开放：身份认证、活动发布方告知文本和有效同意版本尚未接通。下方仅展示已发布活动；请勿在页面外发送个人信息报名。</p>
+      <ul v-if="!loading && !error" class="list">
+        <li v-for="activity in activities" :key="activity.id" class="card">
+          <div class="date"><span>{{ activity.beginsAt?.slice(5, 7) || '—' }}月</span><strong>{{ activity.beginsAt?.slice(8, 10) || '—' }}</strong></div>
+          <div class="card-body">
+            <p class="kicker">{{ activity.city }} · {{ activity.type }}</p>
+            <h2>{{ activity.title }}</h2>
+            <p class="meta">{{ dateTime(activity.beginsAt) }}<span v-if="activity.address"> · {{ activity.address }}</span></p>
+            <button type="button" class="detail-btn" :aria-expanded="activeId === activity.id" @click="activeId = activeId === activity.id ? null : activity.id">{{ activeId === activity.id ? '收起信息' : '查看信息' }}</button>
+            <div v-if="activeId === activity.id" class="detail">
+              <p v-if="activity.endsAt">结束时间：{{ dateTime(activity.endsAt) }}</p>
+              <p v-if="activity.signupDeadline">报名截止：{{ dateTime(activity.signupDeadline) }}</p>
+              <p v-if="activity.quota">名额上限：{{ activity.quota }} 人；剩余名额以服务端为准。</p>
+              <p>发布状态：{{ activity.state === 'PUBLISHED' ? '已发布' : '状态待核验' }}</p>
+            </div>
+          </div>
+          <button type="button" class="disabled-action" :data-testid="'signup-' + activity.id" disabled aria-describedby="signup-reason">报名待接入</button>
+        </li>
+        <li v-if="activities.length === 0" class="empty">目前没有已发布活动。稍后可以重试。</li>
+      </ul>
+    </template>
+
+    <template v-else>
+      <p class="notice" data-testid="adoption-notice">领养信息仅供了解，请自行核验发布方及检疫材料。平台尚未接通安全的联系与举报流程，请勿通过本页支付费用或发送证件信息。</p>
+      <ul v-if="!loading && !error" class="list">
+        <li v-for="adoption in adoptions" :key="adoption.id" class="card adoption-card">
+          <div class="adoption-icon" aria-hidden="true">♡</div>
+          <div class="card-body">
+            <p class="kicker">{{ adoption.city }} · 领养信息</p>
+            <h2>{{ adoption.title }}</h2>
+            <p class="adoption-content">{{ adoption.content }}</p>
+            <p v-if="adoption.expireOn" class="meta">信息有效期至 {{ adoption.expireOn }}</p>
+          </div>
+        </li>
+        <li v-if="adoptions.length === 0" class="empty">目前没有公开的领养信息。</li>
+      </ul>
+      <p class="support-note">举报入口将在身份校验与受理回执接通后开放。发现疑似售卖，请暂勿与发布方交易。</p>
+    </template>
   </div>
 </template>
 
 <style scoped>
-.events {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 24px 16px;
-}
-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.tabs {
-  display: flex;
-  gap: 4px;
-  background: #f7f1ea;
-  border-radius: 999px;
-  padding: 4px;
-}
-.tabs button {
-  border: none;
-  background: none;
-  height: 30px;
-  padding: 0 14px;
-  border-radius: 999px;
-  color: #7a6e63;
-}
-.tabs button.on {
-  background: #fff;
-  color: #ff7a2f;
-  font-weight: 600;
-}
-.list {
-  list-style: none;
-  padding: 0;
-  display: grid;
-  gap: 10px;
-  margin-top: 12px;
-}
-.card {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: inset 0 0 0 1px #f0e6dc;
-  padding: 14px 16px;
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-.date {
-  background: #fff1e8;
-  color: #ff7a2f;
-  font-weight: 700;
-  border-radius: 12px;
-  padding: 8px 10px;
-  font-size: 14px;
-}
-.primary {
-  margin-left: auto;
-  height: 36px;
-  padding: 0 16px;
-  border: none;
-  border-radius: 999px;
-  background: #ff7a2f;
-  color: #fff;
-  font-weight: 600;
-}
-.primary:disabled {
-  opacity: 0.4;
-}
-.meta {
-  color: #7a6e63;
-  font-size: 13px;
-}
-.notice {
-  background: #fdecec;
-  color: #b91c1c;
-  border-radius: 12px;
-  padding: 12px 14px;
-  font-size: 13px;
-  line-height: 1.7;
-}
-.muted {
-  color: #7a6e63;
-  font-size: 14px;
-}
-.msg {
-  color: #22c55e;
-  font-size: 13px;
-}
-.mask {
-  position: fixed;
-  inset: 0;
-  background: rgba(43, 33, 24, 0.45);
-  display: grid;
-  place-items: center;
-  z-index: 50;
-}
-.dialog {
-  width: min(420px, calc(100vw - 48px));
-  background: #fff;
-  border-radius: 20px;
-  padding: 24px;
-  display: grid;
-  gap: 12px;
-}
-.agree {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  font-size: 14px;
-}
-.actions {
-  display: flex;
-  gap: 12px;
-}
-.actions button {
-  flex: 1;
-  height: 44px;
-  border: none;
-  border-radius: 999px;
-  font-weight: 600;
-}
-.ghost {
-  background: #fff;
-  color: #7a6e63;
-  box-shadow: inset 0 0 0 1px #f0e6dc;
-}
-.actions .primary:disabled {
-  opacity: 0.4;
-}
-.ghost:not(.actions .ghost) {
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px #f0e6dc;
-  background: #fff;
-  color: #7a6e63;
-}
-.err {
-  color: #ef4444;
-  font-size: 13px;
-}
+.events{max-width:940px;margin:auto;padding:clamp(24px,4vw,48px) 20px 80px;color:#2b2118}.heading{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap}.eyebrow{color:#b45309;font-size:12px;font-weight:800;letter-spacing:.15em;margin:0 0 8px}h1{font-size:clamp(28px,4vw,42px);letter-spacing:-.03em;margin:0}.lede{color:#71675e;line-height:1.7;margin:10px 0 0}.tabs{display:flex;padding:4px;border-radius:999px;background:#f4eee7}.tabs button{border:0;background:transparent;padding:10px 22px;border-radius:999px;color:#665c53;cursor:pointer;font:inherit}.tabs button.on{background:#fff;color:#a64613;box-shadow:0 2px 12px #3a231312;font-weight:700}.notice,.status,.support-note{line-height:1.7;border-radius:14px;padding:14px 18px;margin:24px 0 18px}.notice{background:#fff5e9;color:#704323;border:1px solid #f6dec3}.status{background:#f5f1ec;color:#675d54}.error{background:#fff1ef;color:#a6372b}.error button,.detail-btn{border:0;background:none;color:#a64613;text-decoration:underline;cursor:pointer;font:inherit}.list{list-style:none;margin:0;padding:0;display:grid;gap:12px}.card{background:#fff;border:1px solid #eee3d8;border-radius:18px;box-shadow:0 8px 28px #3a23130a;padding:20px;display:flex;align-items:start;gap:20px}.date{min-width:64px;min-height:70px;border-radius:12px;background:#fff0df;color:#a64613;display:grid;place-content:center;text-align:center}.date span{font-size:12px}.date strong{font-size:25px;line-height:1.1}.card-body{flex:1;min-width:0}.kicker{margin:1px 0 7px;font-size:12px;color:#a64613;font-weight:700}.card h2{font-size:19px;margin:0 0 8px}.meta{color:#736a61;font-size:13px;line-height:1.6;margin:0}.detail-btn{margin-top:10px;padding:0}.detail{margin-top:12px;background:#faf7f3;padding:10px 14px;border-radius:10px;color:#5f554c;font-size:13px}.detail p{margin:5px 0}.disabled-action{background:#ede9e4;color:#756b62;border:0;border-radius:999px;padding:10px 14px;font:inherit;cursor:not-allowed}.adoption-icon{display:grid;place-items:center;width:64px;height:64px;border-radius:16px;background:#f2f9f0;color:#579267;font-size:29px;flex:none}.adoption-content{white-space:pre-line;line-height:1.7;color:#534b42;margin:0 0 8px;overflow-wrap:anywhere}.empty{padding:34px 20px;text-align:center;background:#fff;border:1px dashed #decfbe;border-radius:16px;color:#776a5d}.support-note{background:#f5f1ec;color:#655b52;font-size:13px}@media(max-width:640px){.heading{align-items:start}.tabs{width:100%}.tabs button{flex:1}.card{flex-wrap:wrap;gap:12px}.card-body{flex-basis:calc(100% - 84px)}.disabled-action{margin-left:76px}.adoption-card .card-body{flex-basis:calc(100% - 84px)}}
 </style>

@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <title>照护记录与提醒 · cutePet 移动端设计稿</title>
+  <link rel="stylesheet" href="mobile.css">
+  <style>
+    .studio-intro .sequence { display:grid; gap:12px; margin:28px 0; padding:0; list-style:none; }
+    .sequence li { display:flex; align-items:center; gap:12px; color:#6f5e50; font-size:14px; font-weight:650; }
+    .sequence span { display:grid; place-items:center; width:30px; height:30px; flex:none; border-radius:50%; background:#fff; color:var(--action); font-size:12px; font-weight:850; }
+    .sequence li:first-child span { background:var(--action); color:#fff; }
+    .studio-guide .scenario-stack { display:grid; gap:8px; margin:16px 0 20px; }
+    .scenario-stack button { min-height:44px; padding:9px 13px; border:1px solid #e8d8c8; border-radius:12px; background:#fffaf5; color:#594336; text-align:left; font-size:13px; font-weight:700; }
+    .scenario-stack button:hover, .scenario-stack button:focus-visible { border-color:var(--action); color:var(--action); }
+    .review-strap { display:flex; align-items:center; justify-content:space-between; flex:none; gap:8px; padding:6px 15px; border-block:1px solid #f0dbc6; background:#fff2e4; color:#84400f; font-size:10px; font-weight:750; line-height:1.35; }
+    .review-strap span:first-child { display:flex; align-items:center; gap:5px; }
+    .review-strap [data-icon] svg { width:14px; height:14px; }
+    .review-strap strong { white-space:nowrap; }
+    .care-page { padding-bottom:20px; }
+    .care-topline { display:flex; align-items:center; gap:8px; margin:-7px 0 15px; min-height:44px; }
+    .care-topline h1 { flex:1; margin:0; font-size:17px; font-weight:760; text-align:center; }
+    .care-topline .icon-button { color:#5b4a3d; }
+    .care-topline .spacer { width:44px; height:44px; flex:none; }
+    .pet-banner { position:relative; min-height:158px; padding:20px 18px; overflow:hidden; border:1px solid #f2d7bb; border-radius:24px; background:linear-gradient(135deg,#fff0dc 0%,#ffe2c2 100%); }
+    .pet-banner::after { content:""; position:absolute; width:200px; height:200px; right:-65px; bottom:-105px; border-radius:50%; background:rgba(255,255,255,.43); }
+    .pet-banner .eyebrow { position:relative; z-index:1; }
+    .pet-banner h2 { position:relative; z-index:1; margin:13px 0 2px; font-size:28px; letter-spacing:-.06em; line-height:1.25; }
+    .pet-banner p { position:relative; z-index:1; margin:0; color:#715646; font-size:13px; }
+    .dog-art { position:absolute; z-index:1; right:11px; bottom:-7px; width:144px; height:140px; }
+    .dog-art .face { position:absolute; left:31px; top:34px; width:91px; height:91px; border-radius:47% 47% 44% 44%; background:#c9854a; box-shadow:inset -12px -8px 0 rgba(116,59,26,.08); }
+    .dog-art .ear { position:absolute; z-index:-1; top:19px; width:43px; height:72px; border-radius:50% 50% 45% 45%; background:#97582e; }
+    .dog-art .ear.left { left:19px; transform:rotate(-29deg); }
+    .dog-art .ear.right { right:4px; transform:rotate(27deg); }
+    .dog-art .muzzle { position:absolute; left:54px; top:79px; width:49px; height:37px; border-radius:50%; background:#f8d6ac; }
+    .dog-art .nose { position:absolute; left:74px; top:83px; width:13px; height:9px; border-radius:50% 50% 60% 60%; background:#493328; }
+    .dog-art .eye { position:absolute; top:68px; width:7px; height:9px; border-radius:50%; background:#3d2a20; }
+    .dog-art .eye.left { left:58px; }.dog-art .eye.right { left:97px; }
+    .dog-art .cheek { position:absolute; top:84px; width:10px; height:6px; border-radius:50%; background:rgba(229,112,82,.6); }
+    .dog-art .cheek.left { left:45px; }.dog-art .cheek.right { left:105px; }
+    .pet-facts { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:11px; }
+    .pet-facts div { padding:10px 8px; border:1px solid var(--line); border-radius:14px; background:#fff; text-align:center; }
+    .pet-facts strong { display:block; font-size:14px; line-height:1.3; }.pet-facts span { display:block; margin-top:3px; color:var(--muted); font-size:11px; }
+    .task-feature { display:flex; align-items:flex-start; gap:12px; width:100%; padding:15px; border:1px solid #f3d4b8; border-radius:17px; background:#fff7ed; text-align:left; color:var(--ink); }
+    .task-feature .icon-box { display:grid; place-items:center; flex:none; width:39px; height:39px; border-radius:12px; background:#ffe4cc; color:var(--action); }
+    .task-feature .icon-box svg { width:21px; height:21px; }
+    .task-feature strong { display:block; font-size:15px; }.task-feature small { display:block; margin-top:3px; color:#765d4b; font-size:12px; line-height:1.45; }
+    .task-feature .chev { flex:none; margin-left:auto; color:var(--action); }
+    .care-segments { display:grid; grid-template-columns:repeat(4,1fr); gap:3px; margin:19px 0 13px; padding:4px; border-radius:13px; background:#f2eae3; }
+    .care-segments button { min-height:44px; padding:5px 2px; border:0; border-radius:10px; background:transparent; color:#806e61; font-size:12px; font-weight:700; }
+    .care-segments button[aria-selected="true"] { background:#fff; color:var(--action); box-shadow:0 2px 9px rgba(84,53,29,.08); }
+    .timeline-item { display:flex; gap:11px; padding:12px 0; border-top:1px solid var(--line); }
+    .timeline-item:first-child { border-top:0; }.timeline-dot { position:relative; display:grid; place-items:center; flex:none; width:31px; height:31px; border-radius:10px; background:var(--orange-soft); color:var(--action); }
+    .timeline-dot svg { width:17px; height:17px; }.timeline-item strong { display:block; font-size:13px; }.timeline-item p { margin:2px 0 0; color:var(--muted); font-size:11px; line-height:1.5; }
+    .timeline-item time { margin-left:auto; color:var(--quiet); font-size:11px; white-space:nowrap; }
+    .pet-section-title { margin:0 0 11px; font-size:15px; font-weight:800; }
+    .card-mini-link { width:100%; min-height:53px; display:flex; align-items:center; gap:10px; padding:11px 13px; border:1px solid var(--line); border-radius:14px; background:#fff; text-align:left; color:var(--ink); font-size:13px; font-weight:720; }
+    .card-mini-link .right { margin-left:auto; color:var(--action); font-size:12px; }
+    .due-head { padding:19px 17px 17px; border:1px solid #f3d5b9; border-radius:20px; background:linear-gradient(135deg,#fff7ed,#fff1e3); }
+    .due-head .due-meta { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .due-head h2 { margin:10px 0 3px; font-size:23px; letter-spacing:-.04em; }.due-head p { margin:0; color:#765e4e; font-size:13px; }
+    .big-time { display:flex; align-items:center; gap:8px; margin-top:14px; color:var(--action); font-size:14px; font-weight:800; }
+    .big-time svg { width:18px; height:18px; }
+    .obj-label { display:flex; align-items:center; gap:7px; color:#8d6f59; font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+    .obj-label .bar { display:block; width:4px; height:13px; border-radius:4px; background:var(--primary); }
+    .obj-label.plan .bar { background:var(--purple); }
+    .detail-grid { display:grid; grid-template-columns:1fr auto; gap:10px; margin:10px 0 0; font-size:13px; }
+    .detail-grid dt { color:var(--muted); }.detail-grid dd { margin:0; text-align:right; font-weight:700; }
+    .info-strip { display:flex; gap:9px; align-items:flex-start; padding:11px 12px; border-radius:13px; background:#f4f7fb; color:#51677c; font-size:12px; line-height:1.55; }
+    .info-strip svg { flex:none; width:18px; height:18px; margin-top:1px; }
+    .choice-row { display:flex; align-items:center; gap:11px; width:100%; min-height:63px; padding:12px 13px; border:1.5px solid var(--line); border-radius:14px; background:#fff; color:var(--ink); text-align:left; }
+    .choice-row + .choice-row { margin-top:9px; }.choice-row[aria-checked="true"] { border-color:var(--action); background:#fff8f0; }
+    .choice-row .radio { display:grid; place-items:center; flex:none; width:21px; height:21px; border:1.5px solid #bda694; border-radius:50%; background:#fff; }
+    .choice-row[aria-checked="true"] .radio { border-color:var(--action); }.choice-row[aria-checked="true"] .radio::after { content:""; width:11px; height:11px; border-radius:50%; background:var(--action); }
+    .choice-row strong { display:block; font-size:13px; }.choice-row small { display:block; color:var(--muted); font-size:11px; }
+    .form-split { display:grid; grid-template-columns:1fr 1fr; gap:10px; }.form-split .field { min-width:0; }
+    .record-type-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:13px 0 0; }.record-type-row button { min-height:48px; border:1px solid var(--line); border-radius:13px; background:#fff; color:#715d4d; font-size:13px; font-weight:750; }
+    .record-type-row button[aria-pressed="true"] { border-color:var(--action); background:var(--orange-soft); color:var(--action); }
+    .record-type-row svg { width:17px; height:17px; vertical-align:-3px; margin-right:3px; }
+    .baseline { display:flex; gap:10px; align-items:center; padding:12px 13px; border-radius:13px; background:#f7f0e9; color:#5f4b3d; font-size:12px; }.baseline strong { color:var(--ink); }
+    .preview-step { display:flex; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid var(--line); }.preview-step:last-child { border-bottom:0; }
+    .preview-step .step-icon { display:grid; place-items:center; flex:none; width:31px; height:31px; border-radius:10px; background:var(--orange-soft); color:var(--action); }.preview-step .step-icon.purple { background:var(--purple-soft); color:var(--purple); }.preview-step .step-icon svg { width:18px; height:18px; }
+    .preview-step strong { display:block; font-size:13px; line-height:1.4; }.preview-step small { display:block; color:var(--muted); font-size:11px; line-height:1.5; }
+    .preview-step .not-yet { margin-left:auto; color:var(--quiet); font-size:11px; font-weight:720; }
+    .prototype-control { padding:14px; border:1px dashed #d2b69d; border-radius:15px; background:#fffaf5; }
+    .prototype-control strong { display:block; font-size:12px; color:#6c4b33; }.prototype-control p { margin:4px 0 9px; color:#846b5a; font-size:11px; line-height:1.5; }
+    .prototype-control select { width:100%; min-height:45px; padding:7px 10px; border:1px solid #d9c1ad; border-radius:11px; background:#fff; color:#4b3a2d; font-size:13px; }
+    .result-visual { display:grid; place-items:center; width:74px; height:74px; margin:18px auto 14px; border-radius:24px; background:var(--green-soft); color:var(--green); }.result-visual svg { width:38px; height:38px; }
+    .result-visual.warn { background:var(--orange-soft); color:var(--action); }.result-visual.bad { background:var(--danger-soft); color:var(--danger); }.result-visual.blue { background:var(--blue-soft); color:var(--blue); }
+    .result-title { margin:0; font-size:24px; line-height:1.3; text-align:center; letter-spacing:-.045em; }.result-lede { margin:7px auto 0; max-width:290px; color:var(--muted); text-align:center; font-size:13px; line-height:1.65; }
+    .result-conditions { display:grid; gap:9px; margin-top:22px; }.condition-row { display:flex; align-items:center; gap:9px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:#fff; font-size:12px; font-weight:680; }.condition-row svg { width:17px; height:17px; color:var(--green); }.condition-row.pending svg { color:var(--quiet); }
+    .result-person { display:flex; align-items:center; gap:10px; padding:13px; border-radius:14px; background:#fff5ea; font-size:13px; }.mini-avatar { display:grid; place-items:center; width:34px; height:34px; flex:none; border-radius:50%; background:#efcab5; color:#74412f; font-size:15px; font-weight:850; }
+    .sync-row { display:flex; align-items:flex-start; gap:11px; padding:13px 0; border-top:1px solid var(--line); }.sync-row:first-child { border-top:0; }.sync-row .sync-symbol { display:grid; place-items:center; width:30px; height:30px; flex:none; border-radius:10px; background:var(--orange-soft); color:var(--action); }.sync-row .sync-symbol svg { width:17px; height:17px; }.sync-row strong { display:block; font-size:13px; }.sync-row p { margin:3px 0 0; color:var(--muted); font-size:11px; line-height:1.55; }.sync-row .pill { margin-left:auto; }
+    .result-actions { display:grid; gap:8px; margin-top:18px; }
+    .sheet .sheet-actions { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:18px; }.sheet .sheet-actions button { min-height:46px; }
+    .empty-record { padding:22px 17px; color:var(--muted); text-align:center; font-size:13px; }
+    .empty-record [data-icon] { display:grid; place-items:center; width:52px; height:52px; margin:0 auto 8px; border-radius:16px; background:var(--orange-soft); color:var(--action); }
+    @media (max-width:850px) { .review-strap { padding-top:calc(6px + env(safe-area-inset-top, 0px)); } .screen { padding-top:0; } }
+  </style>
+</head>
+<body>
+  <main class="studio">
+    <aside class="studio-intro" aria-label="稿件说明">
+      <span class="studio-kicker">cutePet · Mobile / Care Loop</span>
+      <h1>把每一次照护，<br>稳稳接住。</h1>
+      <p>从“今天该做什么”，到“谁做了、留下什么记录、下次何时再做”。手机上的每一步都让家人看得清楚。</p>
+      <ol class="sequence">
+        <li><span>01</span>看见本次待办</li>
+        <li><span>02</span>补齐健康记录</li>
+        <li><span>03</span>确认下一次安排</li>
+        <li><span>04</span>同步给有权限的家人</li>
+      </ol>
+      <p class="caption">这是一份可交互的设计评审稿。屏幕中的宠物、日期、记录与处理结果均为示例。</p>
+      <nav class="studio-links" aria-label="其他移动端设计稿">
+        <a href="index.html#home">移动端首页 →</a>
+        <a href="index.html#me">我的与家庭 →</a>
+      </nav>
+    </aside>
+
+    <div class="phone" id="phone" aria-label="cutePet 移动端照护原型">
+      <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="device-status">●●● <span class="battery"></span></span></div>
+      <div class="review-strap" role="status"><span><span data-icon="info"></span>设计演示 · 示例数据</span><strong>无真实保存 / 通知</strong></div>
+      <div class="screen" id="screen">
+        <section class="page care-page" id="view-pet" data-view="pet" aria-labelledby="pet-title">
+          <div class="care-topline"><a class="icon-button" href="index.html#home" aria-label="返回首页"><span data-icon="chevronLeft"></span></a><h1 id="pet-title">宠物档案</h1><span class="spacer"></span></div>
+          <div class="pet-banner"><p class="eyebrow">我的宠物 · 示例</p><h2>旺财</h2><p>柯基 · 2 岁 · 到家 690 天</p><div class="dog-art" aria-hidden="true"><span class="ear left"></span><span class="ear right"></span><span class="face"></span><span class="eye left"></span><span class="eye right"></span><span class="muzzle"></span><span class="nose"></span><span class="cheek left"></span><span class="cheek right"></span></div></div>
+          <div class="pet-facts"><div><strong id="pet-weight-stat">12.5 kg</strong><span>最近体重</span></div><div><strong>1 项</strong><span>今日待办</span></div><div><strong>3 位</strong><span>家庭成员</span></div></div>
+          <div class="section-head"><h2>今天的照护</h2><span class="pill orange" id="pet-task-pill">待处理</span></div>
+          <button class="task-feature" type="button" data-go="todo"><span class="icon-box" data-icon="bell"></span><span><strong id="pet-task-title">疫苗加强针</strong><small id="pet-task-sub">今天 18:00 · 旺财 · 点此查看本次待办</small></span><span class="chev" data-icon="chevronRight"></span></button>
+          <div class="care-segments" role="tablist" aria-label="宠物详情分栏"><button type="button" role="tab" aria-selected="true" data-pet-tab="timeline">时间线</button><button type="button" role="tab" aria-selected="false" data-pet-tab="health">健康记录</button><button type="button" role="tab" aria-selected="false" data-pet-tab="reminders">提醒</button><button type="button" role="tab" aria-selected="false" data-pet-tab="profile">档案</button></div>
+          <div data-pet-panel="timeline"><h3 class="pet-section-title">照护时间线</h3><div class="card card-pad"><div class="timeline-item" id="extra-vaccine-timeline" hidden><span class="timeline-dot" data-icon="medicine"></span><div><strong>新增疫苗记录</strong><p id="extra-vaccine-timeline-note">我记录 · 已关联本次待办</p></div><time>今天</time></div><div class="timeline-item"><span class="timeline-dot" data-icon="medicine"></span><div><strong>疫苗加强针 · 已记录</strong><p id="timeline-vaccine-note">我记录 · 尚未关联本次待办</p></div><time>今天</time></div><div class="timeline-item"><span class="timeline-dot" data-icon="weight"></span><div><strong id="timeline-weight-title">体重 12.5 kg</strong><p id="timeline-weight-sub">我记录 · 较上次变化 +0.2 kg</p></div><time id="timeline-weight-time">9月18日</time></div><div class="timeline-item"><span class="timeline-dot" data-icon="medicine"></span><div><strong>驱虫记录</strong><p>妈妈记录 · 已有对应健康记录</p></div><time>9月03日</time></div></div></div>
+          <div data-pet-panel="health" hidden><h3 class="pet-section-title">健康记录</h3><div class="card card-pad"><div class="timeline-item" id="extra-vaccine-health" hidden><span class="timeline-dot" data-icon="medicine"></span><div><strong>新增疫苗记录</strong><p id="extra-vaccine-health-note">今天 · 我记录 · 已关联待办</p></div></div><div class="timeline-item"><span class="timeline-dot" data-icon="medicine"></span><div><strong>疫苗加强针</strong><p id="health-vaccine-note">今天 · 我记录 · 待关联</p></div></div><div class="timeline-item"><span class="timeline-dot" data-icon="weight"></span><div><strong id="health-weight-title">最近体重 · 12.5 kg</strong><p id="health-weight-note">9月18日 · 我记录</p></div></div><div class="timeline-item"><span class="timeline-dot" data-icon="medicine"></span><div><strong>驱虫</strong><p>9月03日 · 妈妈记录</p></div></div></div><button class="card-mini-link" type="button" data-open-record="weight" style="margin-top:10px"><span data-icon="plus"></span>新增体重记录<span class="right">去记录 →</span></button></div>
+          <div data-pet-panel="reminders" hidden><h3 class="pet-section-title">本次待办</h3><button class="card-mini-link" type="button" data-go="todo"><span data-icon="bell"></span>疫苗加强针 · 今天 18:00<span class="right" id="pet-reminder-status">待处理 →</span></button><h3 class="pet-section-title" style="margin-top:21px">提醒计划</h3><button class="card-mini-link" type="button" data-go="plan"><span data-icon="calendar"></span>疫苗 · 每 30 天<span class="right">查看计划 →</span></button><p class="caption muted" style="margin:9px 0 0">计划决定周期；本次待办记录这一回由谁处理。</p></div>
+          <div data-pet-panel="profile" hidden><h3 class="pet-section-title">档案资料</h3><div class="card card-pad"><dl class="detail-grid" style="margin:0"><dt>物种</dt><dd>犬</dd><dt>品种</dt><dd>柯基</dd><dt>生日</dt><dd>2024年8月18日</dd><dt>档案所有者</dt><dd>我</dd><dt>共享</dt><dd>仅授权家人可见</dd></dl></div></div>
+          <p class="demo-note" style="margin-top:18px">这是示例档案。切换上方分栏查看“健康记录”和“提醒计划”；不会读写真实宠物资料。</p>
+        </section>
+
+        <section class="page care-page" id="view-todo" data-view="todo" aria-labelledby="todo-title" hidden>
+          <div class="care-topline"><button class="icon-button" type="button" data-go="pet" aria-label="返回宠物档案"><span data-icon="chevronLeft"></span></button><h1 id="todo-title">本次待办</h1><span class="spacer"></span></div>
+          <div class="due-head"><div class="due-meta"><span class="obj-label"><span class="bar"></span>本次待办 · #T-0923</span><span class="pill orange" id="todo-status">待处理</span></div><h2>疫苗加强针</h2><p id="todo-subtitle">为旺财安排的这一回照护</p><div class="big-time"><span data-icon="clock"></span>今天 18:00</div></div>
+          <div class="section-head"><h2>完成需要什么？</h2></div>
+          <div class="card card-pad"><div class="preview-step"><span class="step-icon" data-icon="medicine"></span><span><strong>关联已有记录，或新建健康记录</strong><small>疫苗待办必须有对应照护记录</small></span></div><div class="preview-step"><span class="step-icon purple" data-icon="calendar"></span><span><strong>核对下一次时间</strong><small>本次确认后，才安排下期</small></span></div><div class="preview-step"><span class="step-icon" data-icon="users"></span><span><strong>同步处理结果</strong><small>家人能看到处理人和实际时间</small></span></div></div>
+          <div class="section-head"><h2>关联计划</h2><button type="button" data-go="plan">计划详情 →</button></div>
+          <div class="card card-pad"><div class="obj-label plan"><span class="bar"></span>提醒计划 · #P-008</div><dl class="detail-grid"><dt>周期</dt><dd>每 30 天</dd><dt>排期基准</dt><dd>本期计划日</dd><dt>当前状态</dt><dd>启用中</dd></dl></div>
+          <div class="info-strip" style="margin-top:15px"><span data-icon="bell"></span><span><strong>提醒通道示例：仅站内提醒。</strong>当前设计稿未接入系统通知，不能证明离站推送已送达。</span></div>
+        </section>
+
+        <section class="page care-page" id="view-plan" data-view="plan" aria-labelledby="plan-title" hidden>
+          <div class="care-topline"><button class="icon-button" type="button" data-go="todo" aria-label="返回本次待办"><span data-icon="chevronLeft"></span></button><h1 id="plan-title">提醒计划</h1><span class="spacer"></span></div>
+          <div class="card card-pad soft-purple"><div class="obj-label plan"><span class="bar"></span>计划 #P-008 · 启用中</div><h2 style="margin:9px 0 2px;font-size:22px">疫苗加强针</h2><p class="caption muted" style="margin:0">旺财 · 每 30 天 · 18:00</p></div>
+          <div class="section-head"><h2>计划与本次</h2></div>
+          <div class="card card-pad"><dl class="detail-grid" style="margin:0"><dt>排期基准</dt><dd>本期计划日</dd><dt>本次到期</dt><dd>9月23日 18:00</dd><dt>本次状态</dt><dd id="plan-current-status">待处理</dd><dt>下一次</dt><dd id="plan-next-status">本次结束后生成</dd></dl></div>
+          <p class="info-strip" style="margin-top:12px"><span data-icon="info"></span><span>如本次逾期，计划不会自动堆出一串待办；完成或跳过后再确定下一次。</span></p>
+          <div class="section-head"><h2>计划历史</h2></div><div class="card card-pad"><div class="timeline-item"><span class="timeline-dot" data-icon="check"></span><div><strong>8月24日 · 已完成</strong><p>我处理 · 关联疫苗记录</p></div></div><div class="timeline-item"><span class="timeline-dot" data-icon="calendar"></span><div><strong>9月23日 · 本次待办</strong><p>等待健康记录与完成确认</p></div></div></div>
+          <button class="secondary-button" type="button" data-go="todo" style="margin-top:17px">返回本次待办</button>
+        </section>
+
+        <section class="page care-page" id="view-record" data-view="record" aria-labelledby="record-title" hidden>
+          <div class="care-topline"><button class="icon-button" type="button" data-record-back aria-label="返回上一页"><span data-icon="chevronLeft"></span></button><h1 id="record-title">新增照护记录</h1><span class="spacer"></span></div>
+          <p class="eyebrow">旺财 · 健康记录</p><h2 class="page-title" style="font-size:22px;margin-top:6px">记下这一次</h2><p class="page-subtitle" id="record-context-copy">与疫苗待办同次确认，家人不会重复处理。</p>
+          <div class="record-type-row" role="group" aria-label="记录类型"><button type="button" data-kind="vaccine" aria-pressed="true"><span data-icon="medicine"></span>疫苗</button><button type="button" data-kind="weight" aria-pressed="false"><span data-icon="weight"></span>体重</button></div>
+          <div id="task-link-note" class="info-strip" style="margin-top:14px"><span data-icon="info"></span><span>切换到体重会变成独立记录，不会完成疫苗待办。</span></div>
+          <div id="vaccine-fields">
+            <div class="section-head"><h2>选择记录方式</h2></div>
+            <div role="radiogroup" aria-label="记录方式"><button class="choice-row" type="button" role="radio" aria-checked="true" data-mode="existing"><span class="radio"></span><span><strong>关联已有记录</strong><small>同一次照护已有记录时，避免重复录入</small></span></button><button class="choice-row" type="button" role="radio" aria-checked="false" data-mode="new"><span class="radio"></span><span><strong>新建疫苗记录</strong><small>记录发生日期、疫苗与补充说明</small></span></button></div>
+            <div id="existing-record" class="card card-pad" style="margin-top:13px"><div class="obj-label"><span class="bar"></span>选中的已有记录</div><div class="timeline-item" style="padding-bottom:0"><span class="timeline-dot" data-icon="medicine"></span><div><strong>疫苗加强针 · 9月23日</strong><p>我记录 · 尚未关联本次待办</p></div></div></div>
+            <div id="new-record-fields" hidden><div class="form-split"><div class="field"><label for="vaccine-date">实际发生日期</label><input id="vaccine-date" type="date" value="2026-09-23" max="2026-09-23"></div><div class="field"><label for="vaccine-time">实际时间</label><input id="vaccine-time" type="time" value="17:30"></div></div><div class="field"><label for="vaccine-name">疫苗名称 <span style="color:var(--danger)">*</span></label><input id="vaccine-name" type="text" value="加强针" placeholder="例如：加强针" maxlength="40"></div><div class="field"><label for="vaccine-note">补充说明</label><textarea id="vaccine-note" rows="3" placeholder="可补充机构、批次或反应（选填）"></textarea></div></div>
+          </div>
+          <div id="weight-fields" hidden><div class="section-head"><h2>体重信息</h2></div><div class="baseline"><span data-icon="weight"></span><span>上次记录 <strong id="baseline-weight">12.5 kg</strong> · <span id="baseline-date">9月18日</span></span></div><div class="form-split"><div class="field"><label for="weight-value">本次体重（kg）</label><input id="weight-value" type="number" value="14.2" step="0.1" min="0.1" inputmode="decimal"></div><div class="field"><label for="weight-date">实际发生日期</label><input id="weight-date" type="date" value="2026-09-23" max="2026-09-23"></div></div><p class="caption muted" style="margin-top:11px">变化达到 10% 时会先请你核对数字，不推断健康结论。</p></div>
+          <p id="record-error" class="field-error" role="alert" hidden></p>
+          <p class="demo-note" style="margin-top:18px">设计演示：表单只保存在当前页面内存中。真实保存需由平台返回确认。</p>
+        </section>
+
+        <section class="page care-page" id="view-preview" data-view="preview" aria-labelledby="preview-title" hidden>
+          <div class="care-topline"><button class="icon-button" type="button" data-go="record" aria-label="返回修改记录"><span data-icon="chevronLeft"></span></button><h1 id="preview-title">确认与预览</h1><span class="spacer"></span></div>
+          <p class="eyebrow">请核对 · 尚未提交</p><h2 class="page-title" style="font-size:23px;margin-top:6px">这次会留下什么？</h2>
+          <div class="section-head"><h2>本次照护</h2></div><div class="card card-pad" id="preview-summary"><div class="preview-step"><span class="step-icon" data-icon="medicine"></span><span><strong id="preview-record-title">关联疫苗记录</strong><small id="preview-record-sub">9月23日 · 旺财</small></span><span class="not-yet">待确认</span></div><div class="preview-step" id="preview-todo-line"><span class="step-icon purple" data-icon="check"></span><span><strong>完成本次疫苗待办</strong><small>#T-0923 · 处理人：我</small></span><span class="not-yet">待确认</span></div></div>
+          <div id="next-plan-block"><div class="section-head"><h2>下一次安排</h2></div><div class="card card-pad"><div class="obj-label plan"><span class="bar"></span>由疫苗计划生成 · 预览</div><div class="field" style="margin-top:8px"><label for="next-date">下次日期（北京时间）</label><input id="next-date" type="date" value="2026-10-23" min="2026-09-24"></div><p class="caption muted" style="margin:10px 0 0">沿用 18:00。你可以在确认前调整；只有本次完成后才生成下期待办。</p></div></div>
+          <p id="preview-error" class="field-error" role="alert" hidden></p>
+          <div class="prototype-control" style="margin-top:19px"><strong>交互演示控制 · 选择平台可能返回的结果</strong><p>这是评审工具，不发送任何记录，也不触发系统通知。</p><label class="sr-only" for="outcome-select">选择演示结果</label><select id="outcome-select"><option value="success">健康记录和待办同时确认</option><option value="conflict">家人已先完成本次待办</option><option value="failure">提交失败，保留当前输入</option><option value="offline">离线，仅保存新记录草稿</option><option value="lost">共享权限已失效，清理敏感草稿</option></select><p id="outcome-hint" style="margin:8px 0 0">已有关联记录无法离线完成待办；若要体验离线草稿，请选择“新建疫苗记录”。</p></div>
+        </section>
+
+        <section class="page care-page" id="view-result" data-view="result" aria-labelledby="result-title" hidden>
+          <div class="care-topline"><button class="icon-button" type="button" data-go="pet" aria-label="返回宠物档案"><span data-icon="close"></span></button><h1 id="result-title">处理结果</h1><span class="spacer"></span></div>
+          <div id="result-success" data-result="success"><div class="result-visual"><span data-icon="check"></span></div><h2 class="result-title">照护已完成 <span class="micro">（演示）</span></h2><p class="result-lede">示例中，健康记录与本次待办均获平台确认后，才显示完成状态。</p><div class="result-conditions"><div class="condition-row"><span data-icon="check"></span><span id="success-record-condition">已有健康记录已核验并关联 · 旺财</span></div><div class="condition-row"><span data-icon="check"></span>本次待办已完成 · 处理人：我</div><div class="condition-row"><span data-icon="calendar"></span>下次安排 <span id="success-next">10月23日 18:00</span></div></div><div class="result-actions"><button class="primary-button" type="button" data-go="pet">查看宠物时间线</button><button class="secondary-button" id="success-plan-action" type="button" data-go="plan">查看计划历史</button></div></div>
+          <div id="result-conflict" data-result="conflict" hidden><div class="result-visual warn"><span data-icon="users"></span></div><h2 class="result-title">家人已先完成</h2><p class="result-lede">同一待办仅接受第一次有效完成。你的输入仍在本页，未重复生成记录或下一期。</p><div class="result-person" style="margin-top:21px"><span class="mini-avatar">妈</span><span><strong>妈妈 · 今天 17:41</strong><br><span class="caption muted">已关联疫苗记录，待办已完成</span></span></div><div class="info-strip" style="margin-top:12px"><span data-icon="info"></span><span>如你的记录是另一件独立发生的照护，可复制内容另存；不会再完成此待办。</span></div><div class="result-actions"><button class="primary-button" type="button" data-copy-independent>复制为独立记录</button><button class="secondary-button" type="button" data-go="todo">查看家人的处理结果</button></div></div>
+          <div id="result-failure" data-result="failure" hidden><div class="result-visual bad"><span data-icon="alert"></span></div><h2 class="result-title">没有完成这次照护</h2><p class="result-lede">示例平台返回失败。本次关联或新建动作没有获确认，已有记录保持原状；当前输入仍保留，可修改后重试。</p><div class="result-conditions"><div class="condition-row pending"><span data-icon="clock"></span>本次记录提交：未确认</div><div class="condition-row pending" id="failure-todo-row"><span data-icon="clock"></span>本次待办：仍待处理</div></div><div class="result-actions"><button class="primary-button" type="button" data-go="record">返回检查输入</button><button class="secondary-button" type="button" data-go="preview">重新预览</button></div></div>
+          <div id="result-offline" data-result="offline" hidden><div class="result-visual blue"><span data-icon="refresh"></span></div><h2 class="result-title">已存到本机，待同步</h2><p class="result-lede" id="offline-lede">这只是新记录的本地草稿，尚未保存到平台。本次待办仍待处理，不会安排下一期或通知家人。</p><div class="result-conditions"><div class="condition-row pending"><span data-icon="clock"></span>健康记录：本地待同步</div><div class="condition-row pending" id="offline-todo-row"><span data-icon="bell"></span>待办：仍待处理</div></div><div class="result-actions"><button class="primary-button" type="button" data-go="sync">查看待同步记录</button><button class="secondary-button" type="button" data-go="pet">稍后再说</button></div></div>
+          <div id="result-lost" data-result="lost" hidden><div class="result-visual bad"><span data-icon="lock"></span></div><h2 class="result-title">共享权限已失效</h2><p class="result-lede">没有向平台写入记录。示例中的本地敏感草稿已清理，仅保留不含健康内容的失败提示。</p><div class="card card-pad" style="margin-top:20px"><strong style="font-size:13px">失败回执</strong><p class="caption muted" style="margin:3px 0 0">授权已变化 · 请联系宠物所有者确认新的共享权限。</p></div><div class="result-actions"><button class="primary-button" type="button" data-go="denied">查看访问说明</button><a class="secondary-button" href="index.html#home">返回首页</a></div></div>
+        </section>
+
+        <section class="page care-page" id="view-sync" data-view="sync" aria-labelledby="sync-title" hidden>
+          <div class="care-topline"><button class="icon-button" type="button" data-go="result" aria-label="返回处理结果"><span data-icon="chevronLeft"></span></button><h1 id="sync-title">待同步记录</h1><span class="spacer"></span></div><p class="eyebrow">离线与弱网</p><h2 class="page-title" style="font-size:23px;margin-top:6px">先留住记录，<br>再确认是否同步。</h2><p class="page-subtitle">联网后须重新验证账号、宠物状态与当前授权。</p><div class="section-head"><h2>此设备的草稿</h2><span class="pill orange">1 条待同步</span></div><div class="card card-pad"><div class="sync-row"><span class="sync-symbol" data-icon="medicine"></span><div><strong>健康记录草稿 · 9月23日</strong><p>仅存本机 · 尚未保存到平台，不会自动完成提醒</p></div><span class="pill orange">待同步</span></div></div><div class="info-strip" style="margin-top:13px"><span data-icon="shield"></span><span>若同步时发现失权或档案已删除，不改投到其他账号或宠物；清理受控副本，只保留脱敏失败提示。</span></div><div class="result-actions"><button class="primary-button" type="button" data-go="todo">返回待办，联网后再确认</button><button class="secondary-button" type="button" data-go="pet">回宠物档案</button></div><p class="demo-note" style="margin-top:17px">本页仅演示待同步状态；未检测网络，也没有后台同步任务。</p></section>
+
+        <section class="page care-page" id="view-denied" data-view="denied" aria-labelledby="denied-title" hidden><div class="care-topline"><a class="icon-button" href="index.html#home" aria-label="返回首页"><span data-icon="chevronLeft"></span></a><h1 id="denied-title">访问说明</h1><span class="spacer"></span></div><div class="result-visual bad"><span data-icon="lock"></span></div><h2 class="result-title">目前无法查看此档案</h2><p class="result-lede">共享权限已经变化。请联系宠物所有者确认；这里不会显示原档案的照片、健康记录或提醒详情。</p><a class="primary-button" href="index.html#home" style="margin-top:25px">返回首页</a></section>
+      </div>
+      <div id="action-bar" class="bottom-action"><button id="main-action" class="primary-button" type="button">完成并留记录</button></div>
+      <nav class="tabbar" aria-label="移动端主导航"><a class="tab-item" href="index.html#home" aria-current="page"><span data-icon="home"></span><span>首页</span></a><a class="tab-item" href="资讯探索与用品.html#news"><span data-icon="news"></span><span>资讯</span></a><a class="tab-item" href="资讯探索与用品.html#explore"><span data-icon="compass"></span><span>探索</span></a><a class="tab-item" href="index.html#me"><span data-icon="user"></span><span>我的</span></a></nav>
+      <div class="home-indicator" aria-hidden="true"></div>
+      <div class="sheet-backdrop" id="weight-sheet" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="weight-sheet-title"><div class="sheet-handle"></div><div class="obj-label"><span class="bar"></span>数字核对</div><h2 id="weight-sheet-title" style="margin-top:7px">体重变化较大</h2><p id="weight-change-copy">本次比上次 12.5 kg 高约 13.6%。请核对单位与数字；这里不作健康判断。</p><div class="sheet-actions"><button class="secondary-button" type="button" data-close-sheet="weight">返回修改</button><button class="primary-button" type="button" data-ack-weight>数字无误</button></div></div></div>
+      <div class="toast" id="toast" role="status" hidden></div>
+    </div>
+
+    <aside class="studio-guide" aria-label="流程与状态说明"><span class="studio-kicker">Flow Review / 06 States</span><h2 style="margin:13px 0 7px;font-size:23px;line-height:1.3;letter-spacing:-.03em">一次照护，六种结果</h2><p>点开手机中的待办、记录与预览。你也可以直接跳到下面的状态，核对不同结果如何影响家人和下一次安排。</p><div class="scenario-stack"><button type="button" data-review="pet">01 · 宠物详情与今日待办</button><button type="button" data-review="todo">02 · 本次待办 vs 提醒计划</button><button type="button" data-review="record">03 · 关联/新增记录与体重确认</button><button type="button" data-review="success">04 · 平台共同确认后完成</button><button type="button" data-review="conflict">05 · 家人先完成 / 提交失败</button><button type="button" data-review="offline">06 · 离线草稿 / 失权清理</button></div><div class="note"><strong>成功的两个必要条件</strong>健康记录有效保存，且本次待办完成获平台确认。任一失败，均不播放完成反馈，也不生成下一期待办。</div><div class="note"><strong>真实能力边界</strong>此页只有本地交互与示例数据。系统通知、离线同步、并发处理和服务端事务均需在应用中单独实现与验证。</div><a href="index.html#home">返回移动端总览 →</a></aside>
+  </main>
+  <script src="mobile-icons.js"></script>
+  <script>
+    (() => {
+      const viewIds = ['pet', 'todo', 'plan', 'record', 'preview', 'result', 'sync', 'denied'];
+      let currentView = 'pet';
+      let recordContext = 'todo';
+      let recordKind = 'vaccine';
+      let recordMode = 'existing';
+      let resultKind = 'success';
+      let lostAccess = false;
+      let weightAcknowledged = false;
+      let careCompletion = '';
+      let careRecordMode = '';
+      let savedWeight = 12.5;
+      let weightSaved = false;
+      let independentVaccineSaved = false;
+      const $ = (id) => document.getElementById(id);
+      const screen = $('screen');
+      const actionBar = $('action-bar');
+      const mainAction = $('main-action');
+      const actionByView = { pet: ['快速记录体重', 'weight'], todo: ['完成并留记录', 'todo-record'], plan: ['去处理本次待办', 'todo'], record: ['下一步 · 核对结果', 'preview'], preview: ['查看演示结果', 'resolve'] };
+      function showToast(message) { const node = $('toast'); node.textContent = message; node.hidden = false; clearTimeout(showToast.timer); showToast.timer = setTimeout(() => { node.hidden = true; }, 2700); }
+      function renderCareState() {
+        const done = careCompletion === 'self' || careCompletion === 'family';
+        const byFamily = careCompletion === 'family';
+        $('pet-task-pill').textContent = done ? '已完成 · 示例' : '待处理';
+        $('pet-task-pill').className = done ? 'pill green' : 'pill orange';
+        $('pet-task-title').textContent = done ? '疫苗加强针 · 已完成' : '疫苗加强针';
+        $('pet-task-sub').textContent = done ? (byFamily ? '妈妈今天 17:41 完成 · 查看处理结果' : '我今天 17:30 完成 · 查看记录') : '今天 18:00 · 旺财 · 点此查看本次待办';
+        const newLinked = careCompletion === 'self' && careRecordMode === 'new';
+        $('extra-vaccine-timeline').hidden = !(newLinked || independentVaccineSaved);
+        $('extra-vaccine-health').hidden = !(newLinked || independentVaccineSaved);
+        $('extra-vaccine-timeline-note').textContent = newLinked ? '我记录 · 已关联本次待办' : '我记录 · 独立记录，不重复完成待办';
+        $('extra-vaccine-health-note').textContent = newLinked ? '今天 · 我记录 · 已关联待办' : '今天 · 我记录 · 独立记录';
+        $('timeline-vaccine-note').textContent = careCompletion === 'self' && careRecordMode === 'existing' ? '我记录 · 已关联本次待办' : byFamily ? '我记录 · 未关联，妈妈另行完成待办' : '我记录 · 尚未关联本次待办';
+        $('health-vaccine-note').textContent = careCompletion === 'self' && careRecordMode === 'existing' ? '今天 · 我记录 · 已关联待办' : byFamily ? '今天 · 我记录 · 未关联妈妈的处理' : '今天 · 我记录 · 待关联';
+        const weightLabel = savedWeight.toFixed(1) + ' kg';
+        $('pet-weight-stat').textContent = weightLabel;
+        $('baseline-weight').textContent = weightLabel;
+        $('baseline-date').textContent = weightSaved ? '今天' : '9月18日';
+        $('timeline-weight-title').textContent = '体重 ' + weightLabel;
+        $('timeline-weight-sub').textContent = weightSaved ? '我记录 · 新记录已保存（示例）' : '我记录 · 较上次变化 +0.2 kg';
+        $('timeline-weight-time').textContent = weightSaved ? '今天' : '9月18日';
+        $('health-weight-title').textContent = '最近体重 · ' + weightLabel;
+        $('health-weight-note').textContent = weightSaved ? '今天 · 我记录' : '9月18日 · 我记录';
+        $('pet-reminder-status').textContent = done ? '已完成 →' : '待处理 →';
+        $('todo-status').textContent = done ? '已完成' : '待处理';
+        $('todo-status').className = done ? 'pill green' : 'pill orange';
+        $('todo-subtitle').textContent = done ? (byFamily ? '妈妈处理了这一次照护' : '我处理了这一次照护') : '为旺财安排的这一回照护';
+        $('plan-current-status').textContent = done ? '已完成' : '待处理';
+        $('plan-next-status').textContent = done ? $('success-next').textContent : '本次结束后生成';
+      }
+      function go(view, pushHash = true) {
+        if (!viewIds.includes(view)) view = 'pet';
+        if (lostAccess && ['pet', 'todo', 'plan', 'record', 'preview', 'sync'].includes(view)) view = 'denied';
+        currentView = view;
+        document.querySelectorAll('[data-view]').forEach((node) => { node.hidden = node.dataset.view !== view; });
+        actionBar.hidden = !Object.prototype.hasOwnProperty.call(actionByView, view);
+        if (!actionBar.hidden) {
+          mainAction.textContent = actionByView[view][0]; mainAction.dataset.action = actionByView[view][1];
+          if (view === 'todo' && careCompletion) { mainAction.textContent = '查看本次处理结果'; mainAction.dataset.action = 'result'; }
+          if (view === 'plan' && careCompletion) { mainAction.textContent = '查看本次处理结果'; mainAction.dataset.action = 'result'; }
+        }
+        if (pushHash && location.hash !== '#' + view) location.hash = view;
+        screen.scrollTop = 0;
+      }
+      function setPetTab(tab) {
+        document.querySelectorAll('[data-pet-tab]').forEach((node) => { node.setAttribute('aria-selected', String(node.dataset.petTab === tab)); });
+        document.querySelectorAll('[data-pet-panel]').forEach((node) => { node.hidden = node.dataset.petPanel !== tab; });
+      }
+      function setRecordMode(mode) {
+        recordMode = mode;
+        document.querySelectorAll('[data-mode]').forEach((node) => { node.setAttribute('aria-checked', String(node.dataset.mode === mode)); });
+        $('existing-record').hidden = mode !== 'existing';
+        $('new-record-fields').hidden = mode !== 'new';
+      }
+      function setRecordKind(kind) {
+        recordKind = kind;
+        document.querySelectorAll('[data-kind]').forEach((node) => { node.setAttribute('aria-pressed', String(node.dataset.kind === kind)); });
+        $('vaccine-fields').hidden = kind !== 'vaccine';
+        $('weight-fields').hidden = kind !== 'weight';
+        $('task-link-note').hidden = kind !== 'vaccine' || recordContext !== 'todo';
+        $('record-context-copy').textContent = kind === 'weight' ? '独立记录体重，不会完成疫苗待办。' : recordContext === 'todo' ? '与疫苗待办同次确认，家人不会重复处理。' : '独立记录疫苗信息，不重复完成家人已处理的待办。';
+        $('record-title').textContent = kind === 'weight' ? '新增体重记录' : '新增照护记录';
+      }
+      function openRecord(context) {
+        recordContext = context === 'todo' ? 'todo' : 'independent';
+        setRecordKind(context === 'weight' ? 'weight' : 'vaccine');
+        if (context === 'todo') setRecordMode('existing');
+        if (context === 'copy') setRecordMode('new');
+        $('record-error').hidden = true;
+        weightAcknowledged = false;
+        go('record');
+      }
+      function validRecord() {
+        const error = $('record-error'); error.hidden = true;
+        if (recordKind === 'weight') {
+          const n = Number($('weight-value').value);
+          if (!Number.isFinite(n) || n <= 0) { error.textContent = '请填写大于 0 的体重。'; error.hidden = false; return false; }
+          if (!$('weight-date').value || $('weight-date').value > '2026-09-23') { error.textContent = '实际发生日期不能晚于今天。'; error.hidden = false; return false; }
+          const percent = Math.abs((n - savedWeight) / savedWeight) * 100;
+          if (percent >= 10 && !weightAcknowledged) { $('weight-change-copy').textContent = '本次比上次 ' + savedWeight.toFixed(1) + ' kg ' + (n >= savedWeight ? '高' : '低') + '约 ' + percent.toFixed(1) + '%。请核对单位与数字；这里不作健康判断。'; $('weight-sheet').hidden = false; return false; }
+        } else if (recordMode === 'new') {
+          if (!$('vaccine-name').value.trim()) { error.textContent = '请填写疫苗名称。'; error.hidden = false; return false; }
+          if (!$('vaccine-date').value || $('vaccine-date').value > '2026-09-23') { error.textContent = '实际发生日期不能晚于今天。'; error.hidden = false; return false; }
+        }
+        return true;
+      }
+      function openPreview() {
+        if (!validRecord()) return;
+        const isTodo = recordContext === 'todo' && recordKind === 'vaccine';
+        $('preview-todo-line').hidden = !isTodo;
+        $('next-plan-block').hidden = !isTodo;
+        $('preview-record-title').textContent = recordKind === 'weight' ? '新增体重记录 · ' + Number($('weight-value').value).toFixed(1) + ' kg' : recordMode === 'existing' && isTodo ? '关联已有疫苗记录' : '新增疫苗记录 · ' + $('vaccine-name').value.trim();
+        $('preview-record-sub').textContent = recordKind === 'weight' ? $('weight-date').value + ' · 独立记录' : recordMode === 'existing' && isTodo ? '9月23日 · 不重复复制记录' : $('vaccine-date').value + ' · 旺财';
+        const outcome = $('outcome-select');
+        outcome.querySelector('[value="success"]').textContent = isTodo ? '健康记录和待办同时确认' : '独立健康记录保存成功';
+        outcome.querySelector('[value="conflict"]').disabled = !isTodo;
+        outcome.querySelector('[value="offline"]').disabled = recordKind === 'vaccine' && recordMode === 'existing';
+        if (outcome.selectedOptions[0].disabled) outcome.value = 'success';
+        $('outcome-hint').textContent = recordKind === 'vaccine' && recordMode === 'existing' ? '已有关联记录无法离线完成待办；若要体验离线草稿，请选择“新建疫苗记录”。' : isTodo ? '离线时只保留新健康记录草稿，待办不能离线完成。' : '独立记录的成功反馈仅对应健康记录，不改变疫苗待办。';
+        $('preview-error').hidden = true;
+        go('preview');
+      }
+      function showResult(kind) {
+        const independent = recordContext !== 'todo' || recordKind === 'weight';
+        if (kind === 'conflict' && independent) kind = 'failure';
+        if (kind === 'offline' && recordKind === 'vaccine' && recordMode === 'existing') kind = 'failure';
+        if (recordContext === 'todo' && recordKind === 'vaccine' && kind === 'success') {
+          const date = $('next-date').value;
+          if (!date || date <= '2026-09-23') { $('preview-error').textContent = '下次时间必须晚于本次确认时间。'; $('preview-error').hidden = false; return; }
+          const parts = date.split('-'); $('success-next').textContent = Number(parts[1]) + '月' + Number(parts[2]) + '日 18:00';
+        }
+        resultKind = kind;
+        if (!independent) {
+          careCompletion = kind === 'success' ? 'self' : kind === 'conflict' ? 'family' : '';
+          careRecordMode = kind === 'success' ? recordMode : '';
+        }
+        if (independent && kind === 'success' && recordKind === 'weight') { savedWeight = Number($('weight-value').value); weightSaved = true; }
+        if (independent && kind === 'success' && recordKind === 'vaccine') independentVaccineSaved = true;
+        renderCareState();
+        if (kind === 'lost') {
+          lostAccess = true;
+          $('vaccine-name').value = '';
+          $('vaccine-note').value = '';
+          $('weight-value').value = '';
+        }
+        document.querySelectorAll('[data-result]').forEach((node) => { node.hidden = node.dataset.result !== kind; });
+        $('success-record-condition').textContent = independent ? '独立健康记录已获平台确认 · 旺财' : recordMode === 'existing' ? '已有健康记录已核验并关联 · 旺财' : '新健康记录已保存并关联 · 旺财';
+        $('failure-todo-row').hidden = independent;
+        $('result-failure').querySelector('.result-title').textContent = independent ? '记录未能保存' : '没有完成这次照护';
+        $('result-failure').querySelector('.result-lede').textContent = independent ? '示例平台返回失败。独立记录没有获确认，当前输入仍保留，可修改后重试。' : '示例平台返回失败。本次关联或新建动作没有获确认，已有记录保持原状；当前输入仍保留，可修改后重试。';
+        $('offline-todo-row').hidden = independent;
+        $('offline-lede').textContent = independent ? '这只是本地草稿，尚未保存到平台；不会改变疫苗待办或通知家人。' : '这只是新记录的本地草稿，尚未保存到平台。本次待办仍待处理，不会安排下一期或通知家人。';
+        if (independent && kind === 'success') {
+          $('result-success').querySelector('.result-title').innerHTML = '记录已保存 <span class="micro">（演示）</span>';
+          $('result-success').querySelector('.result-lede').textContent = '示例中，独立健康记录获平台确认后才显示保存成功；未关联本次疫苗待办。';
+          $('result-success').querySelectorAll('.condition-row')[1].hidden = true;
+          $('result-success').querySelectorAll('.condition-row')[2].hidden = true;
+          $('success-plan-action').hidden = true;
+        } else {
+          $('result-success').querySelector('.result-title').innerHTML = '照护已完成 <span class="micro">（演示）</span>';
+          $('result-success').querySelector('.result-lede').textContent = '示例中，健康记录与本次待办均获平台确认后，才显示完成状态。';
+          $('result-success').querySelectorAll('.condition-row')[1].hidden = false;
+          $('result-success').querySelectorAll('.condition-row')[2].hidden = false;
+          $('success-plan-action').hidden = false;
+        }
+        go('result');
+      }
+      function review(target) {
+        lostAccess = false;
+        careCompletion = '';
+        careRecordMode = '';
+        independentVaccineSaved = false;
+        savedWeight = 12.5;
+        weightSaved = false;
+        renderCareState();
+        if (target === 'record') { openRecord('todo'); return; }
+        if (['success', 'conflict', 'failure', 'offline', 'lost'].includes(target)) { recordContext = 'todo'; recordKind = 'vaccine'; setRecordMode(target === 'offline' ? 'new' : 'existing'); showResult(target); return; }
+        go(target);
+      }
+      document.addEventListener('click', (event) => {
+        if (event.target === $('weight-sheet')) { $('weight-sheet').hidden = true; return; }
+        const node = event.target.closest('button, a'); if (!node) return;
+        if (node.hasAttribute('data-review')) { review(node.dataset.review); return; }
+        if (node.hasAttribute('data-pet-tab')) { setPetTab(node.dataset.petTab); return; }
+        if (node.hasAttribute('data-go')) { go(node.dataset.go); return; }
+        if (node.hasAttribute('data-open-record')) { openRecord(node.dataset.openRecord); return; }
+        if (node.hasAttribute('data-record-back')) { go(recordContext === 'todo' ? 'todo' : 'pet'); return; }
+        if (node.hasAttribute('data-kind')) { setRecordKind(node.dataset.kind); weightAcknowledged = false; return; }
+        if (node.hasAttribute('data-mode')) { setRecordMode(node.dataset.mode); return; }
+        if (node.hasAttribute('data-close-sheet')) { $('weight-sheet').hidden = true; return; }
+        if (node.hasAttribute('data-ack-weight')) { weightAcknowledged = true; $('weight-sheet').hidden = true; openPreview(); return; }
+        if (node.hasAttribute('data-copy-independent')) { openRecord('copy'); showToast('已打开独立记录；不会再次完成待办'); return; }
+        if (node === mainAction) {
+          const action = mainAction.dataset.action;
+          if (action === 'weight') openRecord('weight');
+          else if (action === 'todo-record') openRecord('todo');
+          else if (action === 'preview') openPreview();
+          else if (action === 'resolve') showResult($('outcome-select').value);
+          else if (action === 'todo') go('todo');
+          else if (action === 'result') go('result');
+        }
+      });
+      $('weight-value').addEventListener('input', () => { weightAcknowledged = false; });
+      document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && !$('weight-sheet').hidden) $('weight-sheet').hidden = true; });
+      window.addEventListener('hashchange', () => { const hash = location.hash.slice(1); if (viewIds.includes(hash)) go(hash, false); });
+      const initial = location.hash.slice(1); go(viewIds.includes(initial) ? initial : 'pet', false);
+      renderCareState();
+      window.renderMobileIcons?.();
+    })();
+  </script>
+</body>
+</html>

@@ -44,8 +44,8 @@ import {
 
 test('4-Tab（决议：用品并入首页）+ 栈规则', () => {
   assert.equal(TABS.length, 4);
-  assert.deepEqual(TABS.map((t) => t.id), ['home', 'pet', 'explore', 'me']);
-  assert.equal(stackAction('home', 'pet'), 'SWITCH_KEEP_STACK', '切 Tab 保留各自栈');
+  assert.deepEqual(TABS.map((t) => t.id), ['home', 'news', 'explore', 'me']);
+  assert.equal(stackAction('home', 'news'), 'SWITCH_KEEP_STACK', '切 Tab 保留各自栈');
   assert.equal(stackAction('home', 'home', '/pets/1'), 'PUSH', '同 Tab 入栈');
   assert.equal(stackAction('home', 'home'), 'POP_TO_ROOT', '再点当前 Tab 回根');
 });

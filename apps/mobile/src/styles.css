@@ -1,11 +1,12 @@
 /* cutePet 移动 H5 全局样式（T10.5 动效 · reduced-motion · 安全区 · 44px 点按） */
 
 :root {
-  --primary: #ff7a2f;
+  --primary: #b85111;
+  --accent: #ff7a2f;
   --ink: #2b2118;
-  --ink-2: #7a6e63;
-  --line: #f0e6dc;
-  --bg: #f7f3ee;
+  --ink-2: #66594f;
+  --line: #eadfd4;
+  --bg: #fff9f3;
 }
 
 * { box-sizing: border-box; }
@@ -19,6 +20,11 @@ html, body {
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: contain; /* 下拉不串动页面 */
 }
+
+body { min-width: 320px; }
+button, input, select, textarea { font: inherit; }
+button { cursor: pointer; }
+input, textarea, select { font-size: 16px; }
 
 button, a, input, select, textarea {
   font-family: inherit;
@@ -42,7 +48,6 @@ button, a {
     animation-duration: 100ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 100ms !important;
-    transform: none !important;
   }
 }
 

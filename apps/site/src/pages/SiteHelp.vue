@@ -1,70 +1,132 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-
-const SECTIONS = [
-  { id: 'account', label: '账号与登录', qs: [
-    { q: '如何登录？', a: '手机号验证码一键登录（dev 固定码 123456）；微信登录需补手机验证与协议（U83）。' },
-    { q: '忘记账号了？', a: '同一手机号即账号；换绑见应用内设置。' },
-  ] },
-  { id: 'pet', label: '宠物与记录', qs: [
-    { q: '删掉的宠物能恢复吗？', a: '软删 30 天内可恢复；归档随时恢复；超期联系人工。' },
-    { q: '提醒怎么自动生成？', a: '疫苗/驱虫记录里的「下次提醒」日期会自动建计划。' },
-  ] },
-  { id: 'content', label: '内容与投稿', qs: [
-    { q: '投稿多久有结果？', a: '先审后发，SLA 24 小时；超时看板标红催办。' },
-    { q: '被驳回会封号吗？', a: '质量退修与违规分开计数：3 次退修暂停 7 天，不计违规。' },
-  ] },
-  { id: 'family', label: '家庭与共享', qs: [
-    { q: '家人能看到我全部宠物吗？', a: '不能。只有你主动共享的宠物可见，且默认只读。' },
-    { q: '能同时加两个家庭吗？', a: '不能，一人限一个家庭。' },
-  ] },
-  { id: 'safety', label: '安全与合规', qs: [
-    { q: '如何举报？', a: '内容/用户/场所均有举报入口，48 小时内反馈结果。' },
-    { q: '未成年人可以使用吗？', a: '满 14 周岁自主注册；未满 14 走监护人同意流程（方案甲）。' },
-    { q: '被封禁了怎么办？', a: '受限账号页可申诉与查询，无需恢复账号（X15）。' },
-  ] },
-];
-const open = ref('account');
+const groups = [
+  {
+    id: 'start',
+    title: '开始使用',
+    questions: [
+      { question: '现在可以从官网登录或下载吗？', answer: '官网负责介绍产品。电脑 Web 和手机 H5 的正式入口会在地址与发布状态核验后放在“开始使用”页；页面标为准备中时，请不要把它当作已可用的登录或安装入口。' },
+      { question: '未满 14 周岁可以自行注册吗？', answer: '产品规划要求独立的监护人核验与同意流程。正式注册服务开放前，年龄判断、监护同意及相应规则仍需完成核验。' },
+    ],
+  },
+  {
+    id: 'care',
+    title: '宠物与照护',
+    questions: [
+      { question: '记录与提醒有什么区别？', answer: '照护记录用于记下已经发生的事；提醒计划用于安排未来的事，待办对应其中某一次。健康类待办完成时，应关联有效记录，并以平台确认后的结果为准。' },
+    ],
+  },
+  {
+    id: 'family',
+    title: '家庭协作',
+    questions: [
+      { question: '加入家庭后，家人会看到我全部宠物吗？', answer: '不会。每只宠物由所有者主动决定是否共享；新加入成员对已经共享的宠物默认只读。家庭管理员身份也不会自动取得其他成员宠物的管理权。' },
+    ],
+  },
+  {
+    id: 'content',
+    title: '内容与活动',
+    questions: [
+      { question: '官网能直接投稿或报名活动吗？', answer: '不能。官网只展示可以公开的说明和内容。投稿、互动及活动报名应在可用的用户端完成登录、告知与确认，官网不会替你提交。' },
+      { question: '养宠资讯可以代替兽医建议吗？', answer: '不能。健康类内容仅供科普参考；疾病、用药或紧急情况应咨询有资质的兽医。' },
+    ],
+  },
+  {
+    id: 'safety',
+    title: '隐私与支持',
+    questions: [
+      { question: '如何举报、申诉或提出版权请求？', answer: '正式接收渠道和处理流程仍待公布。目前可先阅读规则页中的主题说明；联系页会显示渠道的真实开放状态，不会让你把材料发往示例地址。' },
+    ],
+  },
+] as const;
 </script>
 
 <template>
-  <div class="site-help">
-    <h1>帮助中心</h1>
-
-    <router-link class="appeal" to="/contact">⚖️ 处置申诉与投诉举报通道 →</router-link>
-
-    <nav class="tabs">
-      <button
-        v-for="s in SECTIONS"
-        :key="s.id"
-        type="button"
-        :class="{ on: open === s.id }"
-        @click="open = s.id"
-      >
-        {{ s.label }}
-      </button>
+  <div class="help site-wrap">
+    <nav class="crumb" aria-label="当前位置">
+      <router-link to="/">首页</router-link><span aria-hidden="true">/</span><span aria-current="page">帮助中心</span>
     </nav>
 
-    <section class="faq">
-      <article v-for="qa in SECTIONS.find((s) => s.id === open)!.qs" :key="qa.q">
-        <strong>{{ qa.q }}</strong>
-        <p>{{ qa.a }}</p>
-      </article>
+    <header class="intro">
+      <p class="site-eyebrow">HELP CENTER</p>
+      <h1 class="site-section-title">遇到问题，先找到下一步。</h1>
+      <p class="site-lead">按使用情境查看简明说明。关于正式联系、举报与版权渠道的状态，请以联系页为准。</p>
+    </header>
+
+    <section class="priority" aria-labelledby="priority-title">
+      <div>
+        <span class="priority-label">重要入口</span>
+        <h2 id="priority-title">投诉、申诉与版权请求</h2>
+        <p>了解需要准备的信息和渠道开放状态。当前没有经过核验的在线提交服务，本页不会声称请求已被接收。</p>
+      </div>
+      <router-link class="site-button outline" to="/contact">查看联系状态 <span aria-hidden="true">→</span></router-link>
     </section>
 
-    <p class="meta">没解决？应用内「帮助与客服 → 提交工单」（48h 反馈）；或联系页留言。</p>
+    <div class="help-grid">
+      <nav class="directory" aria-label="帮助主题">
+        <h2>帮助主题</h2>
+        <a v-for="group in groups" :key="group.id" :href="'#' + group.id">{{ group.title }} <span aria-hidden="true">↗</span></a>
+      </nav>
+
+      <div class="faqs">
+        <section v-for="group in groups" :id="group.id" :key="group.id" class="group" :aria-labelledby="'heading-' + group.id">
+          <h2 :id="'heading-' + group.id">{{ group.title }}</h2>
+          <details v-for="item in group.questions" :key="item.question" class="question">
+            <summary>{{ item.question }}<span class="plus" aria-hidden="true">＋</span></summary>
+            <p>{{ item.answer }}</p>
+          </details>
+        </section>
+      </div>
+    </div>
+
+    <section class="next">
+      <div>
+        <h2>还想了解使用方式？</h2>
+        <p>查看四项能力说明，或阅读规则主题。规则的正式文本尚未发布，页面会明确标注状态。</p>
+      </div>
+      <div class="next-links">
+        <router-link class="site-text-link" to="/products">查看产品能力 <span aria-hidden="true">→</span></router-link>
+        <router-link class="site-text-link" to="/legal/terms">查看规则主题 <span aria-hidden="true">→</span></router-link>
+      </div>
+    </section>
   </div>
 </template>
 
 <style scoped>
-.site-help { max-width: 800px; margin: 0 auto; padding: 40px 24px; display: grid; gap: 18px; }
-h1 { font-size: 32px; margin: 0; }
-.appeal { background: #f5f3ff; color: #6d5bd0; border-radius: 14px; padding: 16px 20px; text-decoration: none; font-weight: 600; font-size: 15px; }
-.tabs { display: flex; gap: 8px; flex-wrap: wrap; }
-.tabs button { height: 34px; padding: 0 16px; border: none; border-radius: 999px; background: #fff; color: #7a6e63; box-shadow: inset 0 0 0 1px #f0e6dc; font-size: 13px; cursor: pointer; }
-.tabs button.on { background: #ff7a2f; color: #fff; font-weight: 600; box-shadow: none; }
-.faq { display: grid; gap: 12px; }
-.faq article { background: #fff; border-radius: 16px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 18px 20px; display: grid; gap: 8px; }
-.faq p { margin: 0; color: #7a6e63; font-size: 14px; line-height: 1.8; }
-.meta { color: #7a6e63; font-size: 13px; }
+.help { padding-block: 28px 100px; }
+.crumb { display: flex; align-items: center; gap: 10px; color: var(--site-muted); font-size: 13px; }
+.crumb a { color: inherit; text-decoration: none; }
+.crumb a:hover { color: var(--site-action); text-decoration: underline; }
+.intro { padding: clamp(38px, 6vw, 72px) 0 36px; }
+.priority { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: clamp(24px, 4vw, 38px); border: 1px solid #e6dbf6; border-radius: 22px; background: #f7f3fc; }
+.priority-label { color: #5f427e; font-size: 12px; font-weight: 800; letter-spacing: .1em; }
+.priority h2 { margin: 9px 0 5px; font-size: clamp(21px, 2.4vw, 27px); }
+.priority p { max-width: 65ch; margin: 0; color: var(--site-muted); font-size: 14px; line-height: 1.8; }
+.priority a { flex: none; }
+.help-grid { display: grid; grid-template-columns: minmax(210px, 260px) minmax(0, 1fr); align-items: start; gap: 36px; padding-top: 62px; }
+.directory { position: sticky; top: 110px; padding: 22px; border: 1px solid var(--site-line); border-radius: 18px; background: var(--site-paper); }
+.directory h2 { margin: 0 0 12px; font-size: 16px; }
+.directory a { display: flex; justify-content: space-between; align-items: center; min-height: 44px; padding: 8px 0; border-bottom: 1px solid var(--site-line); color: var(--site-muted); font-size: 14px; text-decoration: none; }
+.directory a:last-child { border: 0; }
+.directory a:hover { color: var(--site-action); }
+.faqs { min-width: 0; }
+.group { padding-bottom: 38px; scroll-margin-top: 96px; }
+.group h2 { margin: 0 0 16px; font-size: 23px; }
+.question { margin-bottom: 10px; border: 1px solid var(--site-line); border-radius: 15px; background: #fff; }
+.question summary { display: flex; align-items: center; justify-content: space-between; gap: 15px; min-height: 58px; padding: 13px 19px; color: var(--site-ink); font-size: 15px; font-weight: 700; cursor: pointer; list-style: none; }
+.question summary::-webkit-details-marker { display: none; }
+.question[open] { border-color: #e6c9b5; }
+.question[open] .plus { transform: rotate(45deg); }
+.plus { flex: none; color: var(--site-action); font-size: 20px; font-weight: 400; transition: transform .2s var(--site-ease); }
+.question p { margin: 0; padding: 0 19px 19px; color: var(--site-muted); font-size: 14px; line-height: 1.85; }
+.next { display: flex; justify-content: space-between; gap: 24px; padding: 30px 0 0; border-top: 1px solid var(--site-line); }
+.next h2 { margin: 0 0 6px; font-size: 22px; }
+.next p { max-width: 58ch; margin: 0; color: var(--site-muted); font-size: 14px; }
+.next-links { display: flex; flex-wrap: wrap; gap: 16px; align-content: start; }
+@media (max-width: 760px) {
+  .help { padding-block: 22px 68px; }
+  .priority, .next { flex-direction: column; align-items: flex-start; }
+  .help-grid { grid-template-columns: 1fr; gap: 32px; padding-top: 45px; }
+  .directory { position: static; }
+  .directory a { display: inline-flex; gap: 7px; margin-right: 17px; border: 0; }
+}
 </style>

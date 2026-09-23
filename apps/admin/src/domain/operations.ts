@@ -18,7 +18,8 @@ export function taxonomyTagValid(name: string): boolean {
 }
 
 export function bannerScheduleValid(startsAt: string, endsAt: string): boolean {
-  if (!startsAt || !endsAt) return true; // 空=常驻
+  if (!startsAt && !endsAt) return true; // 两端都空才是常驻
+  if (!startsAt || !endsAt) return false;
   return endsAt > startsAt;
 }
 
@@ -34,18 +35,59 @@ export function productBanned(category: string, name: string): boolean {
 }
 
 export interface CsvParseResult {
-  accepted: { name: string; category: string; source: string }[];
+  accepted: { line: number; name: string; category: string; source: string }[];
   rejected: { line: number; reason: string }[];
 }
 
-/** CSV 行格式：name,category,sourceType —— 逐行同规则（不能绕 U77） */
+/** 仅用于本地预检；服务端仍须对原文件逐行复检。 */
+function csvCells(line: string): string[] | null {
+  const cells: string[] = [];
+  let current = '';
+  let quoted = false;
+  let afterQuote = false;
+  for (let i = 0; i < line.length; i += 1) {
+    const char = line[i];
+    if (quoted) {
+      if (char === '"' && line[i + 1] === '"') { current += '"'; i += 1; }
+      else if (char === '"') { quoted = false; afterQuote = true; }
+      else current += char;
+    } else if (char === ',') {
+      cells.push(current.trim()); current = ''; afterQuote = false;
+    } else if (char === '"' && !current.trim() && !afterQuote) {
+      quoted = true;
+    } else if (afterQuote && char !== ' ' && char !== '\t') {
+      return null;
+    } else if (char === '"') {
+      return null;
+    } else if (!afterQuote) {
+      current += char;
+    }
+  }
+  if (quoted) return null;
+  cells.push(current.trim());
+  return cells;
+}
+
+/** CSV 行格式：name,category,sourceType；本地预检不代表平台受理。 */
 export function parseProductCsv(content: string): CsvParseResult {
   const accepted: CsvParseResult['accepted'] = [];
   const rejected: CsvParseResult['rejected'] = [];
-  const lines = content.split(/\r?\n/).filter((l) => l.trim());
+  const lines = content.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n').split('\n');
+  let firstData = true;
   lines.forEach((line, i) => {
-    if (i === 0 && line.toLowerCase().startsWith('name')) return; // 表头
-    const [name = '', category = '', source = ''] = line.split(',').map((s) => s.trim());
+    if (!line.trim()) return;
+    const cells = csvCells(line);
+    if (firstData && cells?.length === 3 && cells[0]?.toLowerCase() === 'name' &&
+        cells[1]?.toLowerCase() === 'category' && cells[2]?.toLowerCase() === 'sourcetype') {
+      firstData = false;
+      return;
+    }
+    firstData = false;
+    if (!cells || cells.length !== 3) {
+      rejected.push({ line: i + 1, reason: '字段缺失或列数不符' });
+      return;
+    }
+    const [name = '', category = '', source = ''] = cells;
     if (!name || !category) {
       rejected.push({ line: i + 1, reason: '字段缺失' });
       return;
@@ -58,7 +100,7 @@ export function parseProductCsv(content: string): CsvParseResult {
       rejected.push({ line: i + 1, reason: '禁止品类（兽药/处方）' });
       return;
     }
-    accepted.push({ name, category, source });
+    accepted.push({ line: i + 1, name, category, source });
   });
   return { accepted, rejected };
 }
@@ -101,7 +143,7 @@ export function activityChangeOutcome(approved: boolean): { nextState: string; n
 }
 
 export function csvImportSummary(result: { accepted: unknown[]; rejected: { line: number; reason: string }[] }): string {
-  return `导入完成：通过 ${result.accepted.length} 条，拒绝 ${result.rejected.length} 条${
+  return `本地预检：通过 ${result.accepted.length} 条，拒绝 ${result.rejected.length} 条；未导入平台${
     result.rejected.length ? `（首条：第 ${result.rejected[0]!.line} 行 ${result.rejected[0]!.reason}）` : ''
   }`;
 }

@@ -49,11 +49,11 @@ test('离开拦截', () => {
   assert.equal(unsavedGuard(false).block, false);
 });
 
-test('驳回→质量退修提示（U76：3 次暂停 7 天不计违规）', () => {
+test('驳回→质量退修提示（BR-06：质量退修不暂停投稿）', () => {
   assert.equal(rejectCopy(1).suspended, false);
-  assert.equal(rejectCopy(3).suspended, true);
-  assert.ok(rejectCopy(3).message.includes('暂停 7 天'));
-  assert.ok(rejectCopy(3).message.includes('不计违规'));
+  assert.equal(rejectCopy(3).suspended, false);
+  assert.ok(rejectCopy(3).message.includes('不暂停投稿'));
+  assert.ok(rejectCopy(3).message.includes('人工确认的违规'));
 });
 
 test('撤回可用性（U75：治理下架不可自行恢复）', () => {

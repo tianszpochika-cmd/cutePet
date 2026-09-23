@@ -1,169 +1,71 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
-import { BAN_ACTION_COPY, banBlockers, appealOverdue, FAMILY_DISPUTE_RULE, type BanLevel } from '../domain/governance';
+import { BAN_ACTION_COPY, FAMILY_DISPUTE_RULE, type BanLevel } from '../domain/governance';
 
-const actorId = ref(1); // 当前操作者（演示）
-const users = ref([
-  { id: 1, nickname: '自己（管理员）', status: 'ACTIVE', posts: true },
-  { id: 9, nickname: '广告账号', status: 'ACTIVE', posts: true },
-]);
-const message = ref('');
-
-const banTarget = ref<number | null>(null);
-const banLevel = ref<BanLevel>('L2');
-const banReason = ref('');
-const doubleConfirmed = ref(false);
-
-const appeals = ref([
-  { id: 51, userId: 9, actionType: 'MODERATION', createdAt: '2026-09-20T00:00:00Z', resolvedAt: null, reason: '误判为广告' },
-  { id: 52, userId: 12, actionType: 'CUSTOMER_SERVICE', createdAt: '2026-09-22T00:00:00Z', resolvedAt: null, reason: '数据更正请求' },
-]);
-const disputes = ref([{ id: 61, familyId: 3, resolution: '' }]);
-const resolution = ref('');
-
-function submitBan() {
-  if (banTarget.value === null) return;
-  const blockers = banBlockers({
-    actorId: actorId.value,
-    targetId: banTarget.value,
-    level: banLevel.value,
-    reason: banReason.value,
-    doubleConfirmed: doubleConfirmed.value,
-  });
-  if (blockers.length > 0) {
-    message.value = blockers.join(' / ');
-    return;
-  }
-  const u = users.value.find((x) => x.id === banTarget.value);
-  if (u) u.status = banLevel.value === 'L4' ? 'BANNED' : 'MUTED';
-  message.value = `#${banTarget.value} 处置：${BAN_ACTION_COPY[banLevel.value]}（高危二次确认+审计已留痕）`;
-  banTarget.value = null;
-  doubleConfirmed.value = false;
-  banReason.value = '';
-}
-
-function resolveAppeal(id: number, accepted: boolean) {
-  const a = appeals.value.find((x) => x.id === id);
-  if (!a) return;
-  if (!resolution.value.trim()) {
-    message.value = 'RESOLUTION_REQUIRED：结论必填';
-    return;
-  }
-  a.resolvedAt = new Date().toISOString();
-  message.value = accepted
-    ? `#${id} 申诉成立：撤销对应处置（剔除违规计数 U76），已通知用户`
-    : `#${id} 申诉驳回：维持原处置，已通知用户`;
-}
-
-const appealOverdueFlag = computed(() =>
-  appeals.value.filter((a) => appealOverdue(a.createdAt, a.resolvedAt, new Date().toISOString())),
-);
-
-function resolveDispute(id: number) {
-  const d = disputes.value.find((x) => x.id === id);
-  if (!d) return;
-  if (!resolution.value.trim()) {
-    message.value = 'RESOLUTION_REQUIRED：处理依据必填（留痕）';
-    return;
-  }
-  d.resolution = resolution.value;
-  message.value = `家庭纠纷 #${id} 已处理（${FAMILY_DISPUTE_RULE}）`;
-}
+const levels: BanLevel[] = ['L1', 'L2', 'L3', 'L4'];
+const queues = [
+  { title: '举报与版权', permission: 'report.handle', detail: '先核对举报对象、证据与处置范围；版权通知和一般举报分流处理。' },
+  { title: '申诉复核', permission: 'appeal.handle', detail: '核对原处置、申诉材料与 48 小时反馈时限；成立后按回执撤销相应记录。' },
+  { title: '家庭纠纷', permission: 'family.dispute', detail: FAMILY_DISPUTE_RULE },
+];
 </script>
 
 <template>
-  <div class="gov">
-    <section class="card">
-      <h2>用户与处置（user.view / user.ban）</h2>
-      <table>
-        <thead><tr><th>ID</th><th>昵称</th><th>状态</th><th>操作</th></tr></thead>
-        <tbody>
-          <tr v-for="u in users" :key="u.id">
-            <td>#{{ u.id }}</td>
-            <td>{{ u.nickname }}</td>
-            <td>{{ u.status }}</td>
-            <td>
-              <button type="button" class="chip danger" @click="banTarget = u.id">封禁…</button>
-              <button type="button" class="chip" @click="message = `#${u.id} 投稿资格已切换（user.post.right.cancel）`">
-                投稿权
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="governance">
+    <header class="page-head">
+      <p class="eyebrow">TRUST &amp; GOVERNANCE</p>
+      <h1>用户与工单治理</h1>
+      <p>先确认对象、权限和证据，再决定处置与申诉结果。</p>
+    </header>
 
-      <div v-if="banTarget !== null" class="ban-form" data-testid="ban-form">
-        <label>等级
-          <select v-model="banLevel" data-testid="ban-level">
-            <option value="L1">L1 — {{ BAN_ACTION_COPY.L1 }}</option>
-            <option value="L2">L2 — {{ BAN_ACTION_COPY.L2 }}</option>
-            <option value="L3">L3 — {{ BAN_ACTION_COPY.L3 }}</option>
-            <option value="L4">L4 — {{ BAN_ACTION_COPY.L4 }}</option>
-          </select>
-        </label>
-        <input v-model="banReason" placeholder="处置原因（必填，进入审计）" data-testid="ban-reason" />
-        <label class="confirm">
-          <input v-model="doubleConfirmed" type="checkbox" data-testid="double-confirm" />
-          我已知悉这是高危操作（§6.2 双保险：二次确认 + 全量审计）
-        </label>
-        <div class="inline">
-          <button type="button" class="chip danger" data-testid="ban-submit" @click="submitBan">执行处置</button>
-          <button type="button" class="chip" @click="banTarget = null">取消</button>
+    <div class="preview-note" role="status">
+      <span aria-hidden="true">ⓘ</span>
+      <div><strong>当前为只读界面预览</strong><p>管理身份、逐项权限和用户明细尚未接入。这里没有读取真实用户、工单或审计记录，也不会执行封禁、解封、投稿限制或申诉结案。</p></div>
+    </div>
+
+    <div class="top-grid">
+      <section class="panel" aria-labelledby="user-search-title">
+        <div class="panel-head"><div><p class="panel-kicker">USER LOOKUP</p><h2 id="user-search-title">用户检索</h2></div><span class="perm">user.view</span></div>
+        <div class="search-row">
+          <label for="governance-query">昵称或手机号</label>
+          <div><input id="governance-query" type="text" placeholder="接入管理员身份后可检索" disabled /><button type="button" disabled>查询待接入</button></div>
         </div>
+        <div class="unavailable">
+          <strong>尚不能显示用户列表</strong>
+          <p>服务端当前只返回处置摘要，缺少经 IAM 聚合的脱敏用户资料、当前限制状态与对象级权限。接入前不能选择目标或发起高危操作。</p>
+        </div>
+        <p class="foot">封禁与投稿资格是不同限制；解除一项不能自动解除另一项。</p>
+      </section>
+
+      <section class="panel" aria-labelledby="ban-title">
+        <div class="panel-head"><div><p class="panel-kicker">MODERATION LADDER</p><h2 id="ban-title">分级处置规则</h2></div><span class="perm danger">user.ban</span></div>
+        <ol class="levels">
+          <li v-for="level in levels" :key="level">
+            <span class="level" :class="{ severe: level === 'L4' }">{{ level }}</span>
+            <div><strong>{{ BAN_ACTION_COPY[level] }}</strong><p>{{ level === 'L4' ? '永久封禁前须确认法律依据与证据留存。' : '期限、对象及影响范围须由真实工单确认。' }}</p></div>
+          </li>
+        </ol>
+        <div class="safety"><strong>执行前的必要条件</strong><p>核验操作者和目标不是同一人、校验 user.ban、填写原因与期限、二次确认，并由服务端返回处置状态及审计编号。</p></div>
+      </section>
+    </div>
+
+    <section class="rule-card" aria-labelledby="quality-rule-title">
+      <span class="rule-icon" aria-hidden="true">≠</span>
+      <div>
+        <h2 id="quality-rule-title">质量退修与违规处罚分开计算</h2>
+        <p>质量或材料问题要求补正，退修 3 次也不按违规暂停投稿。只有滚动 180 天内 3 次经人工确认的违规驳回，才按规则暂停投稿 7 天；申诉撤销的记录需剔除。</p>
       </div>
     </section>
 
-    <section class="card">
-      <h2>工单分流（appeal.handle / report.handle 互不串）</h2>
-      <label>处理结论（申诉/纠纷共用，必填）<input v-model="resolution" data-testid="resolution" /></label>
-      <ul>
-        <li v-for="a in appeals" :key="a.id">
-          #{{ a.id }} [{{ a.actionType }}] {{ a.reason }}
-          <span v-if="appealOverdueFlag.includes(a)" class="overdue">48h 超时</span>
-          <button v-if="!a.resolvedAt" type="button" class="chip" data-testid="appeal-accept" @click="resolveAppeal(a.id, true)">成立</button>
-          <button v-if="!a.resolvedAt" type="button" class="chip" @click="resolveAppeal(a.id, false)">驳回</button>
-          <span v-else class="done">已结案</span>
-        </li>
-      </ul>
-      <p class="meta">举报/版权走 report.handle 独立队列（/governance 集合入口）；不能用内容发布按钮处理工单（闭环 §3）。</p>
-    </section>
-
-    <section class="card">
-      <h2>家庭纠纷（family.dispute）</h2>
-      <p class="meta">{{ FAMILY_DISPUTE_RULE }}</p>
-      <ul>
-        <li v-for="d in disputes" :key="d.id">
-          家庭 #{{ d.familyId }}
-          <template v-if="!d.resolution">
-            <button type="button" class="chip" data-testid="dispute-resolve" @click="resolveDispute(d.id)">按结论处理</button>
-          </template>
-          <span v-else class="done">已处理：{{ d.resolution }}</span>
-        </li>
-      </ul>
-    </section>
-
-    <p v-if="message" class="msg" data-testid="message">{{ message }}</p>
+    <div class="queue-grid">
+      <section v-for="queue in queues" :key="queue.title" class="panel queue-card">
+        <div class="panel-head"><h2>{{ queue.title }}</h2><span class="perm">{{ queue.permission }}</span></div>
+        <p>{{ queue.detail }}</p>
+        <div class="queue-status"><span aria-hidden="true">◇</span><strong>队列待接入</strong><small>没有读取真实工单，当前无法判断数量或时限。</small></div>
+      </section>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.gov { display: grid; gap: 14px; }
-.card { background: #fff; border-radius: 16px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 16px; display: grid; gap: 10px; }
-.card h2 { margin: 0; font-size: 15px; }
-table { width: 100%; border-collapse: collapse; }
-th, td { text-align: left; padding: 8px 10px; font-size: 13px; border-bottom: 1px solid #f0e6dc; }
-th { color: #7a6e63; font-size: 12px; }
-ul { margin: 0; padding-left: 16px; display: grid; gap: 8px; font-size: 13px; }
-li { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-.ban-form { background: #fdecec; border-radius: 12px; padding: 14px; display: grid; gap: 10px; }
-.ban-form label { display: grid; gap: 6px; font-size: 13px; font-weight: 600; }
-.ban-form input, .card select, .card > label input { height: 36px; border: 1px solid #f0e6dc; border-radius: 10px; padding: 0 10px; font-size: 13px; font-weight: 400; }
-.confirm { display: flex; gap: 8px; align-items: center; font-weight: 400 !important; color: #7a6e63; }
-.inline { display: flex; gap: 8px; }
-.chip { border: none; background: #f7f1ea; color: #7a6e63; border-radius: 999px; padding: 5px 12px; font-size: 12px; cursor: pointer; }
-.chip.danger { background: #fdecec; color: #b91c1c; }
-.overdue { background: #fdecec; color: #b91c1c; border-radius: 999px; padding: 2px 8px; font-size: 11px; }
-.done { color: #22c55e; font-size: 12px; }
-.meta { margin: 0; color: #7a6e63; font-size: 13px; }
-.msg { background: #e7f8ef; color: #15803d; border-radius: 8px; padding: 10px 14px; font-size: 13px; margin: 0; }
+.governance{display:grid;gap:18px;color:#2b2118;max-width:1320px;margin:auto}.page-head{margin:4px 0 0}.eyebrow,.panel-kicker{margin:0 0 6px;color:#B85111;font-size:11px;font-weight:800;letter-spacing:.15em}.page-head h1{font-size:29px;letter-spacing:-.03em;margin:0}.page-head>p:last-child{color:#6b5e52;font-size:13px;margin:8px 0 0}.preview-note{display:flex;align-items:start;gap:12px;border:1px solid #ecd8b8;border-radius:13px;background:#fff8eb;color:#654a2c;padding:15px 17px;line-height:1.6}.preview-note>span{font-size:20px}.preview-note strong{font-size:13px}.preview-note p{font-size:12px;margin:3px 0 0}.top-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(400px,.95fr);gap:16px}.panel{background:#fff;border:1px solid #e9ded2;border-radius:14px;box-shadow:0 8px 24px #2b211808;padding:18px}.panel-head{display:flex;justify-content:space-between;align-items:start;gap:12px;margin-bottom:17px}.panel-head h2{font-size:16px;margin:0}.perm{font:600 11px ui-monospace,SFMono-Regular,Consolas,monospace;color:#5c4d82;background:#f2eefb;border-radius:999px;padding:5px 8px;white-space:nowrap}.perm.danger{color:#96372e;background:#fff0ee}.search-row label{display:block;font-size:12px;color:#6b5e52;font-weight:700;margin-bottom:7px}.search-row>div{display:flex;gap:8px}.search-row input{flex:1;min-width:0;min-height:40px;border:1px solid #ddd0c2;border-radius:9px;padding:0 12px;font:inherit}.search-row button{min-height:40px;border:0;border-radius:9px;background:#e9e3dd;color:#73675d;padding:0 14px;font:inherit;cursor:not-allowed}.unavailable{margin-top:17px;border:1px dashed #dcc9b8;border-radius:11px;padding:20px;background:#fcfaf7}.unavailable strong{font-size:13px}.unavailable p,.foot{color:#74685e;font-size:12px;line-height:1.7}.unavailable p{margin:6px 0 0}.foot{margin:15px 0 0}.levels{list-style:none;padding:0;margin:0;display:grid;gap:8px}.levels li{display:flex;gap:12px;align-items:start;padding:9px 0;border-bottom:1px solid #f1e9e1}.level{width:38px;height:34px;display:grid;place-items:center;flex:none;background:#fff1e6;color:#9b4b17;border-radius:8px;font-weight:800;font-size:12px}.level.severe{background:#fff0ee;color:#96372e}.levels strong{font-size:13px}.levels p{font-size:11px;color:#807368;margin:4px 0 0;line-height:1.5}.safety{margin-top:16px;padding:12px 14px;border-radius:10px;background:#f8f3ed}.safety strong{font-size:12px}.safety p{font-size:11px;color:#6d6054;line-height:1.6;margin:4px 0 0}.rule-card{display:flex;align-items:start;gap:15px;padding:18px;border:1px solid #dbe7dc;border-radius:14px;background:#f5faf4}.rule-icon{width:37px;height:37px;flex:none;display:grid;place-items:center;border-radius:10px;background:#e2efe3;color:#4e7a55;font-size:22px}.rule-card h2{font-size:15px;margin:0}.rule-card p{font-size:12px;line-height:1.7;color:#5b6b5e;margin:6px 0 0}.queue-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.queue-card>p{font-size:12px;color:#6d6155;line-height:1.7;min-height:65px}.queue-status{display:flex;align-items:center;flex-wrap:wrap;gap:7px;background:#f7f3ef;border-radius:10px;padding:11px;color:#7b6d60}.queue-status strong{font-size:12px}.queue-status small{width:100%;font-size:11px}@media(max-width:1080px){.top-grid{grid-template-columns:1fr}.queue-grid{grid-template-columns:1fr}}
 </style>

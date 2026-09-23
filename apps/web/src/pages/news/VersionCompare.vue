@@ -1,76 +1,47 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { versionHeader, VERSION_DIFF_REQUIRED, WITHDRAW_THEN_EDIT, versionOutcome } from '../../domain/closedLoop';
+import { api, getAccessToken } from '@cutepet/api-client';
+import { reviewStateCopy } from '../../domain/news';
 
 const route = useRoute();
 const router = useRouter();
-const submissionId = String(route.params.id);
-const liveVersion = ref(1);
-const head = () => versionHeader(liveVersion.value);
-const decision = ref<'approved' | 'rejected' | null>(null);
-const showDiff = ref(false);
+const submissionId = String(route.params.id ?? '');
+const authorized = Boolean(getAccessToken());
+const loading = ref(true);
+const error = ref('');
+const state = ref('');
+async function load() {
+  if (!authorized) return;
+  loading.value = true;
+  error.value = '';
+  state.value = '';
+  try {
+    const result = await api.submissionList();
+    if (!Array.isArray(result)) throw new Error('投稿记录暂时无法读取');
+    const row = (result as { submissionId?: number; state?: string }[]).find((item) => String(item.submissionId ?? '') === submissionId);
+    state.value = row?.state ?? '';
+  } catch (cause) {
+    error.value = cause instanceof Error ? cause.message : '投稿记录暂时无法读取';
+  } finally { loading.value = false; }
+}
+onMounted(() => {
+  if (!authorized) void router.replace({ path: '/login', query: { return: route.fullPath, resume: 'version' } });
+  else void load();
+});
 </script>
 
 <template>
-  <div class="x14">
-    <header>
-      <button type="button" class="back" @click="router.push('/submissions')">‹ 我的投稿</button>
-      <h1>内容修改版本（X14）</h1>
-    </header>
-
-    <div class="versions" data-testid="version-head">
-      <span class="live">{{ head().live }}</span>
-      <span class="arrow">→</span>
-      <span class="draft">{{ head().draft }}</span>
-    </div>
-
-    <p class="rule">{{ WITHDRAW_THEN_EDIT }}</p>
-
-    <button type="button" class="ghost" data-testid="toggle-diff" @click="showDiff = !showDiff">
-      {{ showDiff ? '收起对比' : '查看对比预览' }}{{ VERSION_DIFF_REQUIRED ? '（必看）' : '' }}
-    </button>
-
-    <section v-if="showDiff" class="diff" data-testid="diff">
-      <div class="col">
-        <h3>{{ head().live }}（线上）</h3>
-        <p>原段落：幼猫喂养需要注意少食多餐……</p>
-      </div>
-      <div class="col added">
-        <h3>{{ head().draft }}（修改稿）</h3>
-        <p>＋新增段落：换粮需要 7 天过渡期……</p>
-        <p>－删除段落：旧的错误建议……</p>
-      </div>
-    </section>
-
-    <div class="actions">
-      <button type="button" class="primary" data-testid="approve" @click="decision = 'approved'">通过（替换上线）</button>
-      <button type="button" class="ghost" data-testid="reject" @click="decision = 'rejected'">驳回（保留旧版）</button>
-    </div>
-
-    <p v-if="decision" class="result" data-testid="result">{{ versionOutcome(decision) }}</p>
-
-    <button type="button" class="link" @click="router.push('/news')">前往线上文查看旧版 →</button>
+  <div class="version-page">
+    <nav class="breadcrumb"><router-link to="/submissions">我的投稿</router-link><span>／</span><span>版本对比</span></nav>
+    <header><p class="eyebrow">REVISION HISTORY</p><h1>确认每一次修改。</h1><p>只有读取到真实的线上版与修改稿，才能准确比较内容。</p></header>
+    <section v-if="!authorized" class="state">正在前往登录页…</section>
+    <section v-else-if="loading" class="state" role="status">正在核对投稿状态…</section>
+    <section v-else-if="error" class="state error" role="alert"><h2>暂时无法核对投稿</h2><p>{{ error }}</p><button type="button" @click="load">重试</button></section>
+    <section v-else class="state"><span v-if="state" class="badge">{{ reviewStateCopy(state).label }}</span><h2>版本对比暂不可用</h2><p>投稿 #{{ submissionId }} 的线上正文与修改稿目前无法完整读取。为了避免比较到错误版本，这里暂不显示差异，也不提供审核操作。</p><p v-if="!state">当前列表也尚未返回这篇投稿的可核对状态。</p><router-link to="/submissions">返回我的投稿 →</router-link></section>
   </div>
 </template>
 
 <style scoped>
-.x14 { max-width: 640px; margin: 32px auto; padding: 16px; display: grid; gap: 12px; }
-header { display: flex; gap: 12px; align-items: center; }
-.back { background: none; border: none; color: #ff7a2f; }
-.versions { display: flex; gap: 10px; align-items: center; font-weight: 600; }
-.versions .live { background: #e7f8ef; color: #15803d; border-radius: 999px; padding: 4px 12px; font-size: 13px; }
-.versions .draft { background: #fff1e8; color: #b45309; border-radius: 999px; padding: 4px 12px; font-size: 13px; }
-.arrow { color: #7a6e63; }
-.rule { background: #f5f3ff; color: #6d5bd0; border-radius: 8px; padding: 10px 12px; font-size: 13px; }
-.diff { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.col { background: #fff; border-radius: 12px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 12px; }
-.col.added { background: #f0fdf4; }
-.col h3 { margin: 0 0 6px; font-size: 13px; color: #7a6e63; }
-.col p { margin: 4px 0; font-size: 13px; color: #2b2118; }
-.actions { display: flex; gap: 10px; }
-.primary { flex: 1; height: 46px; border: none; border-radius: 999px; background: #22c55e; color: #fff; font-weight: 600; }
-.ghost { flex: 1; height: 46px; border: none; border-radius: 999px; background: #fff; color: #7a6e63; box-shadow: inset 0 0 0 1px #f0e6dc; }
-.result { background: #eaf1ff; color: #2563eb; border-radius: 8px; padding: 10px 12px; font-size: 13px; }
-.link { background: none; border: none; color: #ff7a2f; font-size: 13px; text-align: left; }
+.version-page{width:min(100% - 32px,800px);margin:0 auto;padding:27px 0 90px}.breadcrumb{display:flex;gap:8px;color:var(--ink-2);font-size:13px}.breadcrumb a{text-decoration:none}.eyebrow{margin:0 0 12px;color:var(--primary);font-size:12px;font-weight:800;letter-spacing:.13em}header{margin:55px 0 27px}header h1{margin:0;font-size:clamp(32px,4vw,48px)}header p:not(.eyebrow){color:var(--ink-2)}.state{min-height:235px;padding:clamp(25px,4vw,40px);border:1px solid var(--line);border-radius:22px;background:#fff;color:var(--ink-2)}.state h2{margin:13px 0;font-size:24px;color:var(--ink)}.state p{max-width:590px;line-height:1.8}.state a{display:inline-flex;margin-top:9px;color:var(--primary);font-weight:750;text-decoration:none}.state button{border:0;background:none;color:var(--primary);font-weight:750}.state.error{color:#a63322}.badge{display:inline-block;padding:4px 11px;border-radius:999px;background:var(--primary-soft);color:var(--primary);font-size:12px;font-weight:800}@media(max-width:650px){header{margin-top:37px}}
 </style>

@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { api } from '@cutepet/api-client';
 
 interface ReminderRow {
-  id: number;
+  id: number | string;
   type: string;
   title: string;
   state: string;
@@ -16,36 +16,27 @@ const router = useRouter();
 const petId = String(route.params.id);
 const rows = ref<ReminderRow[]>([]);
 const error = ref('');
-const message = ref('');
+const loading = ref(true);
 
-onMounted(async () => {
-  try {
-    rows.value = (await api.reminderList({ path: { id: petId } })) as unknown as ReminderRow[];
-  } catch (e) {
-    error.value = e instanceof Error ? e.message : '加载失败（dev 需启动 pet-service）';
-  }
-});
-
-async function complete(r: ReminderRow) {
-  try {
-    const res = (await api.reminderComplete({ path: { id: String(r.id) } })) as unknown as {
-      outcome?: string;
-      nextDue?: string;
-    };
-    message.value =
-      res?.outcome === 'ALREADY_DONE'
-        ? '该提醒已完成（幂等：显示已有结果，不重复动作）'
-        : res?.nextDue
-          ? `已完成，下期 ${res.nextDue}`
-          : '已完成';
-    await reload();
-  } catch (e) {
-    error.value = e instanceof Error ? e.message : '操作失败';
-  }
-}
+onMounted(() => { void reload(); });
 
 async function reload() {
-  rows.value = (await api.reminderList({ path: { id: petId } })) as unknown as ReminderRow[];
+  loading.value = true;
+  error.value = '';
+  try {
+    const response = await api.reminderList({ path: { id: petId } });
+    if (!Array.isArray(response) || !response.every((row) => row && typeof row === 'object' &&
+        (typeof row.id === 'number' || typeof row.id === 'string') && typeof row.state === 'string' &&
+        typeof row.type === 'string' && typeof row.title === 'string')) {
+      throw new Error('提醒列表格式异常');
+    }
+    rows.value = response as ReminderRow[];
+  } catch (e) {
+    rows.value = [];
+    error.value = e instanceof Error ? e.message : '提醒读取失败';
+  } finally {
+    loading.value = false;
+  }
 }
 
 function tone(state: string): string {
@@ -60,30 +51,28 @@ function tone(state: string): string {
   <div class="reminders">
     <header>
       <button type="button" class="back" @click="router.push(`/pets/${petId}`)">‹ 返回</button>
-      <h1>提醒中心</h1>
+      <h1>提醒计划</h1>
     </header>
 
-    <p v-if="error" class="err">{{ error }}</p>
-    <p v-if="message" class="ok" data-testid="reminder-msg">{{ message }}</p>
-    <p v-if="rows.length === 0 && !error" class="muted" data-testid="empty">
-      还没有提醒 —— 在健康记录里填「下次日期」会自动生成，或在档案页新建。
-    </p>
+    <p class="notice">这里显示平台返回的提醒计划。健康类待办需要与有效记录关联；当前完成接口尚不接收记录信息，完成操作暂未开放。</p>
+    <p v-if="loading" class="muted" role="status">正在读取提醒…</p>
+    <div v-else-if="error" class="error-state" role="alert">
+      <p>{{ error }}</p>
+      <button type="button" class="ghost" @click="reload">重试</button>
+    </div>
+    <div v-else-if="rows.length === 0" class="empty" data-testid="empty">
+      <strong>目前没有提醒计划</strong>
+      <p class="muted">健康记录中的下次日期只会生成建议。提醒创建入口接入前，请勿将建议视为已排期。</p>
+      <button type="button" class="ghost" @click="router.push(`/pets/${petId}/record`)">去记录健康事项</button>
+    </div>
 
-    <ul class="list">
+    <ul v-else class="list">
       <li v-for="r in rows" :key="r.id" class="row">
         <div>
           <strong>{{ r.type }}</strong> <span :class="['tag', tone(r.state)]">{{ r.state }}</span>
           <p class="muted">{{ r.title }} · 下期 {{ r.nextDue ?? '—' }}</p>
         </div>
-        <button
-          v-if="r.state === 'ACTIVE'"
-          type="button"
-          class="ok-btn"
-          :data-testid="`complete-${r.id}`"
-          @click="complete(r)"
-        >
-          完成
-        </button>
+        <span v-if="r.state === 'ACTIVE'" class="pending-label">完成待接入</span>
       </li>
     </ul>
   </div>
@@ -105,7 +94,9 @@ header {
 .back {
   background: none;
   border: none;
-  color: #ff7a2f;
+  color: #a8470c;
+  min-height: 44px;
+  cursor: pointer;
 }
 .list {
   list-style: none;
@@ -121,7 +112,14 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
 }
+.notice, .empty { background: #fff; border: 1px solid #f0e6dc; border-radius: 16px; padding: 16px; color: #604b3b; font-size: 14px; line-height: 1.6; }
+.empty { display: grid; gap: 8px; }
+.empty p { margin: 0; }
+.error-state { color: #a12a28; background: #fff4f2; border-radius: 14px; padding: 14px; }
+.ghost { min-height: 44px; border: 1px solid #dacabc; border-radius: 999px; background: #fff; color: #684b39; padding: 0 16px; cursor: pointer; }
+.pending-label { color: #7b5d43; font-size: 12px; white-space: nowrap; }
 .tag {
   font-size: 12px;
   border-radius: 999px;
@@ -130,40 +128,27 @@ header {
 }
 .tag.orange {
   background: #fff1e8;
-  color: #ff7a2f;
+  color: #9c3f0b;
 }
 .tag.green {
   background: #e7f8ef;
-  color: #22c55e;
+  color: #176336;
 }
 .tag.red {
   background: #fdecec;
-  color: #ef4444;
+  color: #a12a28;
 }
 .tag.gray {
   background: #f0e6dc;
   color: #7a6e63;
 }
-.ok-btn {
-  height: 36px;
-  padding: 0 16px;
-  border: none;
-  border-radius: 999px;
-  background: #22c55e;
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-}
+.back:focus-visible, .ghost:focus-visible { outline: 3px solid #6f320c; outline-offset: 2px; }
 .muted {
   color: #7a6e63;
   font-size: 13px;
 }
 .err {
   color: #ef4444;
-  font-size: 13px;
-}
-.ok {
-  color: #22c55e;
   font-size: 13px;
 }
 </style>

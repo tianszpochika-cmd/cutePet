@@ -1,74 +1,47 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { PLAN_DETAIL_RULES, resumeNeedsFutureConfirm } from '../../domain/closedLoop';
+import { PLAN_DETAIL_RULES } from '../../domain/closedLoop';
 
 const router = useRouter();
-const paused = ref(false);
-const resumeDate = ref('2026-10-01');
-const confirmInfo = ref<{ required: boolean; copy: string } | null>(null);
-const today = new Date().toISOString().slice(0, 10);
-
-function checkResume() {
-  confirmInfo.value = resumeNeedsFutureConfirm(resumeDate.value, today);
-}
 </script>
 
 <template>
-  <div class="x02">
-    <header>
-      <button type="button" class="back" @click="router.back()">‹ 返回</button>
-      <h1>计划详情（X02）</h1>
-    </header>
+  <main class="plan-detail">
+    <button type="button" class="back" @click="router.back()">‹ 返回</button>
+    <div class="heading">
+      <span class="eyebrow">照护计划</span>
+      <h1>计划详情</h1>
+      <p>计划、每期待办与处理记录需要从平台分别核对。</p>
+    </div>
 
-    <section class="card">
-      <h2>本次待办</h2>
-      <p>疫苗接种提醒 · 每 180 天 · 基准：计划日（plan）</p>
-      <div class="actions">
-        <button type="button" class="primary" @click="router.push('/todos/1/confirm')">去完成</button>
-        <button type="button" class="ghost" @click="router.push('/todos/1/confirm')">跳过（填原因）</button>
-      </div>
+    <section class="unavailable" role="status">
+      <h2>计划详情暂不可查看</h2>
+      <p>当前接口只有按宠物查询计划列表，没有按计划编号读取详情或历史待办的入口。本页无法确认这项计划属于哪只宠物，也无法展示真实日期与处理人。</p>
+      <button type="button" @click="router.push('/pets')">查看我的宠物</button>
     </section>
 
-    <section class="card">
-      <h2>计划管理</h2>
-      <p class="rule">{{ PLAN_DETAIL_RULES.editScope }}</p>
-      <p class="rule">{{ PLAN_DETAIL_RULES.pauseVsSkip }}</p>
-      <div class="actions">
-        <button type="button" class="ghost" @click="paused = !paused">
-          {{ paused ? '已暂停（点击恢复）' : '暂停计划' }}
-        </button>
-        <button type="button" class="ghost">编辑周期（仅影响未完成）</button>
-      </div>
+    <section class="rules" aria-label="计划管理规则">
+      <h2>计划管理规则</h2>
+      <p>{{ PLAN_DETAIL_RULES.editScope }}</p>
+      <p>{{ PLAN_DETAIL_RULES.pauseVsSkip }}</p>
+      <p>编辑、暂停、恢复和跳过需要平台提供当前状态与相应操作结果，接通前暂不开放。</p>
     </section>
-
-    <section v-if="paused" class="card">
-      <h2>恢复计划</h2>
-      <label class="field">新的下期时间 <input v-model="resumeDate" type="date" data-testid="resume-date" /></label>
-      <button type="button" class="ghost" @click="checkResume">校验恢复时间</button>
-      <p v-if="confirmInfo" class="hint" data-testid="resume-confirm">{{ confirmInfo.copy }}</p>
-    </section>
-
-    <section class="card">
-      <h2>历史执行</h2>
-      <p class="muted">2026-03-21 已完成（处理人：妈妈）· 2025-09-22 已完成 · 2025-03-21 已跳过（原因：出差）</p>
-    </section>
-  </div>
+  </main>
 </template>
 
 <style scoped>
-.x02 { max-width: 560px; margin: 32px auto; padding: 16px; display: grid; gap: 12px; }
-header { display: flex; gap: 12px; align-items: center; }
-.back { background: none; border: none; color: #ff7a2f; }
-.card { background: #fff; border-radius: 16px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 16px; display: grid; gap: 10px; }
-.card h2 { margin: 0; font-size: 15px; }
-.card p { margin: 0; font-size: 14px; color: #2b2118; }
-.rule { color: #7a6e63 !important; font-size: 13px !important; }
-.actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.primary { height: 40px; padding: 0 18px; border: none; border-radius: 999px; background: #ff7a2f; color: #fff; font-weight: 600; }
-.ghost { height: 40px; padding: 0 14px; border: none; border-radius: 999px; background: #fff; color: #7a6e63; box-shadow: inset 0 0 0 1px #f0e6dc; }
-.field { display: grid; gap: 6px; font-size: 14px; font-weight: 600; }
-.field input { height: 44px; border: 1px solid #f0e6dc; border-radius: 12px; padding: 0 12px; }
-.hint { background: #fff1e8; color: #b45309; border-radius: 8px; padding: 8px 12px; font-size: 13px; }
-.muted { color: #7a6e63; font-size: 13px; line-height: 1.8; }
+.plan-detail { max-width: 620px; margin: 32px auto; padding: 16px; display: grid; gap: 20px; color: #2b2118; }
+.back { justify-self: start; border: 0; min-height: 44px; background: transparent; color: #a8470c; cursor: pointer; }
+.heading { display: grid; gap: 6px; }
+.heading h1 { margin: 0; font-size: clamp(24px, 4vw, 32px); }
+.heading p { margin: 0; color: #706255; line-height: 1.6; }
+.eyebrow { color: #a8470c; font-size: 13px; font-weight: 700; }
+.unavailable, .rules { padding: 20px; border-radius: 18px; line-height: 1.7; }
+.unavailable { background: #fff7ee; border: 1px solid #ecd9c8; }
+.rules { background: #fff; border: 1px solid #f0e6dc; }
+h2 { margin: 0 0 8px; font-size: 18px; }
+p { margin: 0 0 8px; font-size: 14px; color: #604b3b; }
+p:last-child { margin-bottom: 0; }
+.unavailable button { min-height: 44px; margin-top: 8px; padding: 0 18px; border: 0; border-radius: 999px; color: #fff; background: #b85111; font-weight: 700; cursor: pointer; }
+button:focus-visible { outline: 3px solid #6f320c; outline-offset: 2px; }
 </style>

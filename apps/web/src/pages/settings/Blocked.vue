@@ -1,75 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { BLOCKED_ALLOWED_ACTIONS, blockedCopy, restoredCapabilities } from '../../domain/settings';
 
 const router = useRouter();
-const copy = blockedCopy();
-const action = ref<string | null>(null);
-const queryState = ref(false);
-
-// #56：各处罚独立计时（演示数据；真实状态随接口）
-const banExpired = ref(false);
-const muteExpired = ref(false);
-const restored = () =>
-  restoredCapabilities({ banExpired: banExpired.value, muteExpired: muteExpired.value, postRightSuspended: true });
 </script>
 
 <template>
-  <div class="blocked">
-    <h1 data-testid="blocked-title">{{ copy.title }}</h1>
-    <p class="note">{{ copy.note }}</p>
-
-    <!-- X15：受限动作仅四类，不进普通个人中心 -->
-    <nav class="actions">
-      <button
-        v-for="a in BLOCKED_ALLOWED_ACTIONS"
-        :key="a"
-        type="button"
-        :data-testid="`action-${a}`"
-        @click="action = a"
-      >
-        {{ a }}
-      </button>
-    </nav>
-
-    <section v-if="action === '申诉'" class="panel">
-      <p>提交申诉（理由必填）→ 管理端 appeal.handle 处理 → 结果经本页与消息反馈（≤48h）。</p>
-      <textarea rows="3" placeholder="说明申诉理由…" />
-      <button type="button" class="primary" @click="alert('申诉已提交，可在此页查询进度（无需恢复账号）')">
-        提交申诉
-      </button>
-    </section>
-
-    <section v-else-if="action === '状态查询'" class="panel" data-testid="status">
-      <p>处罚状态（各处罚独立计时，期满仅恢复对应能力 —— #56）：</p>
-      <label><input v-model="banExpired" type="checkbox" /> 封禁已到期</label>
-      <label><input v-model="muteExpired" type="checkbox" /> 禁言已到期</label>
-      <p class="restored">已恢复能力：{{ restored().length > 0 ? restored().join('、') : '暂无（仍有生效处罚）' }}</p>
-      <p v-if="queryState" class="meta">状态：查询完成</p>
-    </section>
-
-    <section v-else-if="action === '查看规则'" class="panel">
-      <button type="button" class="link" @click="router.push('/legal/community')">查看《社区规范》处置阶梯 →</button>
-    </section>
-
-    <section v-else class="panel">
-      <p>提交信息请求（更正/删除/复制个人信息）→ 工单流转，结果在本页可查。</p>
-      <button type="button" class="primary" @click="alert('信息请求已提交')">提交</button>
-    </section>
-  </div>
+  <div class="blocked"><p class="eyebrow">ACCOUNT STATUS</p><h1>账号状态与申诉</h1><p class="lead">账号处罚、到期时间和恢复能力必须由平台查询。当前页面尚未接通状态接口，不会用本地开关给出“已恢复”结论。</p><section class="card" role="status"><span class="icon" aria-hidden="true">◎</span><h2>暂无法读取账号状态</h2><p>如果你收到处置通知，请保留通知编号与相关信息。受限账号的帮助、规则及申诉入口应保持可达；申诉提交和处理进度以真实工单为准。</p><div class="links"><router-link to="/help">前往帮助与客服 →</router-link><router-link to="/legal/community">查看社区规范状态 →</router-link></div></section><button type="button" class="back" @click="router.push('/')">返回首页</button></div>
 </template>
 
 <style scoped>
-.blocked { max-width: 560px; margin: 48px auto; padding: 16px; display: grid; gap: 14px; text-align: center; }
-.note { background: #fdecec; color: #b91c1c; border-radius: 12px; padding: 12px; font-size: 13px; line-height: 1.7; }
-.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.actions button { height: 48px; border: none; border-radius: 12px; background: #fff; box-shadow: inset 0 0 0 1px #f0e6dc; font-size: 14px; color: #2b2118; }
-.panel { background: #fff; border-radius: 16px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 16px; display: grid; gap: 10px; text-align: left; font-size: 14px; color: #2b2118; }
-label { display: flex; gap: 8px; align-items: center; font-size: 14px; }
-.primary { height: 44px; border: none; border-radius: 999px; background: #ff7a2f; color: #fff; font-weight: 600; }
-.link { background: none; border: none; color: #ff7a2f; font-size: 14px; text-align: left; }
-.restored { color: #22c55e; font-weight: 600; }
-.meta { color: #7a6e63; font-size: 12px; }
-textarea { border: 1px solid #f0e6dc; border-radius: 12px; padding: 10px; font-family: inherit; }
+.blocked { width: min(720px, calc(100% - 32px)); margin: 48px auto; }.eyebrow { margin: 0 0 9px; color: #b85111; font-size: 12px; font-weight: 800; letter-spacing: .14em; }h1 { margin: 0; font-size: clamp(31px, 5vw, 43px); }.lead { color: #64574d; line-height: 1.8; }.card { margin: 25px 0 18px; padding: clamp(24px, 5vw, 40px); background: #fff; border: 1px solid #eadfd4; border-radius: 24px; }.icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 14px; background: #fff1e8; color: #b85111; font-size: 26px; }.card h2 { margin: 20px 0 8px; font-size: 21px; }.card p { color: #64574d; line-height: 1.8; }.links { display: flex; flex-wrap: wrap; gap: 8px 20px; }.links a { display: inline-flex; align-items: center; min-height: 44px; color: #b85111; font-weight: 700; text-decoration: none; }.back { min-height: 44px; border: 0; background: transparent; color: #b85111; font-weight: 700; }
 </style>

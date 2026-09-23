@@ -14,13 +14,13 @@ export function petActionAllowed(input: {
   share: ShareLevel | null;
   action: PetAction;
 }): boolean {
-  const { actorIsPetOwner, role, share, action } = input;
+  const { actorIsPetOwner, share, action } = input;
   if (actorIsPetOwner) return true; // 所有者全动作
   if (action === 'SUMMARY_EXPORT') return false; // #35 仅所有者可生成摘要
   if (action === 'SET_SHARE') return false; // 档位设置=所有者（U61 非所有者不能提升）
   if (action === 'VIEW') return share !== null; // 已共享才可见
-  // 编辑记录/处理提醒：需可管理档（家庭管理员角色不越权到他人宠物——所有权维度独立 U60）
-  if (role === 'MEMBER') return false;
+  // 家庭角色不替代逐宠授权：普通成员获得 MANAGE 后也可记录和处理待办。
+  // 家庭管理员若未获得这只宠物的 MANAGE，同样不能操作。
   return share === 'MANAGE';
 }
 

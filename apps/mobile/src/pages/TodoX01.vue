@@ -1,64 +1,45 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-// T10.6 复用 T7.11：同一 closedLoop 实现（跨端一致）
-import { todoConfirmSuccess, type TodoConfirmModel } from '../../../web/src/domain/closedLoop.ts';
+import { getAccessToken } from '@cutepet/api-client';
 
 const route = useRoute();
 const router = useRouter();
-const existing = ref(true);
-const occurred = ref(new Date().toISOString().slice(0, 10));
-const nextDue = ref('2027-03-21');
-const result = ref<{ headline: string; lines: string[] } | null>(null);
-const alreadyDone = ref(false); // 家人已完成演示（X01）
-
-function confirm() {
-  const model: TodoConfirmModel = {
-    petName: '旺财',
-    existingRecord: existing.value ? '健康记录·疫苗' : null,
-    occurredDate: occurred.value,
-    nextDuePreview: nextDue.value,
-    handler: '妈妈',
-  };
-  result.value = todoConfirmSuccess(model, alreadyDone.value ? 'ALREADY_COMPLETED' : 'COMPLETED');
-}
-void route;
+const authorized = computed(() => Boolean(getAccessToken()));
+const reference = computed(() => {
+  const id = String(route.params.id ?? '');
+  return /^[1-9]\d*$/.test(id) ? id : '';
+});
 </script>
 
 <template>
-  <div class="m-x01">
-    <header>
-      <button type="button" class="back" @click="router.back()">‹</button>
-      <h1>完成待办（X01）</h1>
+  <div class="todo-confirm">
+    <header class="top">
+      <button type="button" class="back" @click="router.push('/')">← 今日照护</button>
+      <span class="eyebrow">CARE COMPLETION</span>
+      <h1>完成照护待办</h1>
+      <p>完成一项健康待办，需要把它与真实的健康记录一起核对。</p>
     </header>
-
-    <template v-if="!result">
-      <label class="row"><input v-model="existing" type="radio" :value="true" /> 关联已有记录：疫苗（2026-09-20）</label>
-      <label class="row"><input v-model="existing" type="radio" :value="false" /> 新增健康记录</label>
-      <label class="field">发生日期 <input v-model="occurred" type="date" data-testid="occurred" /></label>
-      <label class="field">下次计划 <input v-model="nextDue" type="date" /></label>
-      <label class="row"><input v-model="alreadyDone" type="checkbox" data-testid="already" /> 模拟家人已完成（幂等）</label>
-      <button type="button" class="primary" data-testid="confirm" @click="confirm">确认完成</button>
-    </template>
-
-    <section v-else class="success" data-testid="success">
-      <h2>{{ result.headline }}</h2>
-      <ul><li v-for="l in result.lines" :key="l">{{ l }}</li></ul>
-      <button type="button" class="primary" @click="router.push('/pets')">返回</button>
+    <section v-if="!authorized" class="card state" role="status">
+      <span class="mark" aria-hidden="true">◇</span>
+      <h2>登录后查看待办</h2>
+      <p>待办及完成情况属于有权照护的账号。</p>
+      <button type="button" class="primary" @click="router.push({ path: '/login', query: { return: route.fullPath } })">前往登录</button>
+    </section>
+    <section v-else class="card state" role="status">
+      <span class="mark" aria-hidden="true">◇</span>
+      <h2>完成操作尚未接入</h2>
+      <p v-if="reference" class="reference">链接中的待办编号：#{{ reference }}。这只是链接参数，页面尚不能从平台核对待办详情。</p>
+      <p v-else class="reference">待办编号无效，无法核对待办详情。</p>
+      <p>当前接口没有提供待办详情读取，也没有“关联有效健康记录并原子完成待办”的回执契约。这里不会显示宠物、经办人、下次日期或已完成状态。</p>
+      <div class="notice">如果照护已经发生，可先为对应宠物创建健康记录。该记录不会自动完成本待办；待服务端闭环能力接入后才能确认完成。</div>
+      <button type="button" class="primary" data-testid="confirm" disabled>暂不能确认完成</button>
+      <button type="button" class="secondary" @click="router.push('/pets')">查看宠物档案</button>
+      <button type="button" class="text-button" @click="router.push('/')">返回今日照护 →</button>
     </section>
   </div>
 </template>
 
 <style scoped>
-.m-x01 { padding: 16px; display: grid; gap: 12px; }
-header { display: flex; gap: 10px; align-items: center; }
-.back { border: none; background: #fff; width: 44px; height: 44px; border-radius: 999px; color: #ff7a2f; font-size: 20px; }
-h1 { margin: 0; font-size: 17px; }
-.row { background: #fff; border-radius: 14px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 14px 16px; font-size: 14px; display: flex; gap: 10px; align-items: center; min-height: 48px; }
-.field { display: grid; gap: 6px; font-size: 14px; font-weight: 600; }
-.field input { height: 48px; border: 1px solid #f0e6dc; border-radius: 12px; padding: 0 12px; font-size: 16px; }
-.primary { height: 52px; border: none; border-radius: 999px; background: #ff7a2f; color: #fff; font-size: 16px; font-weight: 700; min-height: 44px; }
-.success { background: #fff; border-radius: 18px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 20px; display: grid; gap: 12px; }
-.success h2 { margin: 0; color: #22c55e; font-size: 18px; }
-.success ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14px; color: #2b2118; }
+.todo-confirm{display:grid;gap:17px;padding:18px 16px calc(36px + env(safe-area-inset-bottom));color:#30241d}.top{display:grid;justify-items:start;gap:7px}.back{min-height:44px;padding:0;border:0;background:transparent;color:#94420d;font-size:13px;font-weight:750}.eyebrow{color:#a6490e;font-size:11px;font-weight:800;letter-spacing:.12em}.top h1{margin:0;font-size:27px;line-height:1.2}.top p,.state p{margin:0;color:#706155;font-size:13px;line-height:1.7}.card{padding:20px;border:1px solid #e8d9ca;border-radius:18px;background:#fff}.state{display:grid;justify-items:start;gap:14px}.mark{display:grid;place-items:center;width:48px;height:48px;border-radius:15px;background:#fff1e1;color:#b85111;font-size:26px}.state h2{margin:0;font-size:19px}.state .reference{color:#684b35;font-weight:750}.notice{padding:14px;border-radius:12px;background:#fff4e7;color:#65451f;font-size:13px;line-height:1.7}.primary,.secondary{width:100%;min-height:48px;padding:10px 14px;border-radius:12px;font-size:14px;font-weight:750}.primary{border:0;background:#b85111;color:#fff}.primary:disabled{opacity:.58}.secondary{border:1px solid #d1ad8c;background:#fff;color:#8d3d0c}.text-button{min-height:44px;padding:0;border:0;background:transparent;color:#93410e;font-size:13px;font-weight:750}button:focus-visible{outline:3px solid #783307;outline-offset:2px}@media(max-width:350px){.top h1{font-size:24px}.card{padding:16px}}
 </style>

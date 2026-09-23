@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="cutePet 官网使用场景 UI/UX 设计稿：新手养宠、多宠家庭与带宠出行。">
+  <title>使用场景 · cutePet 官网设计稿</title>
+  <style>
+    :root {
+      --orange: #ff7a2f;
+      --orange-dark: #b85111;
+      --orange-soft: #fff1e8;
+      --ink: #2b2118;
+      --muted: #64574d;
+      --line: #eadfd4;
+      --cream: #fff9f3;
+      --white: #fff;
+      --pink: #ffedf0;
+      --green: #e9f7ee;
+      --blue: #eaf2ff;
+      --purple: #efebff;
+      --shadow: 0 22px 56px rgba(69, 41, 19, .10);
+      --out: cubic-bezier(.22, 1, .36, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; color: var(--ink); background: var(--cream); font-family: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; }
+    :focus-visible { outline: 3px solid var(--orange-dark); outline-offset: 4px; }
+    section[id] { scroll-margin-top: 98px; }
+    .wrap { width: min(100% - 48px, 1200px); margin-inline: auto; }
+    .skip { position: absolute; top: -60px; left: 16px; z-index: 100; padding: 10px 14px; border-radius: 8px; color: white; background: var(--ink); }
+    .skip:focus { top: 12px; }
+    .preview-bar { padding: 9px 16px; color: #69432e; background: #f9e8d9; text-align: center; font-size: 12px; font-weight: 650; }
+    .preview-bar span { opacity: .76; }
+
+    .site-header { position: sticky; top: 0; z-index: 30; border-bottom: 1px solid rgba(234, 223, 212, .8); background: rgba(255, 249, 243, .95); backdrop-filter: blur(18px); }
+    .header-inner { min-height: 76px; display: flex; align-items: center; gap: 44px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-size: 23px; font-weight: 850; letter-spacing: -.065em; white-space: nowrap; }
+    .brand-mark { width: 39px; height: 39px; display: grid; place-items: center; border-radius: 13px; color: white; background: var(--orange-dark); transform: rotate(-8deg); }
+    .brand-mark svg { width: 27px; height: 27px; display: block; }
+    .brand-dot { color: var(--orange); }
+    .site-nav { display: flex; align-items: center; flex-wrap: wrap; gap: 26px; margin-left: auto; }
+    .site-nav a { min-height: 44px; display: inline-flex; align-items: center; color: #584b40; font-size: 14px; font-weight: 700; }
+    .site-nav a:hover, .site-nav a[aria-current="page"] { color: var(--orange-dark); }
+    .header-cta { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; padding: 0 20px; border-radius: 999px; color: white; background: var(--orange-dark); font-size: 13px; font-weight: 800; }
+    .header-cta:hover { background: #863307; }
+
+    .eyebrow { display: flex; align-items: center; gap: 10px; margin: 0 0 18px; color: var(--orange-dark); font-size: 12px; font-weight: 850; letter-spacing: .15em; }
+    .eyebrow::before { content: ""; width: 21px; height: 2px; background: currentColor; }
+    .button { min-height: 50px; display: inline-flex; align-items: center; justify-content: center; gap: 12px; padding: 0 24px; border: 1px solid transparent; border-radius: 999px; font-size: 14px; font-weight: 800; transition: transform .22s var(--out), background .22s; }
+    .button:hover { transform: translateY(-2px); }
+    .button-primary { color: white; background: var(--orange-dark); }
+    .button-primary:hover { background: #863307; }
+    .button-outline { border-color: #d6b9a3; color: #533a2b; background: white; }
+    .button-outline:hover { background: var(--orange-soft); }
+    .text-link { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; border-bottom: 1px solid currentColor; color: var(--orange-dark); font-size: 14px; font-weight: 800; }
+
+    .hero { overflow: hidden; padding: 76px 0 93px; background: radial-gradient(circle at 80% 30%, #ffead8 0, transparent 33%), linear-gradient(145deg, #fff9f3 43%, #fff3e7 100%); }
+    .hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: 65px; align-items: center; }
+    .hero h1 { margin: 0 0 24px; font-size: clamp(43px, 4.4vw, 65px); line-height: 1.18; letter-spacing: -.075em; }
+    .hero h1 span { color: var(--orange-dark); }
+    .hero-lead { max-width: 550px; margin: 0; color: var(--muted); font-size: 18px; line-height: 1.9; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 13px; margin-top: 34px; }
+    .hero-note { display: inline-flex; align-items: center; margin: 28px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .hero-art { position: relative; min-height: 430px; border: 1px solid #f1dccb; border-radius: 36px; background: linear-gradient(145deg, #ffd3b1, #ffecda 65%, #f2e8d8); box-shadow: var(--shadow); overflow: hidden; }
+    .hero-art::before, .hero-art::after { content: ""; position: absolute; border: 1px solid rgba(255, 255, 255, .72); border-radius: 50%; }
+    .hero-art::before { width: 430px; height: 430px; top: -140px; right: -110px; }
+    .hero-art::after { width: 280px; height: 280px; bottom: -110px; left: -95px; }
+    .art-center { position: absolute; top: 50%; left: 50%; width: 152px; height: 152px; display: grid; place-items: center; transform: translate(-50%, -50%) rotate(-6deg); border: 9px solid white; border-radius: 43px; background: #f6c79f; box-shadow: 0 20px 45px rgba(85, 47, 21, .17); font-size: 72px; }
+    .art-card { position: absolute; z-index: 1; min-width: 146px; padding: 15px 18px; border: 1px solid #f1e0d0; border-radius: 17px; background: rgba(255, 255, 255, .95); box-shadow: 0 13px 28px rgba(85, 47, 21, .10); }
+    .art-card small { display: block; color: var(--muted); font-size: 11px; }
+    .art-card strong { display: block; margin-top: 5px; color: var(--ink); font-size: 14px; }
+    .art-card.one { top: 53px; left: 38px; transform: rotate(-5deg); }
+    .art-card.two { right: 25px; top: 123px; transform: rotate(5deg); }
+    .art-card.three { left: 65px; bottom: 40px; transform: rotate(3deg); }
+    .art-caption { position: absolute; right: 22px; bottom: 20px; color: var(--muted); font-size: 10px; letter-spacing: .11em; }
+
+    .intro-strip { margin-top: -41px; position: relative; z-index: 2; }
+    .intro-box { display: grid; grid-template-columns: repeat(3, 1fr); padding: 23px 18px; border: 1px solid var(--line); border-radius: 25px; background: white; box-shadow: 0 20px 45px rgba(55, 35, 22, .07); }
+    .intro-item { display: flex; gap: 15px; align-items: center; padding: 6px 22px; }
+    .intro-item + .intro-item { border-left: 1px solid var(--line); }
+    .intro-icon { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border-radius: 14px; color: var(--orange-dark); background: var(--orange-soft); font-size: 20px; }
+    .intro-item strong { display: block; font-size: 15px; }
+    .intro-item small { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+
+    .chooser { padding: 112px 0 110px; }
+    .section-head { max-width: 680px; margin-bottom: 32px; }
+    .section-head h2 { margin: 0; font-size: clamp(32px, 3.7vw, 48px); line-height: 1.24; letter-spacing: -.055em; }
+    .section-head p:last-child { margin: 17px 0 0; color: var(--muted); font-size: 16px; line-height: 1.8; }
+    .scene-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 30px; }
+    .scene-tab { min-height: 82px; display: flex; align-items: center; gap: 14px; padding: 15px 18px; border: 1px solid var(--line); border-radius: 18px; color: #584b40; background: white; text-align: left; transition: transform .22s var(--out), box-shadow .22s, border-color .22s; }
+    .scene-tab:hover { transform: translateY(-2px); }
+    .scene-tab[aria-selected="true"] { border-color: #d48454; box-shadow: 0 10px 28px rgba(144, 71, 28, .12); }
+    .scene-tab .tab-icon { width: 42px; height: 42px; flex: none; display: grid; place-items: center; border-radius: 13px; color: var(--orange-dark); background: var(--orange-soft); font-size: 22px; }
+    .scene-tab:nth-child(2) .tab-icon { color: #7058b9; background: var(--purple); }
+    .scene-tab:nth-child(3) .tab-icon { color: #207346; background: var(--green); }
+    .scene-tab strong { display: block; font-size: 17px; }
+    .scene-tab small { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; }
+    .scene-panel { padding: 45px; border: 1px solid var(--line); border-radius: 30px; background: white; box-shadow: 0 16px 42px rgba(69, 41, 19, .05); }
+    .panel-top { display: grid; grid-template-columns: 1.1fr .9fr; align-items: stretch; gap: 35px; }
+    .panel-number { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 20px; color: var(--orange-dark); font-size: 12px; font-weight: 850; letter-spacing: .11em; }
+    .panel-number::before { content: ""; width: 22px; height: 2px; background: currentColor; }
+    .panel-top h3 { max-width: 550px; margin: 0; font-size: clamp(30px, 3.3vw, 43px); line-height: 1.25; letter-spacing: -.055em; }
+    .panel-lead { max-width: 600px; margin: 18px 0 0; color: var(--muted); font-size: 16px; line-height: 1.85; }
+    .problem { align-self: stretch; padding: 25px 27px; border-radius: 22px; background: #fff3e9; }
+    .problem.purple { background: #f3efff; }
+    .problem.green { background: #eaf7ef; }
+    .problem h4 { margin: 0 0 13px; font-size: 14px; }
+    .problem ul { margin: 0; padding-left: 20px; color: #604e42; font-size: 14px; line-height: 1.9; }
+    .problem li + li { margin-top: 6px; }
+    .divider { height: 1px; margin: 40px 0; background: var(--line); }
+    .block-head { display: flex; align-items: baseline; justify-content: space-between; gap: 15px; margin-bottom: 19px; }
+    .block-head h4 { margin: 0; font-size: 22px; letter-spacing: -.035em; }
+    .block-head span { color: var(--muted); font-size: 12px; }
+    .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .step { min-height: 192px; padding: 21px; border-radius: 19px; background: #fbf7f2; }
+    .step-num { width: 33px; height: 33px; display: grid; place-items: center; border-radius: 11px; color: white; background: var(--orange-dark); font-size: 12px; font-weight: 850; }
+    .step strong { display: block; margin: 18px 0 8px; font-size: 16px; }
+    .step p { margin: 0; color: #716154; font-size: 13px; line-height: 1.7; }
+    .ability-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
+    .ability { min-height: 147px; display: flex; flex-direction: column; align-items: flex-start; padding: 21px; border: 1px solid var(--line); border-radius: 19px; }
+    .ability .label { display: inline-flex; margin-bottom: 10px; padding: 5px 9px; border-radius: 7px; color: var(--orange-dark); background: var(--orange-soft); font-size: 11px; font-weight: 850; }
+    .ability.news .label { color: #ad315a; background: var(--pink); }
+    .ability.explore .label { color: #207346; background: var(--green); }
+    .ability.family .label { color: #644ca8; background: var(--purple); }
+    .ability strong { font-size: 15px; }
+    .ability p { margin: 7px 0 0; color: #716154; font-size: 13px; line-height: 1.6; }
+    .panel-foot { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-top: 36px; padding: 24px 26px; border-radius: 18px; color: #e8dbd0; background: var(--ink); }
+    .panel-foot strong { display: block; color: white; font-size: 15px; }
+    .panel-foot p { max-width: 670px; margin: 7px 0 0; color: #cbb9a9; font-size: 13px; line-height: 1.7; }
+    .panel-foot .button { flex: none; border-color: #c6a68f; color: white; background: transparent; }
+    .panel-foot .button:hover { background: #48362b; }
+    .route-note { margin: 15px 0 0; color: var(--muted); font-size: 11px; }
+
+    .entry { padding: 86px 0 102px; color: white; background: var(--ink); }
+    .entry-grid { display: grid; grid-template-columns: 1fr .95fr; gap: 70px; align-items: center; }
+    .entry .eyebrow { color: #ffad79; }
+    .entry h2 { max-width: 560px; margin: 0; font-size: clamp(33px, 4vw, 52px); line-height: 1.25; letter-spacing: -.055em; }
+    .entry p { max-width: 570px; margin: 18px 0 0; color: #d5c5b9; font-size: 15px; line-height: 1.8; }
+    .entry-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+    .entry-card { min-height: 193px; padding: 23px; border: 1px solid #685344; border-radius: 20px; background: #3d3028; }
+    .entry-card .icon { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 12px; color: #ffb786; background: #654734; font-size: 22px; }
+    .entry-card h3 { margin: 17px 0 8px; font-size: 16px; }
+    .entry-card p { margin: 0; color: #c9b8aa; font-size: 12px; line-height: 1.7; }
+    .entry-status { display: inline-flex; align-items: center; gap: 7px; margin-top: 15px; color: #ffd0ac; font-size: 11px; font-weight: 800; }
+    .entry-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #ffad79; }
+    .entry-links { display: flex; flex-wrap: wrap; gap: 13px; margin-top: 31px; }
+    .entry .button-outline { border-color: #8f6e57; color: white; background: transparent; }
+    .entry .button-outline:hover { background: #48362b; }
+
+    .footer { padding: 42px 0 25px; color: #f9f1eb; background: #211913; }
+    .footer-top { display: flex; align-items: start; justify-content: space-between; gap: 30px; padding-bottom: 33px; }
+    .footer .brand { color: white; }
+    .footer-note { max-width: 460px; margin: 14px 0 0; color: #bda696; font-size: 12px; line-height: 1.7; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 18px; }
+    .footer-links a { min-height: 44px; display: inline-flex; align-items: center; color: #d9b8a1; font-size: 13px; }
+    .footer-links a:hover { color: white; }
+    .footer-bottom { display: flex; justify-content: space-between; gap: 20px; padding-top: 22px; border-top: 1px solid #4b3a2e; color: #a68e7b; font-size: 11px; }
+
+    @media (max-width: 1000px) {
+      .hero-grid { gap: 25px; }
+      .site-nav { gap: 14px; }
+      .panel-top { gap: 23px; }
+      .steps { grid-template-columns: repeat(2, 1fr); }
+      .entry-grid { gap: 35px; }
+    }
+    @media (max-width: 760px) {
+      .wrap { width: min(100% - 32px, 1200px); }
+      .header-inner { min-height: 69px; flex-wrap: wrap; gap: 0 16px; padding-block: 8px; }
+      .brand { font-size: 21px; }
+      .brand-mark { width: 36px; height: 36px; }
+      .site-nav { width: 100%; order: 3; justify-content: space-between; gap: 7px; margin-left: 0; }
+      .site-nav a { font-size: 12px; }
+      .header-cta { margin-left: auto; }
+      .hero { padding: 55px 0 79px; }
+      .hero-grid, .panel-top, .entry-grid { grid-template-columns: 1fr; }
+      .hero-art { min-height: 360px; }
+      .intro-box { grid-template-columns: 1fr; padding: 10px 18px; }
+      .intro-item { padding: 15px 6px; }
+      .intro-item + .intro-item { border-left: 0; border-top: 1px solid var(--line); }
+      .chooser { padding: 82px 0; }
+      .scene-tabs { grid-template-columns: 1fr; gap: 9px; }
+      .scene-tab { min-height: 68px; }
+      .scene-panel { padding: 27px 21px; }
+      .ability-grid { grid-template-columns: 1fr; }
+      .ability { min-height: 0; }
+      .panel-foot { align-items: flex-start; flex-direction: column; }
+      .entry { padding: 77px 0 88px; }
+      .footer-top, .footer-bottom { flex-direction: column; }
+    }
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 39px; }
+      .hero-lead { font-size: 16px; }
+      .hero-actions .button { width: 100%; }
+      .hero-art { min-height: 315px; }
+      .art-center { width: 115px; height: 115px; border-radius: 34px; font-size: 55px; }
+      .art-card { min-width: 122px; padding: 11px 12px; }
+      .art-card.one { top: 29px; left: 15px; }
+      .art-card.two { right: 13px; top: 119px; }
+      .art-card.three { left: 29px; bottom: 26px; }
+      .art-card strong { font-size: 12px; }
+      .art-card small { font-size: 10px; }
+      .section-head h2 { font-size: 34px; }
+      .steps { grid-template-columns: 1fr; }
+      .step { min-height: 0; }
+      .entry-cards { grid-template-columns: 1fr; }
+      .entry-card { min-height: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">跳到主要内容</a>
+  <div class="preview-bar">官网 UI/UX 设计预览 <span>· 场景、步骤与入口状态为评审示意</span></div>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html" aria-label="cutePet 返回官网首页">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M16 24.8c-3.4 0-4.5 2.2-7.1 1.1-2.4-1-2.8-4.1-.5-6.1 2.4-2.2 3.7-6.6 7.6-6.6s5.2 4.4 7.6 6.6c2.3 2 .8 5.1-1.5 6.1-2.6 1.1-3.8-1.1-6.8-1.1Z" fill="currentColor"/><ellipse cx="7.2" cy="10.4" rx="2.4" ry="3.5" transform="rotate(-19 7.2 10.4)" fill="currentColor"/><ellipse cx="13" cy="6.6" rx="2.4" ry="3.5" transform="rotate(-7 13 6.6)" fill="currentColor"/><ellipse cx="19.4" cy="6.6" rx="2.4" ry="3.5" transform="rotate(8 19.4 6.6)" fill="currentColor"/><ellipse cx="25" cy="10.4" rx="2.4" ry="3.5" transform="rotate(19 25 10.4)" fill="currentColor"/></svg></span>
+        <span>cutePet<span class="brand-dot">.</span></span>
+      </a>
+      <nav class="site-nav" aria-label="主导航">
+        <a href="index.html">官网首页</a>
+        <a href="产品能力.html">产品能力</a>
+        <a href="#scene-switch" aria-current="page">使用场景</a>
+      </nav>
+      <a class="header-cta" href="#entry">使用入口状态 ↗</a>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap hero-grid">
+        <div>
+          <p class="eyebrow">SOLUTIONS · 按生活情境理解产品</p>
+          <h1 id="hero-title">养宠的每一步，<br><span>都有更清楚的下一步。</span></h1>
+          <p class="hero-lead">第一次建档、照顾多只宠物、带它一起出门。选择正在经历的情境，看看有哪些可执行的安排，以及哪些能力能帮上忙。</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#scene-switch">选择使用场景 <span aria-hidden="true">↓</span></a>
+            <a class="button button-outline" href="产品能力.html">查看四大能力 <span aria-hidden="true">↗</span></a>
+          </div>
+          <p class="hero-note">本页为设计方案；示意步骤不代表真实账户数据或运行验收结果。</p>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="art-center">🐾</div>
+          <div class="art-card one"><small>01 · 回顾</small><strong>上次照护，有记录</strong></div>
+          <div class="art-card two"><small>02 · 计划</small><strong>下次安排，更明确</strong></div>
+          <div class="art-card three"><small>03 · 协作</small><strong>家人接力，少重复</strong></div>
+          <span class="art-caption">SCENE CONCEPT · 流程示意</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="intro-strip">
+      <div class="wrap intro-box">
+        <div class="intro-item"><span class="intro-icon" aria-hidden="true">✎</span><div><strong>从一份档案开始</strong><small>记录健康变化，回顾上次照护</small></div></div>
+        <div class="intro-item"><span class="intro-icon" aria-hidden="true">◷</span><div><strong>知道下一次安排</strong><small>按自己的计划设置提醒和待办</small></div></div>
+        <div class="intro-item"><span class="intro-icon" aria-hidden="true">♡</span><div><strong>需要时一起协作</strong><small>共享范围与处理权限说清楚</small></div></div>
+      </div>
+    </div>
+
+    <section class="chooser" id="scene-switch" aria-labelledby="scene-heading">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">CHOOSE YOUR MOMENT</p>
+          <h2 id="scene-heading">现在的你，正在面对哪件事？</h2>
+          <p>三个情境按真实需求拆成可执行步骤。切换场景可比较任务、对应能力和当前入口状态。</p>
+        </div>
+        <div class="scene-tabs" role="tablist" aria-label="使用场景切换">
+          <button class="scene-tab" type="button" role="tab" id="tab-beginner" aria-controls="panel-beginner" aria-selected="true" tabindex="0"><span class="tab-icon" aria-hidden="true">✦</span><span><strong>新手养宠</strong><small>从建档到第一次安排</small></span></button>
+          <button class="scene-tab" type="button" role="tab" id="tab-multi" aria-controls="panel-multi" aria-selected="false" tabindex="-1"><span class="tab-icon" aria-hidden="true">♡</span><span><strong>多宠家庭</strong><small>每只宠物、每位家人都清楚</small></span></button>
+          <button class="scene-tab" type="button" role="tab" id="tab-travel" aria-controls="panel-travel" aria-selected="false" tabindex="-1"><span class="tab-icon" aria-hidden="true">⌖</span><span><strong>带宠出行</strong><small>出门前把地点与活动看清</small></span></button>
+        </div>
+
+        <div class="scene-panel" id="panel-beginner" role="tabpanel" aria-labelledby="tab-beginner" tabindex="0">
+          <div class="panel-top">
+            <div><span class="panel-number">01 / 03 · 新手养宠</span><h3>刚把它接回家，先把重要的事记清。</h3><p class="panel-lead">不用一次记住所有细节。先建立档案，再把已有健康信息和下一次计划放到同一条照护路径里；有疑问时按频道寻找参考内容。</p></div>
+            <div class="problem"><h4>情境问题</h4><ul><li>疫苗、驱虫、体检等信息散在照片和聊天里。</li><li>想知道上次什么时候做过，下一次该何时提醒。</li><li>需要知识参考，但不想把科普当成诊疗建议。</li></ul></div>
+          </div>
+          <div class="divider"></div>
+          <div class="block-head"><h4>可执行的四步</h4><span>示意流程 · 由用户在应用内完成</span></div>
+          <ol class="steps">
+            <li class="step"><span class="step-num">01</span><strong>建立宠物档案</strong><p>填写昵称、物种、生日或年龄等基础信息，之后可继续补全。</p></li>
+            <li class="step"><span class="step-num">02</span><strong>补上健康记录</strong><p>按实际发生时间记录疫苗、驱虫、体检或就医事件。</p></li>
+            <li class="step"><span class="step-num">03</span><strong>安排下次提醒</strong><p>选择单次或周期计划，未来日期与已有计划的关系由用户确认。</p></li>
+            <li class="step"><span class="step-num">04</span><strong>按主题查资料</strong><p>从七个资讯频道寻找内容；涉医内容仅供科普参考。</p></li>
+          </ol>
+          <div class="divider"></div>
+          <div class="block-head"><h4>对应的产品能力</h4><span>从任务走向功能</span></div>
+          <div class="ability-grid">
+            <div class="ability"><span class="label">宠物管理</span><strong>档案与健康时间线</strong><p>回顾已有记录，查看体重趋势与下一次安排。</p></div>
+            <div class="ability news"><span class="label">宠物资讯</span><strong>按频道寻找参考</strong><p>阅读已公开内容，涉医内容遵循固定免责声明。</p></div>
+            <div class="ability family"><span class="label">家庭共享 · 可选</span><strong>需要时邀请家人</strong><p>共享前明确范围，新成员默认只读。</p></div>
+          </div>
+          <div class="panel-foot"><div><strong>入口状态 · 设计预览</strong><p>建档、记录和设置提醒属于用户端写操作。正式 Web 与移动 H5 地址待运行验收后接入，本稿不提供占位下载包。</p></div><a class="button" href="#entry">查看使用入口说明 ↗</a></div>
+          <p class="route-note">对应计划路由：/solutions/beginner · 本文件用于内页评审，非已实现路由。</p>
+        </div>
+
+        <div class="scene-panel" id="panel-multi" role="tabpanel" aria-labelledby="tab-multi" tabindex="0" hidden>
+          <div class="panel-top">
+            <div><span class="panel-number">02 / 03 · 多宠家庭</span><h3>照顾的不止一只，事情也能各自清楚。</h3><p class="panel-lead">每只宠物保留独立档案和安排；需要家人接力时，先明确哪些档案共享、谁可以处理提醒，完成后看得到处理人。</p></div>
+            <div class="problem purple"><h4>情境问题</h4><ul><li>多只宠物的记录容易串在一起。</li><li>同一件待办可能被两位家人重复处理。</li><li>希望家人协作，也要保留未共享档案的私密性。</li></ul></div>
+          </div>
+          <div class="divider"></div>
+          <div class="block-head"><h4>可执行的四步</h4><span>示意流程 · 由用户在应用内完成</span></div>
+          <ol class="steps">
+            <li class="step"><span class="step-num">01</span><strong>分别建立档案</strong><p>为每只宠物保存基础信息、健康记录与提醒计划。</p></li>
+            <li class="step"><span class="step-num">02</span><strong>查看各自待办</strong><p>切换宠物，确认下一件事属于哪只宠物。</p></li>
+            <li class="step"><span class="step-num">03</span><strong>按范围邀请家人</strong><p>只共享需要协作的宠物，并明确可管理或只读权限。</p></li>
+            <li class="step"><span class="step-num">04</span><strong>交接后核对进度</strong><p>处理状态标记处理人，避免重复完成；权限变更后按新权限生效。</p></li>
+          </ol>
+          <div class="divider"></div>
+          <div class="block-head"><h4>对应的产品能力</h4><span>共享有范围，权限逐动作</span></div>
+          <div class="ability-grid">
+            <div class="ability"><span class="label">宠物管理</span><strong>多宠档案与计划</strong><p>按宠物分别浏览时间线、体重记录及提醒。</p></div>
+            <div class="ability family"><span class="label">家庭共享</span><strong>可管理或只读</strong><p>新成员默认只读；未共享的个人宠物对家人不可见。</p></div>
+            <div class="ability family"><span class="label">所有者权限</span><strong>关键操作有边界</strong><p>健康摘要和所有权转移等敏感操作由所有者处理。</p></div>
+          </div>
+          <div class="panel-foot"><div><strong>入口状态 · 设计预览</strong><p>共享邀请、权限调整和待办处理都要进入用户端，并按登录与对象权限校验。当前没有可核验的正式入口地址。</p></div><a class="button" href="#entry">查看使用入口说明 ↗</a></div>
+          <p class="route-note">对应计划路由：/solutions/multi-pet · 本文件用于内页评审，非已实现路由。</p>
+        </div>
+
+        <div class="scene-panel" id="panel-travel" role="tabpanel" aria-labelledby="tab-travel" tabindex="0" hidden>
+          <div class="panel-top">
+            <div><span class="panel-number">03 / 03 · 带宠出行</span><h3>出门前，先看看哪里适合一起去。</h3><p class="panel-lead">从城市和场所条件开始，查看详情、路线与活动信息。路线与评价是参考，是否适合带宠仍需结合现场规则自行判断。</p></div>
+            <div class="problem green"><h4>情境问题</h4><ul><li>不知道附近有哪些允许带宠的场所。</li><li>想提前核对设施、营业信息与遛宠路线。</li><li>看到活动后，需要了解报名条件与信息使用方式。</li></ul></div>
+          </div>
+          <div class="divider"></div>
+          <div class="block-head"><h4>可执行的四步</h4><span>示意流程 · 不虚构场所或活动数据</span></div>
+          <ol class="steps">
+            <li class="step"><span class="step-num">01</span><strong>确定城市与条件</strong><p>允许定位时查看附近；未授权时改为手动选择城市。</p></li>
+            <li class="step"><span class="step-num">02</span><strong>核对场所详情</strong><p>按类型及宠物友好属性筛选，再查看设施与营业信息。</p></li>
+            <li class="step"><span class="step-num">03</span><strong>参考遛宠路线</strong><p>浏览公开路线的起终点、距离与难度，出门前再核对现场条件。</p></li>
+            <li class="step"><span class="step-num">04</span><strong>了解活动再报名</strong><p>先看活动信息；进入用户端后阅读告知并单独同意，再确认报名。</p></li>
+          </ol>
+          <div class="divider"></div>
+          <div class="block-head"><h4>对应的产品能力</h4><span>公开信息与用户操作分开</span></div>
+          <div class="ability-grid">
+            <div class="ability explore"><span class="label">宠物探索</span><strong>场所筛选与详情</strong><p>地图/列表、位置兜底、设施标签与信息纠错。</p></div>
+            <div class="ability explore"><span class="label">宠物探索</span><strong>路线与本地活动</strong><p>查看公开路线；活动报名回用户端确认。</p></div>
+            <div class="ability news"><span class="label">宠物资讯</span><strong>出行前的内容参考</strong><p>阅读相关公开内容，不把文章或评价当成到店保证。</p></div>
+          </div>
+          <div class="panel-foot"><div><strong>入口状态 · 设计预览</strong><p>场所、路线、活动需要真实已发布数据；地图与导航须接入合规服务。本稿不展示虚构城市、评分、名额或现场已验证标记。</p></div><a class="button" href="#entry">查看使用入口说明 ↗</a></div>
+          <p class="route-note">对应计划路由：/solutions/travel · 本文件用于内页评审，非已实现路由。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="entry" id="entry" aria-labelledby="entry-title">
+      <div class="wrap entry-grid">
+        <div><p class="eyebrow">START WITH A CLEAR PATH</p><h2 id="entry-title">理解了使用方式，<br>再进入真正可用的入口。</h2><p>场景页负责说明任务路径。建档、记录、家庭共享与活动报名在用户端完成。正式 Web 与移动 H5 地址、运行状态和登录回跳需验收后配置。</p><div class="entry-links"><a class="button button-primary" href="产品能力.html">继续了解产品能力 ↗</a><a class="button button-outline" href="index.html">返回官网首页 ↗</a></div></div>
+        <div class="entry-cards"><div class="entry-card"><span class="icon" aria-hidden="true">▣</span><h3>电脑 Web</h3><p>适合查看完整档案、时间线与大屏体重曲线。</p><span class="entry-status">正式地址待核验</span></div><div class="entry-card"><span class="icon" aria-hidden="true">▯</span><h3>手机 H5</h3><p>适合在外查看待办、记录和探索附近信息。</p><span class="entry-status">正式地址待核验</span></div></div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><div class="wrap"><div class="footer-top"><div><a class="brand" href="index.html">cutePet<span class="brand-dot">.</span></a><p class="footer-note">官网使用场景设计稿。品牌名、正式入口、条款与备案信息仍待确认；本页不展示真实用户、城市、场所、活动或评价数据。</p></div><nav class="footer-links" aria-label="页脚导航"><a href="index.html">官网首页</a><a href="产品能力.html">产品能力</a><a href="#scene-switch">切换场景</a><a href="#entry">入口状态</a></nav></div><div class="footer-bottom"><span>© 2026 cutePet · UI/UX 评审示意</span><span>新手养宠 / 多宠家庭 / 带宠出行</span></div></div></footer>
+  <script>
+    const tabs = [...document.querySelectorAll('.scene-tab')];
+    const panels = tabs.map(tab => document.getElementById(tab.getAttribute('aria-controls')));
+    function activateScene(index, moveFocus = false) {
+      tabs.forEach((tab, position) => {
+        const active = position === index;
+        tab.setAttribute('aria-selected', String(active));
+        tab.tabIndex = active ? 0 : -1;
+        panels[position].hidden = !active;
+      });
+      if (moveFocus) tabs[index].focus();
+    }
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => activateScene(index));
+      tab.addEventListener('keydown', event => {
+        let next = index;
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % tabs.length;
+        else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (index - 1 + tabs.length) % tabs.length;
+        else if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = tabs.length - 1;
+        else return;
+        event.preventDefault();
+        activateScene(next, true);
+      });
+    });
+  </script>
+</body>
+</html>

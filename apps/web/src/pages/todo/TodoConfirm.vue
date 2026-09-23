@@ -1,79 +1,58 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { todoConfirmSuccess, keepInputsOnFailure, type TodoConfirmModel } from '../../domain/closedLoop';
+import { useRouter } from 'vue-router';
 
-const route = useRoute();
 const router = useRouter();
-const todoId = String(route.params.id);
-
-// X01：提醒卡 → 关联已有记录或新增 → 发生日期 + 下次计划预览 → 确认
-const useExisting = ref(true);
-const existingRecord = ref('健康记录·疫苗（2026-09-20）');
-const occurredDate = ref(new Date().toISOString().slice(0, 10));
-const nextDuePreview = ref('2027-03-21');
-const handler = ref('我');
-const result = ref<{ headline: string; lines: string[] } | null>(null);
-const failed = ref(false);
-
-function confirm() {
-  // 模拟提交：失败保留输入（X01）
-  if (failed.value) {
-    keepInputsOnFailure();
-    return;
-  }
-  const model: TodoConfirmModel = {
-    petName: '旺财',
-    existingRecord: useExisting.value ? existingRecord.value : null,
-    occurredDate: occurredDate.value,
-    nextDuePreview: nextDuePreview.value,
-    handler: handler.value,
-  };
-  result.value = todoConfirmSuccess(model, 'COMPLETED');
-}
 </script>
 
 <template>
-  <div class="x01">
-    <header>
-      <button type="button" class="back" @click="router.back()">‹ 返回</button>
-      <h1>完成待办（X01）</h1>
-    </header>
+  <main class="todo-confirm">
+    <button type="button" class="back" @click="router.back()">‹ 返回</button>
+    <div class="heading">
+      <span class="eyebrow">照护待办</span>
+      <h1>确认本次完成</h1>
+      <p>完成前需要核对本期待办、对应宠物与有效健康记录。</p>
+    </div>
 
-    <template v-if="!result">
-      <label class="row">
-        <input v-model="useExisting" type="radio" :value="true" /> 关联已有记录：{{ existingRecord }}
-      </label>
-      <label class="row">
-        <input v-model="useExisting" type="radio" :value="false" /> 新增一条健康记录
-      </label>
-      <label class="field">发生日期 <input v-model="occurredDate" type="date" data-testid="occurred" /></label>
-      <label class="field">下次计划预览 <input v-model="nextDuePreview" type="date" /></label>
-
-      <button type="button" class="primary" data-testid="confirm" @click="confirm">确认完成</button>
-      <button type="button" class="ghost" @click="failed = !failed">{{ failed ? '模拟失败态（输入保留）' : '模拟提交失败' }}</button>
-    </template>
-
-    <section v-else class="success" data-testid="success">
-      <h2>{{ result.headline }}</h2>
-      <ul>
-        <li v-for="l in result.lines" :key="l">{{ l }}</li>
-      </ul>
-      <button type="button" class="primary" @click="router.push('/pets')">返回宠物详情</button>
+    <section class="status" role="status" aria-labelledby="unavailable-title">
+      <span class="status-icon" aria-hidden="true">!</span>
+      <div>
+        <h2 id="unavailable-title">待办确认暂未接入</h2>
+        <p>当前接口没有待办详情查询，也不接收关联的健康记录编号。无法核实本次执行与记录是否同成同败，因此这里不会提交完成或显示成功。</p>
+      </div>
     </section>
-  </div>
+
+    <section class="steps" aria-label="完成待办所需信息">
+      <h2>接通后将核对</h2>
+      <ol>
+        <li>平台返回的宠物、待办和本次计划日期</li>
+        <li>已有记录的有效性，或新记录的保存结果</li>
+        <li>处理人、重复处理结果和下次排期</li>
+      </ol>
+    </section>
+
+    <div class="actions">
+      <button type="button" class="primary" disabled data-testid="confirm">确认完成 · 待接入</button>
+      <button type="button" class="ghost" @click="router.push('/pets')">返回我的宠物</button>
+    </div>
+  </main>
 </template>
 
 <style scoped>
-.x01 { max-width: 520px; margin: 32px auto; padding: 16px; display: grid; gap: 12px; }
-header { display: flex; gap: 12px; align-items: center; }
-.back { background: none; border: none; color: #ff7a2f; }
-.row { background: #fff; border-radius: 12px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 14px; font-size: 14px; display: flex; gap: 8px; }
-.field { display: grid; gap: 6px; font-size: 14px; font-weight: 600; }
-.field input { height: 44px; border: 1px solid #f0e6dc; border-radius: 12px; padding: 0 12px; }
-.primary { height: 48px; border: none; border-radius: 999px; background: #ff7a2f; color: #fff; font-weight: 600; }
-.ghost { height: 40px; border: none; border-radius: 999px; background: #fff; color: #7a6e63; box-shadow: inset 0 0 0 1px #f0e6dc; }
-.success { background: #fff; border-radius: 16px; box-shadow: inset 0 0 0 1px #f0e6dc; padding: 18px; display: grid; gap: 10px; }
-.success h2 { margin: 0; color: #22c55e; font-size: 18px; }
-.success ul { padding-left: 18px; display: grid; gap: 6px; color: #2b2118; font-size: 14px; }
+.todo-confirm { max-width: 620px; margin: 32px auto; padding: 16px; display: grid; gap: 20px; color: #2b2118; }
+.back { justify-self: start; border: 0; min-height: 44px; background: transparent; color: #a8470c; cursor: pointer; }
+.heading { display: grid; gap: 6px; }
+.heading h1 { margin: 0; font-size: clamp(24px, 4vw, 32px); }
+.heading p { margin: 0; color: #706255; line-height: 1.6; }
+.eyebrow { color: #a8470c; font-size: 13px; font-weight: 700; }
+.status { display: flex; gap: 14px; align-items: start; padding: 20px; border: 1px solid #ecd9c8; background: #fff7ee; border-radius: 18px; }
+.status-icon { width: 26px; height: 26px; flex: none; display: grid; place-items: center; border-radius: 50%; background: #a8470c; color: #fff; font-weight: 800; }
+.status h2, .steps h2 { margin: 0 0 7px; font-size: 18px; }
+.status p { margin: 0; color: #604b3b; line-height: 1.7; font-size: 14px; }
+.steps { background: #fff; border: 1px solid #f0e6dc; border-radius: 18px; padding: 20px; }
+.steps ol { margin: 0; padding-left: 22px; display: grid; gap: 10px; line-height: 1.6; color: #604b3b; font-size: 14px; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.actions button { min-height: 48px; padding: 0 20px; border-radius: 999px; font-weight: 700; }
+.primary { background: #b85111; color: #fff; border: 0; opacity: .58; cursor: not-allowed; }
+.ghost { color: #684b39; background: #fff; border: 1px solid #dacabc; cursor: pointer; }
+button:focus-visible { outline: 3px solid #6f320c; outline-offset: 2px; }
 </style>

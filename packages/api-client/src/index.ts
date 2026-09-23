@@ -1,5 +1,7 @@
 export {
   GATEWAY_BASE,
+  setGatewayBase,
+  getGatewayBase,
   request,
   buildUrl,
   setAccessToken,
